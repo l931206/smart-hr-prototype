@@ -4,11 +4,11 @@
 
 ## 使用方式
 
-直接開啟 `smart-hr-prototype/index.html` 即可瀏覽；所有資料與流程目前為靜態原型。
+直接開啟 `index.html` 即可瀏覽；所有資料與流程目前為靜態原型。
 
 ## 目錄
 
-- `smart-hr-prototype/employee/`：員工功能
-- `smart-hr-prototype/manager/`：主管功能
-- `smart-hr-prototype/admin/`：管理員功能
-- `smart-hr-prototype/assets/css/`：共用樣式與手機版 RWD
+- `employee/`：員工功能
+- `manager/`：主管功能
+- `admin/`：管理員功能
+- `assets/css/`：共用樣式與手機版 RWD
