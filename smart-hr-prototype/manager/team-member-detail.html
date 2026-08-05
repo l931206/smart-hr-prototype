@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <title>員工詳情｜智慧人資管理平台</title>
+
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/mobile.css">
+
+  <style>
+    .team-detail-page {
+      width: min(900px, calc(100% - 28px));
+    }
+
+    .team-profile-card {
+      padding: 28px;
+      border-radius: 26px;
+      color: white;
+      background:
+        radial-gradient(
+          circle at top right,
+          rgba(255, 255, 255, 0.18),
+          transparent 38%
+        ),
+        linear-gradient(
+          135deg,
+          var(--color-primary),
+          #155e75
+        );
+      box-shadow: 0 20px 50px rgba(15, 118, 110, 0.2);
+    }
+
+    .team-profile-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+    }
+
+    .team-profile-employee {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      min-width: 0;
+    }
+
+    .team-profile-avatar {
+      width: 76px;
+      height: 76px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border: 2px solid rgba(255, 255, 255, 0.28);
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.18);
+      font-size: 28px;
+      font-weight: 900;
+    }
+
+    .team-profile-employee h1 {
+      margin: 0;
+      font-size: 28px;
+      line-height: 1.35;
+    }
+
+    .team-profile-employee p {
+      margin: 7px 0 0;
+      line-height: 1.6;
+      opacity: 0.9;
+    }
+
+    .team-profile-status {
+      display: inline-flex;
+      flex: 0 0 auto;
+      padding: 7px 12px;
+      border-radius: 999px;
+      color: var(--color-success);
+      background: var(--color-success-bg);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .team-detail-summary {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .team-content-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    .team-info-card h2,
+    .team-record-card h2 {
+      margin: 0 0 18px;
+      font-size: 20px;
+    }
+
+    .team-info-row {
+      display: grid;
+      grid-template-columns: 110px minmax(0, 1fr);
+      gap: 14px;
+      padding: 13px 0;
+      border-bottom: 1px solid #edf1f5;
+    }
+
+    .team-info-row:last-child {
+      border-bottom: 0;
+    }
+
+    .team-info-row span {
+      color: var(--color-muted);
+      font-size: 14px;
+    }
+
+    .team-info-row strong {
+      min-width: 0;
+      line-height: 1.6;
+      overflow-wrap: anywhere;
+    }
+
+    .team-record {
+      padding: 14px 0;
+      border-bottom: 1px solid #edf1f5;
+    }
+
+    .team-record:last-child {
+      border-bottom: 0;
+    }
+
+    .team-record-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .team-record h3 {
+      margin: 0;
+      font-size: 15px;
+    }
+
+    .team-record p {
+      margin: 7px 0 0;
+      color: var(--color-muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .team-record-tag {
+      display: inline-flex;
+      flex: 0 0 auto;
+      padding: 5px 9px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .team-record-tag.pending {
+      color: var(--color-warning);
+      background: var(--color-warning-bg);
+    }
+
+    .team-record-tag.approved {
+      color: var(--color-success);
+      background: var(--color-success-bg);
+    }
+
+    .team-record-tag.late {
+      color: #1d4ed8;
+      background: #dbeafe;
+    }
+
+    .team-detail-actions {
+      margin-top: 22px;
+    }
+
+    @media (max-width: 760px) {
+      .team-detail-page {
+        width: calc(100% - 20px);
+      }
+
+      .team-detail-page .back {
+        display: none;
+      }
+
+      .team-profile-card {
+        padding: 20px;
+        border-radius: 22px;
+      }
+
+      .team-profile-head {
+        gap: 14px;
+      }
+
+      .team-profile-avatar {
+        width: 60px;
+        height: 60px;
+        font-size: 23px;
+      }
+
+      .team-profile-employee h1 {
+        font-size: 22px;
+      }
+
+      .team-profile-employee p {
+        font-size: 13px;
+      }
+
+      .team-detail-summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .team-content-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-top: 14px;
+      }
+
+      .team-info-card,
+      .team-record-card {
+        padding: 17px;
+      }
+
+      .team-info-card h2,
+      .team-record-card h2 {
+        margin-bottom: 10px;
+        font-size: 18px;
+      }
+
+      .team-info-row {
+        grid-template-columns: 1fr;
+        gap: 4px;
+        padding: 11px 0;
+      }
+
+      .team-info-row span {
+        font-size: 12px;
+      }
+
+      .team-info-row strong {
+        font-size: 14px;
+      }
+
+      .team-record-head {
+        gap: 8px;
+      }
+
+      .team-record h3 {
+        font-size: 14px;
+      }
+
+      .team-record p {
+        font-size: 12px;
+      }
+
+      .team-detail-actions {
+        margin-top: 14px;
+      }
+    }
+
+    @media (max-width: 430px) {
+      .team-profile-head,
+      .team-profile-employee {
+        align-items: flex-start;
+      }
+
+      .team-profile-head {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page team-detail-page">
+
+    <a class="back" href="team.html">
+      ← 返回我的團隊
+    </a>
+
+    <section class="team-profile-card">
+      <div class="team-profile-head">
+
+        <div class="team-profile-employee">
+          <div class="team-profile-avatar">
+            陳
+          </div>
+
+          <div>
+            <h1>陳員工</h1>
+            <p>軟體工程師｜員工編號 EMP0003</p>
+            <p>資訊部｜直屬主管：王主管</p>
+          </div>
+        </div>
+
+        <span class="team-profile-status">
+          正常出勤
+        </span>
+      </div>
+    </section>
+
+    <section class="summary-grid team-detail-summary">
+      <article class="summary-card">
+        <span>剩餘特休</span>
+        <strong>5 天</strong>
+      </article>
+
+      <article class="summary-card">
+        <span>本年度請假</span>
+        <strong>4 天</strong>
+      </article>
+
+      <article class="summary-card">
+        <span>本月晚到</span>
+        <strong>1 次</strong>
+      </article>
+
+      <article class="summary-card">
+        <span>待審核申請</span>
+        <strong>1 件</strong>
+      </article>
+    </section>
+
+    <section class="team-content-grid">
+
+      <article class="card team-info-card">
+        <h2>基本資料</h2>
+
+        <div class="team-info-row">
+          <span>電子郵件</span>
+          <strong>employee@example.com</strong>
+        </div>
+
+        <div class="team-info-row">
+          <span>聯絡電話</span>
+          <strong>0912-345-678</strong>
+        </div>
+
+        <div class="team-info-row">
+          <span>職稱</span>
+          <strong>軟體工程師</strong>
+        </div>
+
+        <div class="team-info-row">
+          <span>到職日期</span>
+          <strong>2026/01/01</strong>
+        </div>
+
+        <div class="team-info-row">
+          <span>在職狀態</span>
+          <strong>
+            <span class="status active">
+              在職
+            </span>
+          </strong>
+        </div>
+      </article>
+
+      <article class="card team-record-card">
+        <h2>最近紀錄</h2>
+
+        <div class="team-record">
+          <div class="team-record-head">
+            <h3>特休假申請</h3>
+
+            <span class="team-record-tag pending">
+              等待審核
+            </span>
+          </div>
+
+          <p>2026/08/03 至 2026/08/04，共 2 天。</p>
+        </div>
+
+        <div class="team-record">
+          <div class="team-record-head">
+            <h3>晚到通知</h3>
+
+            <span class="team-record-tag late">
+              已通知
+            </span>
+          </div>
+
+          <p>2026/07/18，預計 09:40 到班。</p>
+        </div>
+
+        <div class="team-record">
+          <div class="team-record-head">
+            <h3>病假</h3>
+
+            <span class="team-record-tag approved">
+              已核准
+            </span>
+          </div>
+
+          <p>2026/06/12，共 1 天。</p>
+        </div>
+      </article>
+    </section>
+
+    <div class="actions team-detail-actions">
+      <a
+        class="button primary"
+        href="leave-requests.html"
+      >
+        查看請假申請
+      </a>
+
+      <a
+        class="button secondary"
+        href="late-notices.html"
+      >
+        查看晚到紀錄
+      </a>
+    </div>
+  </main>
+
+  <nav
+    class="mobile-nav"
+    aria-label="主管手機導覽"
+  >
+    <a href="index.html">
+      <span>⌂</span>
+      <small>首頁</small>
+    </a>
+
+    <a href="leave-requests.html">
+      <span>✓</span>
+      <small>審核</small>
+    </a>
+
+    <a
+      class="active"
+      href="team.html"
+      aria-current="page"
+    >
+      <span>人</span>
+      <small>團隊</small>
+    </a>
+
+    <a href="notifications.html">
+      <span>•••</span>
+      <small>更多</small>
+    </a>
+  </nav>
+</body>
+</html>

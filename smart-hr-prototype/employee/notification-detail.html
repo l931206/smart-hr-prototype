@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <title>通知詳情｜智慧人資管理平台</title>
+
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/mobile.css">
+
+  <style>
+    .notification-detail-page {
+      width: min(760px, calc(100% - 28px));
+    }
+
+    .notification-detail-card {
+      padding: 28px;
+    }
+
+    .notification-detail-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 18px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #edf1f5;
+    }
+
+    .notification-detail-head h1 {
+      margin: 0;
+      font-size: 28px;
+      line-height: 1.35;
+    }
+
+    .notification-detail-time {
+      flex: 0 0 auto;
+      color: #8290a3;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .notification-detail-tag {
+      display: inline-flex;
+      margin-top: 12px;
+      padding: 6px 11px;
+      border-radius: 999px;
+      color: var(--color-success);
+      background: var(--color-success-bg);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .notification-detail-message {
+      margin-top: 22px;
+      color: var(--color-text-soft);
+      line-height: 1.8;
+    }
+
+    .notification-info-box {
+      margin-top: 22px;
+      padding: 18px;
+      border-radius: 16px;
+      background: #f8fafc;
+    }
+
+    .notification-info-row {
+      display: grid;
+      grid-template-columns: 120px minmax(0, 1fr);
+      gap: 16px;
+      padding: 11px 0;
+      border-bottom: 1px solid #e8edf2;
+    }
+
+    .notification-info-row:last-child {
+      border-bottom: 0;
+    }
+
+    .notification-info-row span {
+      color: var(--color-muted);
+      font-size: 14px;
+    }
+
+    .notification-info-row strong {
+      min-width: 0;
+      line-height: 1.6;
+      overflow-wrap: anywhere;
+    }
+
+    .notification-detail-actions {
+      margin-top: 24px;
+    }
+
+    @media (max-width: 700px) {
+      .notification-detail-page {
+        width: calc(100% - 20px);
+      }
+
+      .notification-detail-page .back {
+        display: none;
+      }
+
+      .notification-detail-card {
+        padding: 18px;
+      }
+
+      .notification-detail-head {
+        flex-direction: column;
+        gap: 8px;
+        padding-bottom: 16px;
+      }
+
+      .notification-detail-head h1 {
+        font-size: 22px;
+      }
+
+      .notification-detail-time {
+        font-size: 12px;
+        white-space: normal;
+      }
+
+      .notification-detail-message {
+        margin-top: 18px;
+        font-size: 14px;
+      }
+
+      .notification-info-box {
+        margin-top: 18px;
+        padding: 15px;
+      }
+
+      .notification-info-row {
+        grid-template-columns: 1fr;
+        gap: 4px;
+        padding: 10px 0;
+      }
+
+      .notification-info-row span {
+        font-size: 12px;
+      }
+
+      .notification-info-row strong {
+        font-size: 14px;
+      }
+
+      .notification-detail-actions {
+        margin-top: 18px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page notification-detail-page">
+
+    <a class="back" href="notifications.html">
+      ← 返回通知中心
+    </a>
+
+    <article class="card notification-detail-card">
+
+      <header class="notification-detail-head">
+        <div>
+          <h1>請假申請已核准</h1>
+
+          <span class="notification-detail-tag">
+            已核准
+          </span>
+        </div>
+
+        <time
+          class="notification-detail-time"
+          datetime="2026-07-30T14:30"
+        >
+          2026/07/30 14:30
+        </time>
+      </header>
+
+      <div class="notification-detail-message">
+        你的特休假申請已由王主管核准，
+        系統已同步更新請假紀錄與剩餘特休天數。
+      </div>
+
+      <section class="notification-info-box">
+        <div class="notification-info-row">
+          <span>申請編號</span>
+          <strong>LEAVE-20260730-001</strong>
+        </div>
+
+        <div class="notification-info-row">
+          <span>假別</span>
+          <strong>特休假</strong>
+        </div>
+
+        <div class="notification-info-row">
+          <span>請假日期</span>
+          <strong>2026/08/03 上午 至 2026/08/04 下午</strong>
+        </div>
+
+        <div class="notification-info-row">
+          <span>請假天數</span>
+          <strong>2 天</strong>
+        </div>
+
+        <div class="notification-info-row">
+          <span>審核主管</span>
+          <strong>王主管</strong>
+        </div>
+
+        <div class="notification-info-row">
+          <span>主管備註</span>
+          <strong>已確認部門工作安排，准予請假。</strong>
+        </div>
+      </section>
+
+      <div class="actions notification-detail-actions">
+        <a
+          class="button primary"
+          href="leave-history.html"
+        >
+          查看請假紀錄
+        </a>
+
+        <a
+          class="button secondary"
+          href="notifications.html"
+        >
+          返回通知中心
+        </a>
+      </div>
+    </article>
+  </main>
+
+  <nav
+    class="mobile-nav"
+    aria-label="員工手機導覽"
+  >
+    <a href="index.html">
+      <span>⌂</span>
+      <small>首頁</small>
+    </a>
+
+    <a href="leave-apply.html">
+      <span>＋</span>
+      <small>請假</small>
+    </a>
+
+    <a
+      class="active"
+      href="notifications.html"
+      aria-current="page"
+    >
+      <span>●</span>
+      <small>通知</small>
+    </a>
+
+    <a href="profile.html">
+      <span>人</span>
+      <small>我的</small>
+    </a>
+  </nav>
+</body>
+</html>

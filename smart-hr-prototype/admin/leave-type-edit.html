@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>編輯假別規則｜智慧人資管理平台</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, "Noto Sans TC", sans-serif;
+      background: #f4f7fb;
+      color: #18212f;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      width: min(860px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 28px 0 48px;
+    }
+
+    .back {
+      display: inline-flex;
+      margin-bottom: 22px;
+      color: #4338ca;
+      font-weight: 800;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 30px;
+    }
+
+    .header p {
+      margin: 8px 0 0;
+      color: #718096;
+      line-height: 1.7;
+    }
+
+    .form-card {
+      margin-top: 22px;
+      padding: 26px;
+      border: 1px solid #e5ebf2;
+      border-radius: 24px;
+      background: white;
+      box-shadow: 0 14px 38px rgba(15, 23, 42, 0.07);
+    }
+
+    .section-title {
+      margin: 0 0 18px;
+      font-size: 20px;
+    }
+
+    .section-title:not(:first-child) {
+      margin-top: 28px;
+      padding-top: 24px;
+      border-top: 1px solid #edf1f5;
+    }
+
+    .two-column {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 13px 14px;
+      border: 1px solid #d8e2ec;
+      border-radius: 12px;
+      background: white;
+      color: #18212f;
+      font: inherit;
+      outline: none;
+    }
+
+    input,
+    select {
+      min-height: 46px;
+    }
+
+    textarea {
+      min-height: 130px;
+      resize: vertical;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: #4338ca;
+      box-shadow: 0 0 0 3px rgba(67, 56, 202, 0.1);
+    }
+
+    input[disabled] {
+      background: #f3f6f9;
+      color: #8290a3;
+    }
+
+    .help {
+      margin: 7px 0 0;
+      color: #8290a3;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .checkbox-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .checkbox-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 11px;
+      padding: 15px;
+      border: 1px solid #e5ebf2;
+      border-radius: 14px;
+      background: #f8fafc;
+    }
+
+    .checkbox-item input {
+      width: 18px;
+      height: 18px;
+      min-height: auto;
+      margin-top: 2px;
+      flex: 0 0 auto;
+    }
+
+    .checkbox-item label {
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    .checkbox-item strong {
+      display: block;
+      font-size: 14px;
+    }
+
+    .checkbox-item span {
+      display: block;
+      margin-top: 4px;
+      color: #718096;
+      font-size: 13px;
+    }
+
+    .notice {
+      margin-top: 22px;
+      padding: 16px 18px;
+      border-left: 4px solid #f59e0b;
+      border-radius: 12px;
+      background: #fffbeb;
+      color: #6b5b34;
+      line-height: 1.7;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 26px;
+    }
+
+    .button {
+      min-height: 46px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 20px;
+      border: 0;
+      border-radius: 12px;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .primary {
+      color: white;
+      background: #4338ca;
+    }
+
+    .secondary {
+      color: #475569;
+      background: white;
+      border: 1px solid #d8e2ec;
+    }
+
+    @media (max-width: 680px) {
+      .form-card {
+        padding: 22px 18px;
+      }
+
+      .two-column,
+      .checkbox-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .actions {
+        flex-direction: column;
+      }
+
+      .button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <a class="back" href="leave-type-detail.html">← 返回假別詳情</a>
+
+    <header class="header">
+      <h1>編輯假別規則</h1>
+      <p>修改特休假的額度、計薪方式、附件需求與審核規則。</p>
+    </header>
+
+    <form class="form-card" action="leave-type-edit-success.html">
+      <h2 class="section-title">基本資料</h2>
+
+      <div class="two-column">
+        <div class="form-group">
+          <label for="leaveName">假別名稱</label>
+          <input id="leaveName" type="text" value="特休假" required>
+        </div>
+
+        <div class="form-group">
+          <label for="leaveCode">假別代碼</label>
+          <input id="leaveCode" type="text" value="ANNUAL" disabled>
+          <p class="help">假別代碼建立後不可修改。</p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="description">假別說明</label>
+        <textarea id="description" required>依員工到職年資計算年度可使用額度。</textarea>
+      </div>
+
+      <h2 class="section-title">額度與計算</h2>
+
+      <div class="two-column">
+        <div class="form-group">
+          <label for="quotaType">額度類型</label>
+          <select id="quotaType" required>
+            <option>固定年度額度</option>
+            <option selected>依年資計算</option>
+            <option>不限額度</option>
+            <option>依個案核定</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="minimumUnit">最小請假單位</label>
+          <select id="minimumUnit" required>
+            <option selected>1 小時</option>
+            <option>2 小時</option>
+            <option>半天</option>
+            <option>1 天</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="two-column">
+        <div class="form-group">
+          <label for="payType">計薪方式</label>
+          <select id="payType" required>
+            <option selected>全薪</option>
+            <option>半薪</option>
+            <option>無薪</option>
+            <option>依公司規定</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="carryOverRule">跨年度規則</label>
+          <select id="carryOverRule" required>
+            <option>不可跨年度</option>
+            <option selected>依公司規定</option>
+            <option>全部保留至下一年度</option>
+          </select>
+        </div>
+      </div>
+
+      <h2 class="section-title">申請與審核規則</h2>
+
+      <div class="checkbox-grid">
+        <div class="checkbox-item">
+          <input id="deductQuota" type="checkbox" checked>
+          <label for="deductQuota">
+            <strong>扣除假期額度</strong>
+            <span>核准後從員工剩餘特休中扣除。</span>
+          </label>
+        </div>
+
+        <div class="checkbox-item">
+          <input id="managerApproval" type="checkbox" checked>
+          <label for="managerApproval">
+            <strong>需要主管審核</strong>
+            <span>申請必須由直屬主管核准。</span>
+          </label>
+        </div>
+
+        <div class="checkbox-item">
+          <input id="attachmentRequired" type="checkbox">
+          <label for="attachmentRequired">
+            <strong>要求上傳附件</strong>
+            <span>特休假目前不要求證明文件。</span>
+          </label>
+        </div>
+
+        <div class="checkbox-item">
+          <input id="allowHourly" type="checkbox" checked>
+          <label for="allowHourly">
+            <strong>允許以小時計算</strong>
+            <span>可依最小單位申請部分工時。</span>
+          </label>
+        </div>
+
+        <div class="checkbox-item">
+          <input id="allowCarryOver" type="checkbox" checked>
+          <label for="allowCarryOver">
+            <strong>允許跨年度處理</strong>
+            <span>未用完額度依公司規定處理。</span>
+          </label>
+        </div>
+
+        <div class="checkbox-item">
+          <input id="active" type="checkbox" checked>
+          <label for="active">
+            <strong>假別啟用中</strong>
+            <span>員工可在請假表單中選擇此假別。</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-top:20px;">
+        <label for="ruleDescription">規則補充說明</label>
+        <textarea id="ruleDescription">員工可依剩餘特休時數提出申請，核准後扣除相應時數；取消、退回或未核准時不扣除額度。</textarea>
+      </div>
+
+      <div class="notice">
+        修改後只影響後續申請與新產生的年度額度，已完成審核的歷史資料不會自動重新計算。
+      </div>
+
+      <div class="actions">
+        <button class="button primary" type="submit">儲存假別規則</button>
+        <a class="button secondary" href="leave-type-detail.html">取消</a>
+      </div>
+    </form>
+  </main>
+</body>
+</html>

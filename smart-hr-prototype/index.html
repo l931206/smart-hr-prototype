@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>智慧人資管理平台｜互動原型</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, "Noto Sans TC", sans-serif;
+      background: #f4f7fb;
+      color: #1f2937;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .page {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 48px 0;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      color: white;
+      background:
+        radial-gradient(
+          circle at top right,
+          rgba(255, 255, 255, 0.18),
+          transparent 34%
+        ),
+        linear-gradient(135deg, #0f766e, #155e75);
+      border-radius: 30px;
+      padding: 46px;
+      box-shadow: 0 24px 60px rgba(15, 118, 110, 0.22);
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: -90px;
+      bottom: -120px;
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 760px;
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      opacity: 0.78;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(36px, 6vw, 66px);
+      line-height: 1.05;
+    }
+
+    .hero-description {
+      margin: 20px 0 0;
+      font-size: 18px;
+      line-height: 1.8;
+      opacity: 0.92;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .hero-chip {
+      padding: 8px 13px;
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.11);
+      font-size: 14px;
+      font-weight: 700;
+      backdrop-filter: blur(8px);
+    }
+
+    .section-heading {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: end;
+      margin: 44px 0 18px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      font-size: 28px;
+    }
+
+    .section-heading p {
+      max-width: 620px;
+      margin: 7px 0 0;
+      color: #64748b;
+      line-height: 1.7;
+    }
+
+    .prototype-tag {
+      flex: 0 0 auto;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: #e2e8f0;
+      color: #475569;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .role-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .role-card {
+      position: relative;
+      display: flex;
+      min-height: 290px;
+      flex-direction: column;
+      text-decoration: none;
+      color: inherit;
+      background: white;
+      border: 1px solid #e6edf5;
+      border-radius: 24px;
+      padding: 26px;
+      box-shadow: 0 14px 38px rgba(15, 23, 42, 0.07);
+      transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+    }
+
+    .role-card:hover {
+      transform: translateY(-6px);
+      border-color: #99d5cd;
+      box-shadow: 0 22px 50px rgba(15, 23, 42, 0.13);
+    }
+
+    .role-icon {
+      width: 58px;
+      height: 58px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 20px;
+      border-radius: 18px;
+      background: #dff7f3;
+      font-size: 30px;
+    }
+
+    .role-card h3 {
+      margin: 0;
+      font-size: 23px;
+    }
+
+    .role-card > p {
+      margin: 12px 0 0;
+      color: #64748b;
+      line-height: 1.75;
+    }
+
+    .feature-list {
+      display: grid;
+      gap: 9px;
+      margin: 22px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .feature-list li {
+      display: flex;
+      gap: 9px;
+      align-items: flex-start;
+      color: #475569;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .feature-list li::before {
+      content: "✓";
+      color: #0f766e;
+      font-weight: 800;
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-top: auto;
+      padding-top: 24px;
+      color: #0f766e;
+      font-weight: 800;
+    }
+
+    .card-footer span:last-child {
+      font-size: 20px;
+      transition: transform 0.2s ease;
+    }
+
+    .role-card:hover .card-footer span:last-child {
+      transform: translateX(4px);
+    }
+
+    .system-map {
+      margin-top: 44px;
+      background: white;
+      border: 1px solid #e6edf5;
+      border-radius: 24px;
+      padding: 26px;
+      box-shadow: 0 14px 38px rgba(15, 23, 42, 0.07);
+    }
+
+    .system-map h2 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .system-map > p {
+      margin: 9px 0 22px;
+      color: #64748b;
+      line-height: 1.7;
+    }
+
+    .flow-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .flow-step {
+      padding: 11px 15px;
+      border-radius: 999px;
+      background: #edf6ff;
+      color: #075985;
+      font-weight: 800;
+    }
+
+    .arrow {
+      color: #94a3b8;
+      font-weight: 800;
+    }
+
+    .note {
+      margin-top: 18px;
+      padding: 16px 18px;
+      border-left: 4px solid #0f766e;
+      border-radius: 12px;
+      background: #f0fdfa;
+      color: #475569;
+      line-height: 1.7;
+    }
+
+    .page-footer {
+      padding: 30px 0 6px;
+      text-align: center;
+      color: #94a3b8;
+      font-size: 14px;
+    }
+
+    @media (max-width: 900px) {
+      .role-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .role-card {
+        min-height: auto;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .page {
+        width: min(100% - 20px, 1180px);
+        padding: 20px 0;
+      }
+
+      .hero {
+        padding: 30px 23px;
+        border-radius: 24px;
+      }
+
+      .section-heading {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .prototype-tag {
+        align-self: flex-start;
+      }
+
+      .system-map {
+        padding: 22px;
+      }
+
+      .arrow {
+        display: none;
+      }
+
+      .flow-step {
+        width: 100%;
+        border-radius: 14px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <section class="hero">
+      <div class="hero-content">
+        <p class="eyebrow">SMART HR MANAGEMENT PLATFORM</p>
+
+        <h1>智慧人資管理平台</h1>
+
+        <p class="hero-description">
+          此頁為純前端互動原型，用來展示員工、主管與系統管理者
+          在同一套企業平台中的不同操作畫面與工作流程。
+        </p>
+
+        <div class="hero-meta">
+          <span class="hero-chip">純 HTML 原型</span>
+          <span class="hero-chip">RWD 響應式設計</span>
+          <span class="hero-chip">角色導向介面</span>
+          <span class="hero-chip">免登入體驗</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-heading">
+      <div>
+        <h2>選擇角色開始體驗</h2>
+        <p>
+          每一個角色都會進入不同的操作介面，
+          只顯示與該角色工作相關的功能，減少複雜流程。
+        </p>
+      </div>
+
+      <span class="prototype-tag">互動原型首頁</span>
+    </section>
+
+    <section class="role-grid">
+      <a class="role-card" href="employee/index.html">
+        <div class="role-icon">👤</div>
+
+        <h3>員工端</h3>
+
+        <p>
+          以手機操作為優先，讓員工快速完成日常人事申請，
+          不需要進入複雜的後台介面。
+        </p>
+
+        <ul class="feature-list">
+          <li>個人資料與員工資訊</li>
+          <li>請假與晚到通知</li>
+          <li>假期餘額與申請紀錄</li>
+          <li>公司公告與個人通知</li>
+        </ul>
+
+        <div class="card-footer">
+          <span>進入員工端</span>
+          <span>→</span>
+        </div>
+      </a>
+
+      <a href="manager/index.html">
+        <div class="role-icon">🧑‍💼</div>
+
+        <h3>主管工作台</h3>
+
+        <p>
+          集中呈現主管最需要處理的資訊，
+          讓審核與部門管理在同一個工作台完成。
+        </p>
+
+        <ul class="feature-list">
+          <li>查看直屬部屬</li>
+          <li>請假審核與歷程</li>
+          <li>晚到通知與部門狀態</li>
+          <li>部門統計與待辦提醒</li>
+        </ul>
+
+        <div class="card-footer">
+          <span>進入主管工作台</span>
+          <span>→</span>
+        </div>
+      </a>
+
+      <a href="admin/index.html">
+        <div class="role-icon">⚙️</div>
+
+        <h3>系統管理後台</h3>
+
+        <p>
+          管理整套人資平台的基礎資料、帳號、權限與自動化設定，
+          不另外拆成 HR 與技術管理後台。
+        </p>
+
+        <ul class="feature-list">
+          <li>員工、部門與帳號管理</li>
+          <li>角色、權限與假別設定</li>
+          <li>公告、通知與統計報表</li>
+          <li>Trigger、排程與 MCP 整合</li>
+        </ul>
+
+        <div class="card-footer">
+          <span>進入系統管理後台</span>
+          <span>→</span>
+        </div>
+      </a>
+    </section>
+
+    <section class="system-map">
+      <h2>平台整體架構</h2>
+
+      <p>
+        請假不是獨立系統，而是建立在員工、帳號與權限資料上的其中一個功能模組。
+      </p>
+
+      <div class="flow-row">
+        <span class="flow-step">員工與部門資料</span>
+        <span class="arrow">→</span>
+
+        <span class="flow-step">帳號與權限</span>
+        <span class="arrow">→</span>
+
+        <span class="flow-step">請假與出勤</span>
+        <span class="arrow">→</span>
+
+        <span class="flow-step">公告與通知</span>
+        <span class="arrow">→</span>
+
+        <span class="flow-step">報表與自動化</span>
+      </div>
+
+      <div class="note">
+        本原型先展示完整的操作概念與畫面流程；
+        後續再依照原型逐步串接 Django、資料庫、Trigger、排程及 MCP。
+      </div>
+    </section>
+
+    <footer class="page-footer">
+      兆迪聯智科技有限公司｜智慧人資管理平台互動原型
+    </footer>
+  </main>
+</body>
+</html>

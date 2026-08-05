@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <title>申請修改資料｜智慧人資管理平台</title>
+
+  <!-- 全站共用樣式 -->
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/mobile.css">
+
+  <style>
+    /* 此頁專用樣式 */
+
+    .edit-page {
+      width: min(760px, calc(100% - 28px));
+    }
+
+    .edit-header {
+      margin-bottom: 20px;
+    }
+
+    .edit-header h1 {
+      margin: 0;
+      font-size: 30px;
+    }
+
+    .edit-header p {
+      margin: 8px 0 0;
+      color: var(--color-muted);
+      line-height: 1.7;
+    }
+
+    .edit-form {
+      margin-top: 0;
+    }
+
+    .readonly-box {
+      padding: 14px;
+      border: 1px solid var(--color-border);
+      border-radius: 14px;
+      background: #f8fafc;
+    }
+
+    .readonly-box strong {
+      display: block;
+      margin-top: 4px;
+      color: var(--color-text);
+    }
+
+    .readonly-box span {
+      color: var(--color-muted);
+      font-size: 13px;
+    }
+
+    .edit-notice {
+      margin: 4px 0 22px;
+      border-left-color: var(--color-primary);
+      background: #f0fdfa;
+    }
+
+    .edit-actions {
+      margin-top: 0;
+    }
+
+    @media (max-width: 700px) {
+      .edit-page {
+        width: calc(100% - 20px);
+      }
+
+      .edit-header {
+        margin-bottom: 14px;
+      }
+
+      .edit-header h1 {
+        font-size: 24px;
+      }
+
+      .edit-header p {
+        font-size: 14px;
+      }
+
+      .edit-form {
+        padding: 18px;
+      }
+
+      .back {
+        display: none;
+      }
+
+      .edit-notice {
+        margin-bottom: 16px;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page edit-page">
+
+    <!-- 電腦版返回按鈕 -->
+    <a class="back" href="profile.html">
+      ← 返回我的資料
+    </a>
+
+    <!-- 頁面標題 -->
+    <header class="edit-header">
+      <h1>申請修改資料</h1>
+      <p>
+        修改內容送出後，會由系統管理者確認，
+        再更新正式員工資料。
+      </p>
+    </header>
+
+    <!-- 修改申請表單 -->
+    <form
+      class="form-card edit-form"
+      action="profile-success.html"
+    >
+      <div class="form-group">
+        <label>員工編號</label>
+
+        <div class="readonly-box">
+          <span>不可自行修改</span>
+          <strong>EMP0003</strong>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="name">姓名</label>
+
+        <input
+          id="name"
+          name="name"
+          type="text"
+          value="陳員工"
+          autocomplete="name"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="email">電子郵件</label>
+
+        <input
+          id="email"
+          name="email"
+          type="email"
+          value="employee@example.com"
+          autocomplete="email"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="phone">聯絡電話</label>
+
+        <input
+          id="phone"
+          name="phone"
+          type="tel"
+          value="0912-345-678"
+          autocomplete="tel"
+          inputmode="tel"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="reason">修改原因</label>
+
+        <textarea
+          id="reason"
+          name="reason"
+          placeholder="請說明需要修改資料的原因"
+          required
+        ></textarea>
+
+        <p class="help">
+          請簡要說明資料異動原因，方便管理者進行確認。
+        </p>
+      </div>
+
+      <div class="notice edit-notice">
+        部門、職稱、直屬主管與到職日期屬於公司管理資料，
+        員工無法自行修改。
+      </div>
+
+      <div class="actions edit-actions">
+        <button
+          class="button primary"
+          type="submit"
+        >
+          送出修改申請
+        </button>
+
+        <a
+          class="button secondary"
+          href="profile.html"
+        >
+          取消
+        </a>
+      </div>
+    </form>
+  </main>
+
+  <!-- 手機版底部導覽 -->
+  <nav
+    class="mobile-nav"
+    aria-label="員工手機導覽"
+  >
+    <a href="index.html">
+      <span>⌂</span>
+      <small>首頁</small>
+    </a>
+
+    <a href="leave-apply.html">
+      <span>＋</span>
+      <small>請假</small>
+    </a>
+
+    <a href="notifications.html">
+      <span>●</span>
+      <small>通知</small>
+    </a>
+
+    <a
+      class="active"
+      href="profile.html"
+    >
+      <span>人</span>
+      <small>我的</small>
+    </a>
+  </nav>
+</body>
+</html>

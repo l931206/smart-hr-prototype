@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>系統操作紀錄｜智慧人資管理平台</title>
+
+<style>
+*{box-sizing:border-box;}
+
+body{
+    margin:0;
+    font-family:Arial,"Noto Sans TC",sans-serif;
+    background:#f4f7fb;
+    color:#18212f;
+}
+
+a{
+    color:inherit;
+    text-decoration:none;
+}
+
+.page{
+    width:min(1100px,calc(100% - 28px));
+    margin:auto;
+    padding:28px 0 48px;
+}
+
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:16px;
+    margin-bottom:22px;
+}
+
+.back{
+    color:#4338ca;
+    font-weight:800;
+}
+
+.header h1{
+    margin:0;
+    font-size:30px;
+}
+
+.header p{
+    margin:8px 0 0;
+    color:#718096;
+}
+
+.summary{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:16px;
+    margin-top:22px;
+}
+
+.card{
+    background:white;
+    border:1px solid #e5ebf2;
+    border-radius:18px;
+    padding:20px;
+    box-shadow:0 10px 28px rgba(15,23,42,.05);
+}
+
+.card span{
+    color:#718096;
+    font-size:14px;
+}
+
+.card strong{
+    display:block;
+    margin-top:8px;
+    font-size:28px;
+}
+
+.toolbar{
+    display:flex;
+    gap:12px;
+    margin-top:18px;
+    padding:18px;
+    border:1px solid #e5ebf2;
+    border-radius:18px;
+    background:white;
+}
+
+input,
+select{
+    min-height:42px;
+    padding:0 13px;
+    border:1px solid #d8e2ec;
+    border-radius:11px;
+    font:inherit;
+}
+
+input{
+    flex:1;
+}
+
+.log-list{
+    display:grid;
+    gap:16px;
+    margin-top:20px;
+}
+
+.log{
+    background:white;
+    border:1px solid #e5ebf2;
+    border-radius:18px;
+    padding:20px;
+    box-shadow:0 10px 28px rgba(15,23,42,.05);
+}
+
+.log-head{
+    display:flex;
+    justify-content:space-between;
+    gap:16px;
+}
+
+.log-head h2{
+    margin:0;
+    font-size:18px;
+}
+
+.time{
+    color:#718096;
+    font-size:13px;
+}
+
+.detail{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:16px;
+    margin-top:18px;
+    padding-top:16px;
+    border-top:1px solid #edf1f5;
+}
+
+.item span{
+    display:block;
+    color:#718096;
+    font-size:12px;
+}
+
+.item strong{
+    display:block;
+    margin-top:6px;
+}
+
+.desc{
+    margin-top:16px;
+    padding:14px;
+    background:#f8fafc;
+    border-radius:12px;
+    line-height:1.7;
+    color:#475569;
+}
+
+.tag{
+    display:inline-flex;
+    margin-top:14px;
+    padding:5px 10px;
+    border-radius:999px;
+    background:#eef2ff;
+    color:#4338ca;
+    font-size:12px;
+    font-weight:800;
+}
+
+@media(max-width:760px){
+
+.summary,
+.detail{
+grid-template-columns:1fr;
+}
+
+.toolbar,
+.log-head{
+flex-direction:column;
+}
+
+input,
+select{
+width:100%;
+}
+
+}
+</style>
+
+</head>
+
+<body>
+
+<main class="page">
+
+<div class="topbar">
+<a class="back" href="index.html">
+← 返回管理工作台
+</a>
+</div>
+
+<header class="header">
+<h1>系統操作紀錄</h1>
+<p>記錄所有重要的人資系統操作。</p>
+</header>
+
+<section class="summary">
+
+<div class="card">
+<span>今日操作</span>
+<strong>18</strong>
+</div>
+
+<div class="card">
+<span>本月操作</span>
+<strong>462</strong>
+</div>
+
+<div class="card">
+<span>管理者</span>
+<strong>3</strong>
+</div>
+
+<div class="card">
+<span>異常事件</span>
+<strong>0</strong>
+</div>
+
+</section>
+
+<section class="toolbar">
+
+<input type="search" placeholder="搜尋操作人、員工或關鍵字">
+
+<select>
+<option>全部操作</option>
+<option>新增</option>
+<option>修改</option>
+<option>刪除</option>
+<option>登入</option>
+</select>
+
+<select>
+<option>今天</option>
+<option>最近7天</option>
+<option>本月</option>
+</select>
+
+</section>
+
+<section class="log-list">
+
+<article class="log">
+
+<div class="log-head">
+
+<div>
+<h2>更新員工資料</h2>
+</div>
+
+<div class="time">
+2026/07/31 11:25
+</div>
+
+</div>
+
+<div class="detail">
+
+<div class="item">
+<span>操作人</span>
+<strong>管理者</strong>
+</div>
+
+<div class="item">
+<span>對象</span>
+<strong>陳員工</strong>
+</div>
+
+<div class="item">
+<span>模組</span>
+<strong>員工管理</strong>
+</div>
+
+<div class="item">
+<span>IP</span>
+<strong>192.168.0.10</strong>
+</div>
+
+</div>
+
+<div class="desc">
+修改聯絡電話與電子郵件。
+</div>
+
+<span class="tag">UPDATE</span>
+
+</article>
+
+<article class="log">
+
+<div class="log-head">
+
+<div>
+<h2>建立新帳號</h2>
+</div>
+
+<div class="time">
+2026/07/31 10:42
+</div>
+
+</div>
+
+<div class="detail">
+
+<div class="item">
+<span>操作人</span>
+<strong>管理者</strong>
+</div>
+
+<div class="item">
+<span>對象</span>
+<strong>許員工</strong>
+</div>
+
+<div class="item">
+<span>模組</span>
+<strong>帳號管理</strong>
+</div>
+
+<div class="item">
+<span>IP</span>
+<strong>192.168.0.10</strong>
+</div>
+
+</div>
+
+<div class="desc">
+建立登入帳號 employee31。
+</div>
+
+<span class="tag">CREATE</span>
+
+</article>
+
+<article class="log">
+
+<div class="log-head">
+
+<div>
+<h2>部門資料更新</h2>
+</div>
+
+<div class="time">
+2026/07/30 16:30
+</div>
+
+</div>
+
+<div class="detail">
+
+<div class="item">
+<span>操作人</span>
+<strong>管理者</strong>
+</div>
+
+<div class="item">
+<span>對象</span>
+<strong>資訊部</strong>
+</div>
+
+<div class="item">
+<span>模組</span>
+<strong>部門管理</strong>
+</div>
+
+<div class="item">
+<span>IP</span>
+<strong>192.168.0.10</strong>
+</div>
+
+</div>
+
+<div class="desc">
+更新部門主管為王主管。
+</div>
+
+<span class="tag">UPDATE</span>
+
+</article>
+
+</section>
+
+</main>
+
+</body>
+</html>

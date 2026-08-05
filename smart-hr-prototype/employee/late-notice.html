@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <title>晚到通知｜智慧人資管理平台</title>
+
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/mobile.css">
+
+  <style>
+    .late-page {
+      width: min(760px, calc(100% - 28px));
+    }
+
+    .late-header {
+      margin-bottom: 20px;
+    }
+
+    .late-header h1 {
+      margin: 0;
+      font-size: 30px;
+    }
+
+    .late-header p {
+      margin: 8px 0 0;
+      color: var(--color-muted);
+      line-height: 1.7;
+    }
+
+    .late-info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 22px;
+    }
+
+    .late-info-item {
+      padding: 18px;
+      border: 1px solid var(--color-border);
+      border-radius: 16px;
+      background: var(--color-surface);
+      box-shadow: var(--shadow-small);
+    }
+
+    .late-info-item span {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--color-muted);
+      font-size: 13px;
+    }
+
+    .late-info-item strong {
+      font-size: 17px;
+    }
+
+    .late-form {
+      margin-top: 18px;
+    }
+
+    .late-notice {
+      margin-bottom: 22px;
+      border-left-color: #f59e0b;
+      background: #fffbeb;
+      color: #6b5b34;
+    }
+
+    .late-actions {
+      margin-top: 24px;
+    }
+
+    @media (max-width: 700px) {
+      .late-page {
+        width: calc(100% - 20px);
+      }
+
+      .late-header {
+        margin-bottom: 14px;
+      }
+
+      .late-header h1 {
+        font-size: 24px;
+      }
+
+      .late-header p {
+        font-size: 14px;
+      }
+
+      .late-info-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 14px;
+      }
+
+      .late-info-item {
+        padding: 15px;
+        border-radius: 15px;
+      }
+
+      .late-info-item span {
+        font-size: 11px;
+      }
+
+      .late-info-item strong {
+        font-size: 15px;
+      }
+
+      .late-form {
+        margin-top: 14px;
+        padding: 18px;
+      }
+
+      .late-notice {
+        margin-bottom: 16px;
+        font-size: 14px;
+      }
+
+      .back {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page late-page">
+
+    <a class="back" href="index.html">
+      ← 返回員工首頁
+    </a>
+
+    <header class="late-header">
+      <h1>晚到通知</h1>
+      <p>
+        預計無法準時到班時，請先通知直屬主管並填寫原因。
+      </p>
+    </header>
+
+    <section class="late-info-grid">
+      <article class="late-info-item">
+        <span>今日上班時間</span>
+        <strong>09:00</strong>
+      </article>
+
+      <article class="late-info-item">
+        <span>通知對象</span>
+        <strong>王主管</strong>
+      </article>
+    </section>
+
+    <form
+      class="form-card late-form"
+      action="late-success.html"
+    >
+      <div class="notice late-notice">
+        晚到通知不等同請假申請。若需要請假，
+        仍須另外完成正式請假流程。
+      </div>
+
+      <div class="two-column">
+        <div class="form-group">
+          <label for="date">晚到日期</label>
+
+          <input
+            id="date"
+            name="date"
+            type="date"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="arrivalTime">預計到班時間</label>
+
+          <input
+            id="arrivalTime"
+            name="arrivalTime"
+            type="time"
+            required
+          >
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="reasonType">晚到原因類型</label>
+
+        <select
+          id="reasonType"
+          name="reasonType"
+          required
+        >
+          <option value="">請選擇原因類型</option>
+          <option>交通延誤</option>
+          <option>身體不適</option>
+          <option>家庭因素</option>
+          <option>臨時事故</option>
+          <option>其他</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="reason">詳細原因</label>
+
+        <textarea
+          id="reason"
+          name="reason"
+          placeholder="請說明晚到原因與目前狀況"
+          required
+        ></textarea>
+
+        <p class="help">
+          請盡量提供預計抵達時間與目前狀況，
+          方便主管掌握出勤安排。
+        </p>
+      </div>
+
+      <div class="actions late-actions">
+        <button
+          class="button primary"
+          type="submit"
+        >
+          送出晚到通知
+        </button>
+
+        <a
+          class="button secondary"
+          href="index.html"
+        >
+          取消
+        </a>
+      </div>
+    </form>
+  </main>
+
+  <nav
+    class="mobile-nav"
+    aria-label="員工手機導覽"
+  >
+    <a href="index.html">
+      <span>⌂</span>
+      <small>首頁</small>
+    </a>
+
+    <a href="leave-apply.html">
+      <span>＋</span>
+      <small>請假</small>
+    </a>
+
+    <a href="notifications.html">
+      <span>●</span>
+      <small>通知</small>
+    </a>
+
+    <a href="profile.html">
+      <span>人</span>
+      <small>我的</small>
+    </a>
+  </nav>
+</body>
+</html>

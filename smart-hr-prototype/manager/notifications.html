@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <title>主管通知｜智慧人資管理平台</title>
+
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/mobile.css">
+
+  <style>
+    .manager-notification-page {
+      width: min(900px, calc(100% - 28px));
+    }
+
+    .manager-notification-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .manager-mark-read {
+      min-height: 42px;
+      padding: 0 14px;
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      color: var(--color-primary);
+      background: var(--color-surface);
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .manager-notification-header h1 {
+      margin: 0;
+      font-size: 30px;
+    }
+
+    .manager-notification-header p {
+      margin: 8px 0 0;
+      color: var(--color-muted);
+      line-height: 1.7;
+    }
+
+    .manager-notification-summary {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .manager-notification-list {
+      display: grid;
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .manager-notification-card {
+      display: block;
+      padding: 20px 22px;
+      border: 1px solid var(--color-border);
+      border-radius: 18px;
+      background: var(--color-surface);
+      box-shadow: var(--shadow-small);
+      transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+    }
+
+    .manager-notification-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-medium);
+    }
+
+    .manager-notification-card.unread {
+      border-left: 5px solid var(--color-primary);
+      background: #f7fffd;
+    }
+
+    .manager-notification-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 18px;
+    }
+
+    .manager-notification-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .manager-notification-title h2 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.4;
+    }
+
+    .manager-notification-dot {
+      width: 9px;
+      height: 9px;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      background: var(--color-primary);
+    }
+
+    .manager-notification-time {
+      flex: 0 0 auto;
+      color: #8290a3;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .manager-notification-message {
+      margin: 10px 0 0;
+      color: #5f6f82;
+      line-height: 1.7;
+    }
+
+    .manager-notification-tag {
+      display: inline-flex;
+      margin-top: 14px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .tag-approval {
+      color: var(--color-warning);
+      background: var(--color-warning-bg);
+    }
+
+    .tag-late {
+      color: #1d4ed8;
+      background: #dbeafe;
+    }
+
+    .tag-warning {
+      color: var(--color-danger);
+      background: var(--color-danger-bg);
+    }
+
+    .tag-system {
+      color: var(--color-success);
+      background: var(--color-success-bg);
+    }
+
+    @media (max-width: 700px) {
+      .manager-notification-page {
+        width: calc(100% - 20px);
+      }
+
+      .manager-notification-topbar {
+        align-items: stretch;
+        flex-direction: column;
+        margin-bottom: 14px;
+      }
+
+      .manager-notification-topbar .back {
+        display: none;
+      }
+
+      .manager-mark-read {
+        width: 100%;
+      }
+
+      .manager-notification-header h1 {
+        font-size: 24px;
+      }
+
+      .manager-notification-header p {
+        font-size: 14px;
+      }
+
+      .manager-notification-summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .manager-notification-summary .summary-card:last-child {
+        grid-column: 1 / -1;
+      }
+
+      .manager-notification-card {
+        padding: 17px;
+        border-radius: 17px;
+      }
+
+      .manager-notification-head {
+        flex-direction: column;
+        gap: 7px;
+      }
+
+      .manager-notification-title h2 {
+        font-size: 16px;
+      }
+
+      .manager-notification-time {
+        font-size: 12px;
+        white-space: normal;
+      }
+
+      .manager-notification-message {
+        font-size: 13px;
+      }
+
+      .manager-notification-tag {
+        margin-top: 11px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page manager-notification-page">
+
+    <div class="manager-notification-topbar">
+      <a class="back" href="index.html">
+        ← 返回主管工作台
+      </a>
+
+      <button
+        class="manager-mark-read"
+        type="button"
+      >
+        全部標示為已讀
+      </button>
+    </div>
+
+    <header class="manager-notification-header">
+      <h1>主管通知</h1>
+
+      <p>
+        查看請假申請、員工晚到與部門人力提醒。
+      </p>
+    </header>
+
+    <section class="summary-grid manager-notification-summary">
+      <article class="summary-card">
+        <span>未讀通知</span>
+        <strong>3</strong>
+      </article>
+
+      <article class="summary-card">
+        <span>待處理事項</span>
+        <strong>2</strong>
+      </article>
+
+      <article class="summary-card">
+        <span>全部通知</span>
+        <strong>5</strong>
+      </article>
+    </section>
+
+    <section class="manager-notification-list">
+
+      <a
+        class="manager-notification-card unread"
+        href="notification-detail.html"
+      >
+        <div class="manager-notification-head">
+          <div class="manager-notification-title">
+            <span class="manager-notification-dot"></span>
+            <h2>新的特休假申請</h2>
+          </div>
+
+          <span class="manager-notification-time">
+            今天 13:45
+          </span>
+        </div>
+
+        <p class="manager-notification-message">
+          陳員工提出 2026/08/03 至 2026/08/04 的特休假申請，
+          等待你的審核。
+        </p>
+
+        <span class="manager-notification-tag tag-approval">
+          等待審核
+        </span>
+      </a>
+
+      <a
+        class="manager-notification-card unread"
+        href="notification-detail.html"
+      >
+        <div class="manager-notification-head">
+          <div class="manager-notification-title">
+            <span class="manager-notification-dot"></span>
+            <h2>員工晚到通知</h2>
+          </div>
+
+          <span class="manager-notification-time">
+            今天 08:40
+          </span>
+        </div>
+
+        <p class="manager-notification-message">
+          林員工因交通延誤，預計上午 10:00 到班。
+        </p>
+
+        <span class="manager-notification-tag tag-late">
+          晚到通知
+        </span>
+      </a>
+
+      <a
+        class="manager-notification-card unread"
+        href="notification-detail.html"
+      >
+        <div class="manager-notification-head">
+          <div class="manager-notification-title">
+            <span class="manager-notification-dot"></span>
+            <h2>部門人力不足提醒</h2>
+          </div>
+
+          <span class="manager-notification-time">
+            昨天 16:20
+          </span>
+        </div>
+
+        <p class="manager-notification-message">
+          2026/08/05 已有兩位員工請假，
+          核准其他申請前請先確認人力安排。
+        </p>
+
+        <span class="manager-notification-tag tag-warning">
+          人力提醒
+        </span>
+      </a>
+
+      <a
+        class="manager-notification-card"
+        href="notification-detail.html"
+      >
+        <div class="manager-notification-head">
+          <div class="manager-notification-title">
+            <h2>請假審核已完成</h2>
+          </div>
+
+          <span class="manager-notification-time">
+            2026/07/29
+          </span>
+        </div>
+
+        <p class="manager-notification-message">
+          你已核准張員工的特休假，
+          系統已通知申請人。
+        </p>
+
+        <span class="manager-notification-tag tag-system">
+          系統通知
+        </span>
+      </a>
+
+      <a
+        class="manager-notification-card"
+        href="notification-detail.html"
+      >
+        <div class="manager-notification-head">
+          <div class="manager-notification-title">
+            <h2>主管資料已更新</h2>
+          </div>
+
+          <span class="manager-notification-time">
+            2026/07/25
+          </span>
+        </div>
+
+        <p class="manager-notification-message">
+          系統管理者已更新你的部門與直屬員工資料。
+        </p>
+
+        <span class="manager-notification-tag tag-system">
+          系統通知
+        </span>
+      </a>
+    </section>
+  </main>
+
+  <nav
+    class="mobile-nav"
+    aria-label="主管手機導覽"
+  >
+    <a href="index.html">
+      <span>⌂</span>
+      <small>首頁</small>
+    </a>
+
+    <a href="leave-requests.html">
+      <span>✓</span>
+      <small>審核</small>
+    </a>
+
+    <a href="team.html">
+      <span>人</span>
+      <small>團隊</small>
+    </a>
+
+    <a
+      class="active"
+      href="notifications.html"
+      aria-current="page"
+    >
+      <span>•••</span>
+      <small>更多</small>
+    </a>
+  </nav>
+</body>
+</html>

@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>系統管理工作台｜智慧人資管理平台</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, "Noto Sans TC", sans-serif;
+      background: #f4f7fb;
+      color: #18212f;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      width: min(1120px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 28px 0 48px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .brand {
+      color: #0f766e;
+      font-size: 20px;
+      font-weight: 900;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .role {
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: #ede9fe;
+      color: #6d28d9;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .logout {
+      color: #64748b;
+      font-weight: 800;
+    }
+
+    .hero {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+      padding: 30px;
+      border-radius: 26px;
+      color: white;
+      background: linear-gradient(135deg, #4338ca, #0f766e);
+      box-shadow: 0 20px 50px rgba(67, 56, 202, 0.18);
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: 31px;
+    }
+
+    .hero p {
+      margin: 10px 0 0;
+      line-height: 1.7;
+      opacity: 0.9;
+    }
+
+    .avatar {
+      width: 82px;
+      height: 82px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border: 2px solid rgba(255, 255, 255, 0.28);
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.18);
+      font-size: 30px;
+      font-weight: 900;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-top: 22px;
+    }
+
+    .summary-card {
+      padding: 20px;
+      border: 1px solid #e5ebf2;
+      border-radius: 18px;
+      background: white;
+      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.05);
+    }
+
+    .summary-card span {
+      color: #718096;
+      font-size: 14px;
+    }
+
+    .summary-card strong {
+      display: block;
+      margin-top: 8px;
+      font-size: 28px;
+    }
+
+    .section-title {
+      margin: 30px 0 16px;
+      font-size: 22px;
+    }
+
+    .action-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .action-card {
+      display: block;
+      padding: 23px;
+      border: 1px solid #e5ebf2;
+      border-radius: 20px;
+      background: white;
+      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.05);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .action-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 16px 36px rgba(15, 23, 42, 0.09);
+    }
+
+    .icon {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: #eef2ff;
+      font-size: 24px;
+    }
+
+    .action-card h2 {
+      margin: 16px 0 7px;
+      font-size: 19px;
+    }
+
+    .action-card p {
+      margin: 0;
+      color: #718096;
+      line-height: 1.7;
+      font-size: 14px;
+    }
+
+    .badge {
+      display: inline-flex;
+      margin-top: 14px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      color: #92400e;
+      background: #fef3c7;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .panel-grid {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    .panel {
+      padding: 23px;
+      border: 1px solid #e5ebf2;
+      border-radius: 20px;
+      background: white;
+      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.05);
+    }
+
+    .panel h2 {
+      margin: 0 0 18px;
+      font-size: 20px;
+    }
+
+    .task {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding: 15px 0;
+      border-bottom: 1px solid #edf1f5;
+    }
+
+    .task:last-child {
+      border-bottom: 0;
+    }
+
+    .task h3 {
+      margin: 0;
+      font-size: 15px;
+    }
+
+    .task p {
+      margin: 6px 0 0;
+      color: #718096;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .task-status {
+      flex: 0 0 auto;
+      padding: 6px 10px;
+      border-radius: 999px;
+      color: #92400e;
+      background: #fef3c7;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .activity {
+      padding: 14px 0;
+      border-bottom: 1px solid #edf1f5;
+    }
+
+    .activity:last-child {
+      border-bottom: 0;
+    }
+
+    .activity h3 {
+      margin: 0;
+      font-size: 15px;
+    }
+
+    .activity p {
+      margin: 6px 0 0;
+      color: #718096;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 850px) {
+      .summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .action-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .panel-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .topbar,
+      .hero {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .summary-grid,
+      .action-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        padding: 24px;
+      }
+
+      .task {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <header class="topbar">
+      <a class="brand" href="index.html">智慧人資管理平台</a>
+
+      <div class="top-actions">
+        <span class="role">系統管理者</span>
+        <a class="logout" href="index.html">切換角色</a>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div>
+        <h1>系統管理者，早安</h1>
+        <p>管理員工、部門、帳號權限與資料修改申請。</p>
+      </div>
+
+      <div class="avatar">管</div>
+    </section>
+
+    <section class="summary-grid">
+      <article class="summary-card">
+        <span>在職員工</span>
+        <strong>28</strong>
+      </article>
+
+      <article class="summary-card">
+        <span>公司部門</span>
+        <strong>5</strong>
+      </article>
+
+      <article class="summary-card">
+        <span>待處理資料申請</span>
+        <strong>2</strong>
+      </article>
+
+      <article class="summary-card">
+        <span>啟用帳號</span>
+        <strong>30</strong>
+      </article>
+    </section>
+
+    <h2 class="section-title">系統管理功能</h2>
+
+    <section class="action-grid">
+      <a class="action-card" href="employees.html">
+        <div class="icon">👤</div>
+        <h2>員工管理</h2>
+        <p>新增、查看、修改員工資料與在職狀態。</p>
+      </a>
+
+      <a class="action-card" href="departments.html">
+        <div class="icon">🏢</div>
+        <h2>部門管理</h2>
+        <p>建立公司部門並指定部門主管。</p>
+      </a>
+
+      <a class="action-card" href="accounts.html">
+        <div class="icon">🔐</div>
+        <h2>帳號與權限</h2>
+        <p>建立登入帳號並設定員工、主管或管理者角色。</p>
+      </a>
+
+      <a class="action-card" href="profile-requests.html">
+        <div class="icon">📝</div>
+        <h2>資料修改申請</h2>
+        <p>審核員工提出的個人資料修改內容。</p>
+        <span class="badge">2 件待處理</span>
+      </a>
+
+      <a class="action-card" href="leave-settings.html">
+        <div class="icon">📅</div>
+        <h2>假別與規則</h2>
+        <p>管理假別、年度天數與附件需求。</p>
+      </a>
+
+      <a class="action-card" href="system-log.html">
+        <div class="icon">📋</div>
+        <h2>系統操作紀錄</h2>
+        <p>查看帳號、員工資料與權限異動紀錄。</p>
+      </a>
+    </section>
+
+    <h2 class="section-title">待辦與近期活動</h2>
+
+    <section class="panel-grid">
+      <article class="panel">
+        <h2>等待處理</h2>
+
+        <div class="task">
+          <div>
+            <h3>陳員工－個人資料修改申請</h3>
+            <p>申請修改電子郵件與聯絡電話。</p>
+          </div>
+
+          <span class="task-status">等待審核</span>
+        </div>
+
+        <div class="task">
+          <div>
+            <h3>李員工－個人資料修改申請</h3>
+            <p>申請修改姓名與聯絡電話。</p>
+          </div>
+
+          <span class="task-status">等待審核</span>
+        </div>
+      </article>
+
+      <article class="panel">
+        <h2>近期系統活動</h2>
+
+        <div class="activity">
+          <h3>新增員工帳號</h3>
+          <p>管理者建立 EMP0028 的系統帳號。</p>
+        </div>
+
+        <div class="activity">
+          <h3>更新部門主管</h3>
+          <p>資訊部主管已更新為王主管。</p>
+        </div>
+
+        <div class="activity">
+          <h3>停用離職員工</h3>
+          <p>EMP0012 已改為離職並停用登入權限。</p>
+        </div>
+      </article>
+    </section>
+  </main>
+</body>
+</html>

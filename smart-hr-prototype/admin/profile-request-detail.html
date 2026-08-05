@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>資料修改申請詳情｜智慧人資管理平台</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, "Noto Sans TC", sans-serif;
+      background: #f4f7fb;
+      color: #18212f;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      width: min(820px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 28px 0 48px;
+    }
+
+    .back {
+      display: inline-flex;
+      margin-bottom: 22px;
+      color: #4338ca;
+      font-weight: 800;
+    }
+
+    .card {
+      padding: 28px;
+      border: 1px solid #e5ebf2;
+      border-radius: 24px;
+      background: white;
+      box-shadow: 0 14px 38px rgba(15, 23, 42, 0.07);
+    }
+
+    .head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 18px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #edf1f5;
+    }
+
+    .employee {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .avatar {
+      width: 54px;
+      height: 54px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      color: white;
+      background: #4338ca;
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .employee h1 {
+      margin: 0;
+      font-size: 25px;
+    }
+
+    .employee p {
+      margin: 6px 0 0;
+      color: #718096;
+      font-size: 14px;
+    }
+
+    .status {
+      display: inline-flex;
+      flex: 0 0 auto;
+      padding: 6px 11px;
+      border-radius: 999px;
+      color: #92400e;
+      background: #fef3c7;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .section-title {
+      margin: 26px 0 12px;
+      font-size: 19px;
+    }
+
+    .info-box {
+      padding: 18px;
+      border-radius: 16px;
+      background: #f8fafc;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 16px;
+      padding: 13px 0;
+      border-bottom: 1px solid #e8edf2;
+    }
+
+    .row:last-child {
+      border-bottom: 0;
+    }
+
+    .row span {
+      color: #718096;
+      font-size: 14px;
+    }
+
+    .row strong {
+      line-height: 1.7;
+      word-break: break-word;
+    }
+
+    .change-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .change-card {
+      padding: 18px;
+      border: 1px solid #e5ebf2;
+      border-radius: 16px;
+      background: white;
+    }
+
+    .change-card h3 {
+      margin: 0 0 14px;
+      font-size: 17px;
+    }
+
+    .old {
+      border-top: 4px solid #94a3b8;
+    }
+
+    .new {
+      border-top: 4px solid #4338ca;
+      background: #f8f7ff;
+    }
+
+    .reason-box {
+      padding: 18px;
+      border-left: 4px solid #4338ca;
+      border-radius: 12px;
+      background: #eef2ff;
+      color: #475569;
+      line-height: 1.8;
+    }
+
+    .form-group {
+      margin-top: 22px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 110px;
+      padding: 13px 14px;
+      border: 1px solid #d8e2ec;
+      border-radius: 12px;
+      color: #18212f;
+      font: inherit;
+      resize: vertical;
+      outline: none;
+    }
+
+    textarea:focus {
+      border-color: #4338ca;
+      box-shadow: 0 0 0 3px rgba(67, 56, 202, 0.1);
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .button {
+      min-height: 46px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      padding: 0 20px;
+      border-radius: 12px;
+      font-weight: 800;
+    }
+
+    .approve {
+      color: white;
+      background: #4338ca;
+    }
+
+    .reject {
+      color: white;
+      background: #b91c1c;
+    }
+
+    .secondary {
+      color: #475569;
+      background: white;
+      border: 1px solid #d8e2ec;
+    }
+
+    @media (max-width: 650px) {
+      .card {
+        padding: 22px 18px;
+      }
+
+      .head,
+      .actions {
+        flex-direction: column;
+      }
+
+      .change-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .row {
+        grid-template-columns: 1fr;
+        gap: 5px;
+      }
+
+      .button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <a class="back" href="profile-requests.html">← 返回資料修改申請</a>
+
+    <section class="card">
+      <div class="head">
+        <div class="employee">
+          <div class="avatar">陳</div>
+
+          <div>
+            <h1>陳員工的資料修改申請</h1>
+            <p>申請編號：PROFILE-20260730-001</p>
+          </div>
+        </div>
+
+        <span class="status">等待審核</span>
+      </div>
+
+      <h2 class="section-title">申請人資料</h2>
+
+      <section class="info-box">
+        <div class="row">
+          <span>員工編號</span>
+          <strong>EMP0003</strong>
+        </div>
+
+        <div class="row">
+          <span>所屬部門</span>
+          <strong>資訊部</strong>
+        </div>
+
+        <div class="row">
+          <span>職稱</span>
+          <strong>軟體工程師</strong>
+        </div>
+
+        <div class="row">
+          <span>申請時間</span>
+          <strong>2026/07/30 10:15</strong>
+        </div>
+      </section>
+
+      <h2 class="section-title">修改內容</h2>
+
+      <section class="change-grid">
+        <article class="change-card old">
+          <h3>修改前</h3>
+
+          <div class="row">
+            <span>電子郵件</span>
+            <strong>employee@example.com</strong>
+          </div>
+
+          <div class="row">
+            <span>聯絡電話</span>
+            <strong>0912-345-678</strong>
+          </div>
+        </article>
+
+        <article class="change-card new">
+          <h3>申請修改為</h3>
+
+          <div class="row">
+            <span>電子郵件</span>
+            <strong>chen.new@example.com</strong>
+          </div>
+
+          <div class="row">
+            <span>聯絡電話</span>
+            <strong>0988-123-456</strong>
+          </div>
+        </article>
+      </section>
+
+      <h2 class="section-title">修改原因</h2>
+
+      <div class="reason-box">
+        原使用的電子郵件即將停用，聯絡電話也已更換，因此申請更新個人聯絡資料。
+      </div>
+
+      <div class="form-group">
+        <label for="comment">管理者備註</label>
+        <textarea
+          id="comment"
+          placeholder="核准時可填寫說明；退回時請填寫原因"
+        ></textarea>
+      </div>
+
+      <div class="actions">
+        <a class="button approve" href="profile-request-approved.html">核准並更新資料</a>
+        <a class="button reject" href="profile-request-rejected.html">退回申請</a>
+        <a class="button secondary" href="profile-requests.html">稍後處理</a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

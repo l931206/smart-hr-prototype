@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>新增部門｜智慧人資管理平台</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, "Noto Sans TC", sans-serif;
+      background: #f4f7fb;
+      color: #18212f;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      width: min(800px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 28px 0 48px;
+    }
+
+    .back {
+      display: inline-flex;
+      margin-bottom: 22px;
+      color: #4338ca;
+      font-weight: 800;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 30px;
+    }
+
+    .header p {
+      margin: 8px 0 0;
+      color: #718096;
+      line-height: 1.7;
+    }
+
+    .form-card {
+      margin-top: 22px;
+      padding: 26px;
+      border: 1px solid #e5ebf2;
+      border-radius: 24px;
+      background: white;
+      box-shadow: 0 14px 38px rgba(15, 23, 42, 0.07);
+    }
+
+    .two-column {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 13px 14px;
+      border: 1px solid #d8e2ec;
+      border-radius: 12px;
+      background: white;
+      color: #18212f;
+      font: inherit;
+      outline: none;
+    }
+
+    input,
+    select {
+      min-height: 46px;
+    }
+
+    textarea {
+      min-height: 130px;
+      resize: vertical;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: #4338ca;
+      box-shadow: 0 0 0 3px rgba(67, 56, 202, 0.1);
+    }
+
+    .help {
+      margin: 7px 0 0;
+      color: #8290a3;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .notice {
+      margin-top: 4px;
+      padding: 16px 18px;
+      border-left: 4px solid #4338ca;
+      border-radius: 12px;
+      background: #eef2ff;
+      color: #475569;
+      line-height: 1.7;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 26px;
+    }
+
+    .button {
+      min-height: 46px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 20px;
+      border: 0;
+      border-radius: 12px;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .primary {
+      color: white;
+      background: #4338ca;
+    }
+
+    .secondary {
+      color: #475569;
+      background: white;
+      border: 1px solid #d8e2ec;
+    }
+
+    @media (max-width: 620px) {
+      .form-card {
+        padding: 22px 18px;
+      }
+
+      .two-column {
+        grid-template-columns: 1fr;
+      }
+
+      .actions {
+        flex-direction: column;
+      }
+
+      .button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <a class="back" href="departments.html">← 返回部門管理</a>
+
+    <header class="header">
+      <h1>新增部門</h1>
+      <p>建立新的公司部門，並設定部門主管與基本資料。</p>
+    </header>
+
+    <form class="form-card" action="department-create-success.html">
+      <div class="two-column">
+        <div class="form-group">
+          <label for="departmentCode">部門代碼</label>
+          <input
+            id="departmentCode"
+            type="text"
+            placeholder="例如：HR"
+            maxlength="10"
+            required
+          >
+          <p class="help">建議使用 2 至 5 個英文字母。</p>
+        </div>
+
+        <div class="form-group">
+          <label for="departmentName">部門名稱</label>
+          <input
+            id="departmentName"
+            type="text"
+            placeholder="例如：人資部"
+            required
+          >
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="manager">部門主管</label>
+        <select id="manager" required>
+          <option value="">請選擇部門主管</option>
+          <option>王主管</option>
+          <option>吳主管</option>
+          <option>林主管</option>
+          <option>蔡主管</option>
+          <option>暫不指定主管</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="description">部門說明</label>
+        <textarea
+          id="description"
+          placeholder="請簡要說明部門主要職責"
+          required
+        ></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="status">部門狀態</label>
+        <select id="status" required>
+          <option selected>啟用中</option>
+          <option>暫停使用</option>
+        </select>
+      </div>
+
+      <div class="notice">
+        部門建立完成後，可再將員工分配至此部門。若已指定主管，系統會同步建立主管管理權限與請假簽核關係。
+      </div>
+
+      <div class="actions">
+        <button class="button primary" type="submit">建立部門</button>
+        <a class="button secondary" href="departments.html">取消</a>
+      </div>
+    </form>
+  </main>
+</body>
+</html>

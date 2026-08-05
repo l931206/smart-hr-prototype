@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>假別建立完成｜智慧人資管理平台</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      font-family: Arial, "Noto Sans TC", sans-serif;
+      background: #f4f7fb;
+      color: #18212f;
+    }
+
+    a { text-decoration: none; }
+
+    .card {
+      width: min(580px, 100%);
+      padding: 38px 30px;
+      border: 1px solid #e5ebf2;
+      border-radius: 28px;
+      background: white;
+      text-align: center;
+      box-shadow: 0 20px 52px rgba(15, 23, 42, 0.1);
+    }
+
+    .icon {
+      width: 84px;
+      height: 84px;
+      display: grid;
+      place-items: center;
+      margin: 0 auto 20px;
+      border-radius: 50%;
+      color: white;
+      background: #4338ca;
+      font-size: 38px;
+      box-shadow: 0 14px 30px rgba(67, 56, 202, 0.24);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 30px;
+    }
+
+    p {
+      max-width: 450px;
+      margin: 14px auto 0;
+      color: #718096;
+      line-height: 1.75;
+    }
+
+    .info {
+      margin-top: 22px;
+      padding: 18px;
+      border-radius: 16px;
+      background: #eef2ff;
+      text-align: left;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 8px 0;
+    }
+
+    .row span {
+      color: #718096;
+      font-size: 14px;
+    }
+
+    .row strong {
+      color: #4338ca;
+      text-align: right;
+    }
+
+    .status {
+      display: inline-flex;
+      padding: 5px 10px;
+      border-radius: 999px;
+      color: #047857;
+      background: #d1fae5;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .notice {
+      margin-top: 18px;
+      padding: 16px;
+      border-left: 4px solid #4338ca;
+      border-radius: 12px;
+      background: #f8fafc;
+      color: #475569;
+      line-height: 1.7;
+      text-align: left;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    .button {
+      min-height: 46px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 20px;
+      border-radius: 12px;
+      font-weight: 800;
+    }
+
+    .primary {
+      color: white;
+      background: #4338ca;
+    }
+
+    .secondary {
+      color: #475569;
+      background: white;
+      border: 1px solid #d8e2ec;
+    }
+
+    @media (max-width: 520px) {
+      .card {
+        padding: 32px 20px;
+      }
+
+      .row {
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .row strong {
+        text-align: left;
+      }
+
+      .actions {
+        flex-direction: column;
+      }
+
+      .button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="card">
+    <div class="icon">✓</div>
+
+    <h1>假別建立完成</h1>
+
+    <p>
+      系統已建立新的請假類型，並依照設定完成額度、計薪與審核規則。
+    </p>
+
+    <section class="info">
+      <div class="row">
+        <span>假別名稱</span>
+        <strong>公假</strong>
+      </div>
+
+      <div class="row">
+        <span>假別代碼</span>
+        <strong>OFFICIAL</strong>
+      </div>
+
+      <div class="row">
+        <span>計薪方式</span>
+        <strong>全薪</strong>
+      </div>
+
+      <div class="row">
+        <span>主管審核</span>
+        <strong>需要</strong>
+      </div>
+
+      <div class="row">
+        <span>目前狀態</span>
+        <strong class="status">啟用中</strong>
+      </div>
+    </section>
+
+    <div class="notice">
+      此假別現在已可出現在員工請假申請表單中。後續仍可從假別與規則頁修改或停用。
+    </div>
+
+    <div class="actions">
+      <a class="button primary" href="leave-settings.html">返回假別與規則</a>
+      <a class="button secondary" href="leave-type-create.html">繼續新增假別</a>
+    </div>
+  </main>
+</body>
+</html>

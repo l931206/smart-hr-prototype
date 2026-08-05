@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <title>部門請假日曆｜智慧人資管理平台</title>
+
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/mobile.css">
+
+  <style>
+    .calendar-page {
+      width: min(1100px, calc(100% - 28px));
+    }
+
+    .calendar-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .month-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .month-button {
+      min-height: 42px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 14px;
+      border: 1px solid #d8e2ec;
+      border-radius: 11px;
+      color: var(--color-text-soft);
+      background: var(--color-surface);
+      font-weight: 800;
+    }
+
+    .calendar-header h1 {
+      margin: 0;
+      font-size: 30px;
+    }
+
+    .calendar-header p {
+      margin: 8px 0 0;
+      color: var(--color-muted);
+      line-height: 1.7;
+    }
+
+    .calendar-summary {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .calendar-card {
+      margin-top: 20px;
+      padding: 22px;
+      overflow-x: auto;
+      border: 1px solid var(--color-border);
+      border-radius: 22px;
+      background: var(--color-surface);
+      box-shadow: var(--shadow-medium);
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .calendar-card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .calendar-card-head h2 {
+      margin: 0;
+      font-size: 22px;
+    }
+
+    .calendar-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #64748b;
+      font-size: 13px;
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      flex: 0 0 auto;
+      border-radius: 50%;
+    }
+
+    .legend-approved {
+      background: var(--color-primary);
+    }
+
+    .legend-pending {
+      background: #f59e0b;
+    }
+
+    .legend-late {
+      background: #2563eb;
+    }
+
+    .calendar-grid {
+      min-width: 840px;
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      border-top: 1px solid var(--color-border);
+      border-left: 1px solid var(--color-border);
+    }
+
+    .calendar-weekday,
+    .calendar-day {
+      border-right: 1px solid var(--color-border);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .calendar-weekday {
+      padding: 12px 8px;
+      color: #64748b;
+      background: #f8fafc;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .calendar-day {
+      min-height: 125px;
+      padding: 10px;
+      background: var(--color-surface);
+    }
+
+    .calendar-day.muted {
+      color: #a3adb9;
+      background: #fafafa;
+    }
+
+    .calendar-day.today {
+      box-shadow: inset 0 0 0 2px var(--color-primary);
+    }
+
+    .date-number {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .calendar-event {
+      display: block;
+      margin-top: 6px;
+      padding: 7px 8px;
+      border-radius: 9px;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .calendar-event.approved {
+      color: #065f46;
+      background: var(--color-success-bg);
+    }
+
+    .calendar-event.pending {
+      color: var(--color-warning);
+      background: var(--color-warning-bg);
+    }
+
+    .calendar-event.late {
+      color: #1d4ed8;
+      background: #dbeafe;
+    }
+
+    .schedule-card {
+      margin-top: 20px;
+    }
+
+    .schedule-card h2 {
+      margin: 0 0 18px;
+      font-size: 20px;
+    }
+
+    .schedule-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      padding: 15px 0;
+      border-bottom: 1px solid #edf1f5;
+    }
+
+    .schedule-item:last-child {
+      border-bottom: 0;
+    }
+
+    .schedule-item h3 {
+      margin: 0;
+      font-size: 15px;
+    }
+
+    .schedule-item p {
+      margin: 6px 0 0;
+      color: var(--color-muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .schedule-status {
+      display: inline-flex;
+      flex: 0 0 auto;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .schedule-status.approved {
+      color: var(--color-success);
+      background: var(--color-success-bg);
+    }
+
+    .schedule-status.pending {
+      color: var(--color-warning);
+      background: var(--color-warning-bg);
+    }
+
+    .schedule-status.late {
+      color: #1d4ed8;
+      background: #dbeafe;
+    }
+
+    .mobile-schedule {
+      display: none;
+    }
+
+    @media (max-width: 700px) {
+      .calendar-page {
+        width: calc(100% - 20px);
+      }
+
+      .calendar-topbar {
+        align-items: stretch;
+        flex-direction: column;
+        margin-bottom: 14px;
+      }
+
+      .calendar-topbar .back {
+        display: none;
+      }
+
+      .month-actions {
+        width: 100%;
+      }
+
+      .month-button {
+        flex: 1;
+        min-width: 0;
+        padding: 0 8px;
+        font-size: 13px;
+      }
+
+      .calendar-header h1 {
+        font-size: 24px;
+      }
+
+      .calendar-header p {
+        font-size: 14px;
+      }
+
+      .calendar-summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .calendar-summary .summary-card:last-child {
+        grid-column: 1 / -1;
+      }
+
+      .calendar-card {
+        padding: 16px;
+        border-radius: 18px;
+      }
+
+      .calendar-card-head {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .calendar-card-head h2 {
+        font-size: 19px;
+      }
+
+      .calendar-legend {
+        gap: 8px;
+      }
+
+      .legend-item {
+        font-size: 11px;
+      }
+
+      .calendar-grid {
+        display: none;
+      }
+
+      .mobile-schedule {
+        display: grid;
+        gap: 10px;
+      }
+
+      .mobile-day-card {
+        padding: 14px;
+        border: 1px solid var(--color-border);
+        border-radius: 15px;
+        background: #f8fafc;
+      }
+
+      .mobile-day-card.today {
+        border-color: var(--color-primary);
+        background: #f0fdfa;
+      }
+
+      .mobile-day-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 10px;
+      }
+
+      .mobile-day-head strong {
+        font-size: 15px;
+      }
+
+      .mobile-day-head span {
+        color: var(--color-muted);
+        font-size: 12px;
+      }
+
+      .mobile-day-card .calendar-event {
+        margin-top: 7px;
+      }
+
+      .schedule-card {
+        padding: 17px;
+      }
+
+      .schedule-card h2 {
+        margin-bottom: 10px;
+        font-size: 18px;
+      }
+
+      .schedule-item {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 8px;
+        padding: 12px 0;
+      }
+
+      .schedule-item h3 {
+        font-size: 14px;
+      }
+
+      .schedule-item p {
+        font-size: 12px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page calendar-page">
+
+    <div class="calendar-topbar">
+      <a class="back" href="index.html">
+        ← 返回主管工作台
+      </a>
+
+      <div class="month-actions">
+        <a class="month-button" href="#">
+          ← 上個月
+        </a>
+
+        <a class="month-button" href="#">
+          今天
+        </a>
+
+        <a class="month-button" href="#">
+          下個月 →
+        </a>
+      </div>
+    </div>
+
+    <header class="calendar-header">
+      <h1>部門請假日曆</h1>
+
+      <p>
+        查看資訊部員工的請假、待審核申請與晚到狀況。
+      </p>
+    </header>
+
+    <section class="summary-grid calendar-summary">
+      <article class="summary-card">
+        <span>本月請假人次</span>
+        <strong>8</strong>
+      </article>
+
+      <article class="summary-card">
+        <span>待審核申請</span>
+        <strong>2</strong>
+      </article>
+
+      <article class="summary-card">
+        <span>今日不在辦公室</span>
+        <strong>1</strong>
+      </article>
+    </section>
+
+    <section class="calendar-card">
+
+      <div class="calendar-card-head">
+        <h2>2026 年 8 月</h2>
+
+        <div class="calendar-legend">
+          <span class="legend-item">
+            <span class="legend-dot legend-approved"></span>
+            已核准請假
+          </span>
+
+          <span class="legend-item">
+            <span class="legend-dot legend-pending"></span>
+            等待審核
+          </span>
+
+          <span class="legend-item">
+            <span class="legend-dot legend-late"></span>
+            晚到通知
+          </span>
+        </div>
+      </div>
+
+      <!-- 電腦版月曆 -->
+      <div class="calendar-grid">
+        <div class="calendar-weekday">日</div>
+        <div class="calendar-weekday">一</div>
+        <div class="calendar-weekday">二</div>
+        <div class="calendar-weekday">三</div>
+        <div class="calendar-weekday">四</div>
+        <div class="calendar-weekday">五</div>
+        <div class="calendar-weekday">六</div>
+
+        <div class="calendar-day muted"><span class="date-number">26</span></div>
+        <div class="calendar-day muted"><span class="date-number">27</span></div>
+        <div class="calendar-day muted"><span class="date-number">28</span></div>
+        <div class="calendar-day muted"><span class="date-number">29</span></div>
+        <div class="calendar-day muted"><span class="date-number">30</span></div>
+        <div class="calendar-day muted"><span class="date-number">31</span></div>
+        <div class="calendar-day"><span class="date-number">1</span></div>
+
+        <div class="calendar-day"><span class="date-number">2</span></div>
+
+        <div class="calendar-day">
+          <span class="date-number">3</span>
+          <span class="calendar-event pending">
+            陳員工｜特休待審核
+          </span>
+        </div>
+
+        <div class="calendar-day">
+          <span class="date-number">4</span>
+          <span class="calendar-event pending">
+            陳員工｜特休待審核
+          </span>
+        </div>
+
+        <div class="calendar-day">
+          <span class="date-number">5</span>
+          <span class="calendar-event approved">
+            張員工｜特休
+          </span>
+        </div>
+
+        <div class="calendar-day">
+          <span class="date-number">6</span>
+        </div>
+
+        <div class="calendar-day">
+          <span class="date-number">7</span>
+          <span class="calendar-event approved">
+            李員工｜事假
+          </span>
+        </div>
+
+        <div class="calendar-day"><span class="date-number">8</span></div>
+        <div class="calendar-day"><span class="date-number">9</span></div>
+
+        <div class="calendar-day today">
+          <span class="date-number">10</span>
+          <span class="calendar-event late">
+            林員工｜預計 10:00 到班
+          </span>
+        </div>
+
+        <div class="calendar-day"><span class="date-number">11</span></div>
+
+        <div class="calendar-day">
+          <span class="date-number">12</span>
+          <span class="calendar-event approved">
+            王員工｜病假
+          </span>
+        </div>
+
+        <div class="calendar-day"><span class="date-number">13</span></div>
+        <div class="calendar-day"><span class="date-number">14</span></div>
+        <div class="calendar-day"><span class="date-number">15</span></div>
+        <div class="calendar-day"><span class="date-number">16</span></div>
+        <div class="calendar-day"><span class="date-number">17</span></div>
+
+        <div class="calendar-day">
+          <span class="date-number">18</span>
+          <span class="calendar-event approved">
+            陳員工｜公假
+          </span>
+        </div>
+
+        <div class="calendar-day"><span class="date-number">19</span></div>
+        <div class="calendar-day"><span class="date-number">20</span></div>
+
+        <div class="calendar-day">
+          <span class="date-number">21</span>
+          <span class="calendar-event approved">
+            林員工｜特休
+          </span>
+        </div>
+
+        <div class="calendar-day"><span class="date-number">22</span></div>
+        <div class="calendar-day"><span class="date-number">23</span></div>
+        <div class="calendar-day"><span class="date-number">24</span></div>
+        <div class="calendar-day"><span class="date-number">25</span></div>
+        <div class="calendar-day"><span class="date-number">26</span></div>
+
+        <div class="calendar-day">
+          <span class="date-number">27</span>
+          <span class="calendar-event pending">
+            李員工｜事假待審核
+          </span>
+        </div>
+
+        <div class="calendar-day"><span class="date-number">28</span></div>
+        <div class="calendar-day"><span class="date-number">29</span></div>
+        <div class="calendar-day"><span class="date-number">30</span></div>
+        <div class="calendar-day"><span class="date-number">31</span></div>
+        <div class="calendar-day muted"><span class="date-number">1</span></div>
+        <div class="calendar-day muted"><span class="date-number">2</span></div>
+        <div class="calendar-day muted"><span class="date-number">3</span></div>
+        <div class="calendar-day muted"><span class="date-number">4</span></div>
+        <div class="calendar-day muted"><span class="date-number">5</span></div>
+      </div>
+
+      <!-- 手機版重點行程 -->
+      <div class="mobile-schedule">
+
+        <article class="mobile-day-card">
+          <div class="mobile-day-head">
+            <strong>8 月 3 日</strong>
+            <span>星期一</span>
+          </div>
+
+          <span class="calendar-event pending">
+            陳員工｜特休待審核
+          </span>
+        </article>
+
+        <article class="mobile-day-card">
+          <div class="mobile-day-head">
+            <strong>8 月 4 日</strong>
+            <span>星期二</span>
+          </div>
+
+          <span class="calendar-event pending">
+            陳員工｜特休待審核
+          </span>
+        </article>
+
+        <article class="mobile-day-card">
+          <div class="mobile-day-head">
+            <strong>8 月 5 日</strong>
+            <span>星期三</span>
+          </div>
+
+          <span class="calendar-event approved">
+            張員工｜特休
+          </span>
+        </article>
+
+        <article class="mobile-day-card">
+          <div class="mobile-day-head">
+            <strong>8 月 7 日</strong>
+            <span>星期五</span>
+          </div>
+
+          <span class="calendar-event approved">
+            李員工｜事假
+          </span>
+        </article>
+
+        <article class="mobile-day-card today">
+          <div class="mobile-day-head">
+            <strong>8 月 10 日</strong>
+            <span>今天</span>
+          </div>
+
+          <span class="calendar-event late">
+            林員工｜預計 10:00 到班
+          </span>
+        </article>
+
+        <article class="mobile-day-card">
+          <div class="mobile-day-head">
+            <strong>8 月 12 日</strong>
+            <span>星期三</span>
+          </div>
+
+          <span class="calendar-event approved">
+            王員工｜病假
+          </span>
+        </article>
+
+        <article class="mobile-day-card">
+          <div class="mobile-day-head">
+            <strong>8 月 18 日</strong>
+            <span>星期二</span>
+          </div>
+
+          <span class="calendar-event approved">
+            陳員工｜公假
+          </span>
+        </article>
+
+        <article class="mobile-day-card">
+          <div class="mobile-day-head">
+            <strong>8 月 21 日</strong>
+            <span>星期五</span>
+          </div>
+
+          <span class="calendar-event approved">
+            林員工｜特休
+          </span>
+        </article>
+
+        <article class="mobile-day-card">
+          <div class="mobile-day-head">
+            <strong>8 月 27 日</strong>
+            <span>星期四</span>
+          </div>
+
+          <span class="calendar-event pending">
+            李員工｜事假待審核
+          </span>
+        </article>
+      </div>
+    </section>
+
+    <section class="card schedule-card">
+      <h2>近期人力安排</h2>
+
+      <a
+        class="schedule-item"
+        href="leave-request-detail.html"
+      >
+        <div>
+          <h3>陳員工－特休假</h3>
+          <p>2026/08/03 至 2026/08/04，共 2 天。</p>
+        </div>
+
+        <span class="schedule-status pending">
+          等待審核
+        </span>
+      </a>
+
+      <a
+        class="schedule-item"
+        href="team-member-detail.html"
+      >
+        <div>
+          <h3>張員工－特休假</h3>
+          <p>2026/08/05，共 1 天。</p>
+        </div>
+
+        <span class="schedule-status approved">
+          已核准
+        </span>
+      </a>
+
+      <a
+        class="schedule-item"
+        href="late-notice-detail.html"
+      >
+        <div>
+          <h3>林員工－晚到通知</h3>
+          <p>2026/08/10，預計上午 10:00 到班。</p>
+        </div>
+
+        <span class="schedule-status late">
+          已通知
+        </span>
+      </a>
+    </section>
+  </main>
+
+  <nav
+    class="mobile-nav"
+    aria-label="主管手機導覽"
+  >
+    <a href="index.html">
+      <span>⌂</span>
+      <small>首頁</small>
+    </a>
+
+    <a
+      class="active"
+      href="leave-requests.html"
+    >
+      <span>✓</span>
+      <small>審核</small>
+    </a>
+
+    <a href="team.html">
+      <span>人</span>
+      <small>團隊</small>
+    </a>
+
+    <a href="notifications.html">
+      <span>•••</span>
+      <small>更多</small>
+    </a>
+  </nav>
+</body>
+</html>

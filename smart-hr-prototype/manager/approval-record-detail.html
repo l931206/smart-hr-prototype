@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <title>完整審核紀錄｜智慧人資管理平台</title>
+
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/mobile.css">
+
+  <style>
+    .approval-record-page {
+      width: min(840px, calc(100% - 28px));
+    }
+
+    .approval-record-card {
+      padding: 28px;
+    }
+
+    .approval-record-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 18px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #edf1f5;
+    }
+
+    .approval-record-employee {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .approval-record-avatar {
+      width: 54px;
+      height: 54px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      color: white;
+      background: var(--color-primary);
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .approval-record-employee h1 {
+      margin: 0;
+      font-size: 25px;
+      line-height: 1.4;
+    }
+
+    .approval-record-employee p {
+      margin: 6px 0 0;
+      color: var(--color-muted);
+      font-size: 14px;
+      overflow-wrap: anywhere;
+    }
+
+    .approval-record-status {
+      display: inline-flex;
+      flex: 0 0 auto;
+      padding: 6px 11px;
+      border-radius: 999px;
+      color: var(--color-success);
+      background: var(--color-success-bg);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .approval-record-section-title {
+      margin: 26px 0 12px;
+      font-size: 19px;
+    }
+
+    .approval-record-info {
+      padding: 18px;
+      border-radius: 16px;
+      background: #f8fafc;
+    }
+
+    .approval-record-row {
+      display: grid;
+      grid-template-columns: 140px minmax(0, 1fr);
+      gap: 16px;
+      padding: 13px 0;
+      border-bottom: 1px solid #e8edf2;
+    }
+
+    .approval-record-row:last-child {
+      border-bottom: 0;
+    }
+
+    .approval-record-row span {
+      color: var(--color-muted);
+      font-size: 14px;
+    }
+
+    .approval-record-row strong {
+      min-width: 0;
+      line-height: 1.7;
+      overflow-wrap: anywhere;
+    }
+
+    .approval-timeline {
+      position: relative;
+      margin-top: 8px;
+      padding-left: 28px;
+    }
+
+    .approval-timeline::before {
+      content: "";
+      position: absolute;
+      top: 8px;
+      bottom: 8px;
+      left: 8px;
+      width: 2px;
+      background: #dbe5ec;
+    }
+
+    .approval-timeline-item {
+      position: relative;
+      padding: 0 0 24px 18px;
+    }
+
+    .approval-timeline-item:last-child {
+      padding-bottom: 0;
+    }
+
+    .approval-timeline-item::before {
+      content: "";
+      position: absolute;
+      top: 5px;
+      left: -25px;
+      width: 12px;
+      height: 12px;
+      border: 3px solid var(--color-success-bg);
+      border-radius: 50%;
+      background: var(--color-primary);
+    }
+
+    .approval-timeline-item h3 {
+      margin: 0;
+      font-size: 15px;
+    }
+
+    .approval-timeline-item p {
+      margin: 6px 0 0;
+      color: var(--color-muted);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .approval-comment-box {
+      margin-top: 12px;
+      padding: 16px 18px;
+      border-left: 4px solid var(--color-primary);
+      border-radius: 12px;
+      background: #f0fdfa;
+      color: var(--color-text-soft);
+      line-height: 1.8;
+    }
+
+    .approval-record-actions {
+      margin-top: 26px;
+    }
+
+    @media (max-width: 700px) {
+      .approval-record-page {
+        width: calc(100% - 20px);
+      }
+
+      .approval-record-page .back {
+        display: none;
+      }
+
+      .approval-record-card {
+        padding: 18px;
+      }
+
+      .approval-record-head {
+        flex-direction: column;
+        gap: 10px;
+        padding-bottom: 16px;
+      }
+
+      .approval-record-avatar {
+        width: 46px;
+        height: 46px;
+        font-size: 18px;
+      }
+
+      .approval-record-employee h1 {
+        font-size: 20px;
+      }
+
+      .approval-record-employee p {
+        font-size: 12px;
+      }
+
+      .approval-record-section-title {
+        margin: 22px 0 10px;
+        font-size: 18px;
+      }
+
+      .approval-record-info {
+        padding: 15px;
+      }
+
+      .approval-record-row {
+        grid-template-columns: 1fr;
+        gap: 4px;
+        padding: 10px 0;
+      }
+
+      .approval-record-row span {
+        font-size: 12px;
+      }
+
+      .approval-record-row strong {
+        font-size: 14px;
+      }
+
+      .approval-timeline {
+        padding-left: 25px;
+      }
+
+      .approval-timeline-item {
+        padding-left: 16px;
+        padding-bottom: 20px;
+      }
+
+      .approval-timeline-item h3 {
+        font-size: 14px;
+      }
+
+      .approval-timeline-item p {
+        font-size: 12px;
+      }
+
+      .approval-comment-box {
+        padding: 14px;
+        font-size: 14px;
+      }
+
+      .approval-record-actions {
+        margin-top: 18px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page approval-record-page">
+
+    <a class="back" href="approval-history.html">
+      ← 返回審核紀錄
+    </a>
+
+    <section class="card approval-record-card">
+
+      <header class="approval-record-head">
+        <div class="approval-record-employee">
+          <div class="approval-record-avatar">
+            陳
+          </div>
+
+          <div>
+            <h1>陳員工－特休假</h1>
+            <p>申請編號：LEAVE-20260730-001</p>
+          </div>
+        </div>
+
+        <span class="approval-record-status">
+          已核准
+        </span>
+      </header>
+
+      <h2 class="approval-record-section-title">
+        申請內容
+      </h2>
+
+      <section class="approval-record-info">
+        <div class="approval-record-row">
+          <span>所屬部門</span>
+          <strong>資訊部</strong>
+        </div>
+
+        <div class="approval-record-row">
+          <span>假別</span>
+          <strong>特休假</strong>
+        </div>
+
+        <div class="approval-record-row">
+          <span>請假日期</span>
+          <strong>2026/08/03 上午 至 2026/08/04 下午</strong>
+        </div>
+
+        <div class="approval-record-row">
+          <span>請假天數</span>
+          <strong>2 天</strong>
+        </div>
+
+        <div class="approval-record-row">
+          <span>請假原因</span>
+          <strong>處理個人事務。</strong>
+        </div>
+
+        <div class="approval-record-row">
+          <span>附件</span>
+          <strong>未上傳附件</strong>
+        </div>
+      </section>
+
+      <h2 class="approval-record-section-title">
+        處理紀錄
+      </h2>
+
+      <section class="approval-timeline">
+        <div class="approval-timeline-item">
+          <h3>員工送出申請</h3>
+          <p>
+            2026/07/30 13:45，由陳員工送出。
+          </p>
+        </div>
+
+        <div class="approval-timeline-item">
+          <h3>主管完成審核</h3>
+          <p>
+            2026/07/30 14:30，由王主管核准。
+          </p>
+        </div>
+
+        <div class="approval-timeline-item">
+          <h3>系統更新資料</h3>
+          <p>
+            已更新請假紀錄、剩餘特休天數與員工通知。
+          </p>
+        </div>
+      </section>
+
+      <h2 class="approval-record-section-title">
+        主管備註
+      </h2>
+
+      <div class="approval-comment-box">
+        已確認部門工作安排，准予請假。
+      </div>
+
+      <div class="actions approval-record-actions">
+        <a
+          class="button primary"
+          href="approval-history.html"
+        >
+          返回審核紀錄
+        </a>
+
+        <a
+          class="button secondary"
+          href="team-member-detail.html"
+        >
+          查看員工資料
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <nav
+    class="mobile-nav"
+    aria-label="主管手機導覽"
+  >
+    <a href="index.html">
+      <span>⌂</span>
+      <small>首頁</small>
+    </a>
+
+    <a
+      class="active"
+      href="leave-requests.html"
+      aria-current="page"
+    >
+      <span>✓</span>
+      <small>審核</small>
+    </a>
+
+    <a href="team.html">
+      <span>人</span>
+      <small>團隊</small>
+    </a>
+
+    <a href="notifications.html">
+      <span>•••</span>
+      <small>更多</small>
+    </a>
+  </nav>
+</body>
+</html>

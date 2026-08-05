@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <title>晚到通知詳情｜智慧人資管理平台</title>
+
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/mobile.css">
+
+  <style>
+    .late-detail-page {
+      width: min(820px, calc(100% - 28px));
+    }
+
+    .late-detail-card {
+      padding: 28px;
+    }
+
+    .late-detail-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 18px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #edf1f5;
+    }
+
+    .late-detail-employee {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .late-detail-avatar {
+      width: 54px;
+      height: 54px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      color: white;
+      background: var(--color-primary);
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .late-detail-employee h1 {
+      margin: 0;
+      font-size: 25px;
+      line-height: 1.4;
+    }
+
+    .late-detail-employee p {
+      margin: 6px 0 0;
+      color: var(--color-muted);
+      font-size: 14px;
+      overflow-wrap: anywhere;
+    }
+
+    .late-detail-status {
+      display: inline-flex;
+      flex: 0 0 auto;
+      padding: 6px 11px;
+      border-radius: 999px;
+      color: #1d4ed8;
+      background: #dbeafe;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .late-detail-info {
+      margin-top: 22px;
+      padding: 18px;
+      border-radius: 16px;
+      background: #f8fafc;
+    }
+
+    .late-detail-row {
+      display: grid;
+      grid-template-columns: 140px minmax(0, 1fr);
+      gap: 16px;
+      padding: 13px 0;
+      border-bottom: 1px solid #e8edf2;
+    }
+
+    .late-detail-row:last-child {
+      border-bottom: 0;
+    }
+
+    .late-detail-row span {
+      color: var(--color-muted);
+      font-size: 14px;
+    }
+
+    .late-detail-row strong {
+      min-width: 0;
+      line-height: 1.7;
+      overflow-wrap: anywhere;
+    }
+
+    .late-reason-box {
+      margin-top: 22px;
+      padding: 18px;
+      border-left: 4px solid var(--color-primary);
+      border-radius: 12px;
+      background: #f0fdfa;
+      color: var(--color-text-soft);
+      line-height: 1.8;
+    }
+
+    .late-detail-notice {
+      margin-top: 22px;
+      border-left-color: #f59e0b;
+      background: #fffbeb;
+      color: #6b5b34;
+    }
+
+    .late-detail-actions {
+      margin-top: 24px;
+    }
+
+    @media (max-width: 700px) {
+      .late-detail-page {
+        width: calc(100% - 20px);
+      }
+
+      .late-detail-page .back {
+        display: none;
+      }
+
+      .late-detail-card {
+        padding: 18px;
+      }
+
+      .late-detail-head {
+        flex-direction: column;
+        gap: 10px;
+        padding-bottom: 16px;
+      }
+
+      .late-detail-avatar {
+        width: 46px;
+        height: 46px;
+        font-size: 18px;
+      }
+
+      .late-detail-employee h1 {
+        font-size: 20px;
+      }
+
+      .late-detail-employee p {
+        font-size: 12px;
+      }
+
+      .late-detail-info {
+        margin-top: 18px;
+        padding: 15px;
+      }
+
+      .late-detail-row {
+        grid-template-columns: 1fr;
+        gap: 4px;
+        padding: 10px 0;
+      }
+
+      .late-detail-row span {
+        font-size: 12px;
+      }
+
+      .late-detail-row strong {
+        font-size: 14px;
+      }
+
+      .late-reason-box,
+      .late-detail-notice {
+        margin-top: 16px;
+        font-size: 14px;
+      }
+
+      .late-detail-actions {
+        margin-top: 18px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page late-detail-page">
+
+    <a class="back" href="late-notices.html">
+      ← 返回晚到通知
+    </a>
+
+    <section class="card late-detail-card">
+
+      <header class="late-detail-head">
+        <div class="late-detail-employee">
+          <div class="late-detail-avatar">
+            林
+          </div>
+
+          <div>
+            <h1>林員工的晚到通知</h1>
+            <p>通知編號：LATE-20260730-001</p>
+          </div>
+        </div>
+
+        <span class="late-detail-status">
+          已通知主管
+        </span>
+      </header>
+
+      <section class="late-detail-info">
+        <div class="late-detail-row">
+          <span>所屬部門</span>
+          <strong>資訊部</strong>
+        </div>
+
+        <div class="late-detail-row">
+          <span>職稱</span>
+          <strong>軟體工程師</strong>
+        </div>
+
+        <div class="late-detail-row">
+          <span>晚到日期</span>
+          <strong>2026/07/30</strong>
+        </div>
+
+        <div class="late-detail-row">
+          <span>原上班時間</span>
+          <strong>09:00</strong>
+        </div>
+
+        <div class="late-detail-row">
+          <span>預計到班時間</span>
+          <strong>10:00</strong>
+        </div>
+
+        <div class="late-detail-row">
+          <span>原因類型</span>
+          <strong>交通延誤</strong>
+        </div>
+
+        <div class="late-detail-row">
+          <span>通知時間</span>
+          <strong>2026/07/30 08:40</strong>
+        </div>
+
+        <div class="late-detail-row">
+          <span>聯絡電話</span>
+          <strong>0912-345-679</strong>
+        </div>
+      </section>
+
+      <div class="late-reason-box">
+        <strong>詳細原因</strong>
+        <br><br>
+        上班途中發生交通事故造成道路壅塞，
+        目前已改道前往公司，預計上午 10:00 前抵達。
+      </div>
+
+      <div class="notice late-detail-notice">
+        晚到通知僅供主管掌握出勤狀況，
+        不需要進行核准或退回。
+      </div>
+
+      <div class="actions late-detail-actions">
+        <a
+          class="button primary"
+          href="late-notices.html"
+        >
+          確認已查看
+        </a>
+
+        <a
+          class="button secondary"
+          href="team-member-detail.html"
+        >
+          查看員工資料
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <nav
+    class="mobile-nav"
+    aria-label="主管手機導覽"
+  >
+    <a href="index.html">
+      <span>⌂</span>
+      <small>首頁</small>
+    </a>
+
+    <a href="leave-requests.html">
+      <span>✓</span>
+      <small>審核</small>
+    </a>
+
+    <a
+      class="active"
+      href="team.html"
+    >
+      <span>人</span>
+      <small>團隊</small>
+    </a>
+
+    <a href="notifications.html">
+      <span>•••</span>
+      <small>更多</small>
+    </a>
+  </nav>
+</body>
+</html>

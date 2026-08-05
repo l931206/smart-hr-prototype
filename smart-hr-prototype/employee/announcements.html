@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <title>公告中心｜智慧人資管理平台</title>
+
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/mobile.css">
+
+  <style>
+    .announcement-page {
+      width: min(920px, calc(100% - 28px));
+    }
+
+    .announcement-header h1 {
+      margin: 0;
+      font-size: 30px;
+    }
+
+    .announcement-header p {
+      margin: 8px 0 0;
+      color: var(--color-muted);
+      line-height: 1.7;
+    }
+
+    .announcement-summary {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .announcement-toolbar {
+      margin-top: 18px;
+    }
+
+    .announcement-list {
+      display: grid;
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .announcement-card {
+      display: block;
+      padding: 22px;
+      border: 1px solid var(--color-border);
+      border-radius: 20px;
+      background: var(--color-surface);
+      box-shadow: var(--shadow-small);
+      transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+    }
+
+    .announcement-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-medium);
+    }
+
+    .announcement-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 18px;
+    }
+
+    .announcement-title-group {
+      display: flex;
+      align-items: flex-start;
+      gap: 13px;
+      min-width: 0;
+    }
+
+    .announcement-icon {
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border-radius: 14px;
+      background: #f0fdfa;
+      font-size: 22px;
+    }
+
+    .announcement-title-group h2 {
+      margin: 0;
+      font-size: 19px;
+      line-height: 1.4;
+    }
+
+    .announcement-title-group p {
+      margin: 7px 0 0;
+      color: var(--color-muted);
+      font-size: 13px;
+    }
+
+    .announcement-date {
+      flex: 0 0 auto;
+      color: #8290a3;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .announcement-excerpt {
+      margin: 18px 0 0;
+      color: var(--color-text-soft);
+      line-height: 1.75;
+    }
+
+    .announcement-tag {
+      display: inline-flex;
+      margin-top: 15px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .tag-company {
+      color: var(--color-success);
+      background: var(--color-success-bg);
+    }
+
+    .tag-system {
+      color: #1d4ed8;
+      background: #dbeafe;
+    }
+
+    .tag-personnel {
+      color: #6d28d9;
+      background: #ede9fe;
+    }
+
+    .tag-administration {
+      color: var(--color-warning);
+      background: var(--color-warning-bg);
+    }
+
+    .announcement-view-link {
+      display: inline-flex;
+      margin-top: 17px;
+      color: var(--color-primary);
+      font-weight: 800;
+    }
+
+    @media (max-width: 700px) {
+      .announcement-page {
+        width: calc(100% - 20px);
+      }
+
+      .announcement-page .back {
+        display: none;
+      }
+
+      .announcement-header h1 {
+        font-size: 24px;
+      }
+
+      .announcement-header p {
+        font-size: 14px;
+      }
+
+      .announcement-summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .announcement-summary .summary-card:last-child {
+        grid-column: 1 / -1;
+      }
+
+      .announcement-toolbar {
+        padding: 14px;
+      }
+
+      .announcement-card {
+        padding: 17px;
+        border-radius: 17px;
+      }
+
+      .announcement-head {
+        flex-direction: column;
+        gap: 9px;
+      }
+
+      .announcement-title-group {
+        gap: 10px;
+      }
+
+      .announcement-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 13px;
+        font-size: 20px;
+      }
+
+      .announcement-title-group h2 {
+        font-size: 16px;
+      }
+
+      .announcement-title-group p,
+      .announcement-date {
+        font-size: 12px;
+      }
+
+      .announcement-date {
+        white-space: normal;
+      }
+
+      .announcement-excerpt {
+        margin-top: 13px;
+        font-size: 13px;
+      }
+
+      .announcement-view-link {
+        margin-top: 13px;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page announcement-page">
+
+    <a class="back" href="index.html">
+      ← 返回員工首頁
+    </a>
+
+    <header class="announcement-header">
+      <h1>公告中心</h1>
+      <p>
+        查看公司活動、系統維護、人事異動與行政通知。
+      </p>
+    </header>
+
+    <section class="summary-grid announcement-summary">
+      <article class="summary-card">
+        <span>全部公告</span>
+        <strong>12</strong>
+      </article>
+
+      <article class="summary-card">
+        <span>本月公告</span>
+        <strong>3</strong>
+      </article>
+
+      <article class="summary-card">
+        <span>尚未閱讀</span>
+        <strong>2</strong>
+      </article>
+    </section>
+
+    <section class="toolbar announcement-toolbar">
+      <input
+        type="search"
+        placeholder="搜尋公告標題或內容"
+        aria-label="搜尋公告"
+      >
+
+      <select aria-label="公告類型">
+        <option>全部類型</option>
+        <option>公司公告</option>
+        <option>系統公告</option>
+        <option>人事公告</option>
+        <option>行政公告</option>
+      </select>
+
+      <select aria-label="公告排序">
+        <option>最新發布</option>
+        <option>最舊發布</option>
+      </select>
+    </section>
+
+    <section class="announcement-list">
+
+      <a
+        class="announcement-card"
+        href="announcement-detail.html"
+      >
+        <div class="announcement-head">
+          <div class="announcement-title-group">
+            <div class="announcement-icon">🍽️</div>
+
+            <div>
+              <h2>公司聚餐活動</h2>
+              <p>發布人：行政部</p>
+            </div>
+          </div>
+
+          <time
+            class="announcement-date"
+            datetime="2026-07-30"
+          >
+            2026/07/30
+          </time>
+        </div>
+
+        <p class="announcement-excerpt">
+          本週五晚上將舉辦公司聚餐，
+          請同仁於下班後準時前往活動地點。
+        </p>
+
+        <span class="announcement-tag tag-company">
+          公司公告
+        </span>
+
+        <span class="announcement-view-link">
+          查看公告內容 →
+        </span>
+      </a>
+
+      <a
+        class="announcement-card"
+        href="announcement-detail.html"
+      >
+        <div class="announcement-head">
+          <div class="announcement-title-group">
+            <div class="announcement-icon">🔧</div>
+
+            <div>
+              <h2>系統維護通知</h2>
+              <p>發布人：系統管理者</p>
+            </div>
+          </div>
+
+          <time
+            class="announcement-date"
+            datetime="2026-07-28"
+          >
+            2026/07/28
+          </time>
+        </div>
+
+        <p class="announcement-excerpt">
+          本週五晚間將進行系統維護，
+          期間部分功能可能暫時無法使用。
+        </p>
+
+        <span class="announcement-tag tag-system">
+          系統公告
+        </span>
+
+        <span class="announcement-view-link">
+          查看公告內容 →
+        </span>
+      </a>
+
+      <a
+        class="announcement-card"
+        href="announcement-detail.html"
+      >
+        <div class="announcement-head">
+          <div class="announcement-title-group">
+            <div class="announcement-icon">👋</div>
+
+            <div>
+              <h2>新人報到</h2>
+              <p>發布人：行政部</p>
+            </div>
+          </div>
+
+          <time
+            class="announcement-date"
+            datetime="2026-07-25"
+          >
+            2026/07/25
+          </time>
+        </div>
+
+        <p class="announcement-excerpt">
+          歡迎許員工加入資訊部，
+          請各位同仁協助新進同仁熟悉工作環境。
+        </p>
+
+        <span class="announcement-tag tag-personnel">
+          人事公告
+        </span>
+
+        <span class="announcement-view-link">
+          查看公告內容 →
+        </span>
+      </a>
+
+      <a
+        class="announcement-card"
+        href="announcement-detail.html"
+      >
+        <div class="announcement-head">
+          <div class="announcement-title-group">
+            <div class="announcement-icon">📅</div>
+
+            <div>
+              <h2>八月份補班提醒</h2>
+              <p>發布人：行政部</p>
+            </div>
+          </div>
+
+          <time
+            class="announcement-date"
+            datetime="2026-07-20"
+          >
+            2026/07/20
+          </time>
+        </div>
+
+        <p class="announcement-excerpt">
+          請同仁留意八月份補班日期與當日上下班時間安排。
+        </p>
+
+        <span class="announcement-tag tag-administration">
+          行政公告
+        </span>
+
+        <span class="announcement-view-link">
+          查看公告內容 →
+        </span>
+      </a>
+    </section>
+  </main>
+
+  <nav
+    class="mobile-nav"
+    aria-label="員工手機導覽"
+  >
+    <a
+      class="active"
+      href="index.html"
+    >
+      <span>⌂</span>
+      <small>首頁</small>
+    </a>
+
+    <a href="leave-apply.html">
+      <span>＋</span>
+      <small>請假</small>
+    </a>
+
+    <a href="notifications.html">
+      <span>●</span>
+      <small>通知</small>
+    </a>
+
+    <a href="profile.html">
+      <span>人</span>
+      <small>我的</small>
+    </a>
+  </nav>
+</body>
+</html>

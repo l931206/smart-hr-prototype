@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <title>請假申請｜智慧人資管理平台</title>
+
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/mobile.css">
+
+  <style>
+    .leave-page {
+      width: min(760px, calc(100% - 28px));
+    }
+
+    .leave-header {
+      margin-bottom: 20px;
+    }
+
+    .leave-header h1 {
+      margin: 0;
+      font-size: 30px;
+    }
+
+    .leave-header p {
+      margin: 8px 0 0;
+      color: var(--color-muted);
+      line-height: 1.7;
+    }
+
+    .leave-form {
+      margin-top: 0;
+    }
+
+    .leave-balance {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 22px;
+      padding: 18px;
+      border-radius: 16px;
+      background: #f0fdfa;
+      color: var(--color-text-soft);
+    }
+
+    .leave-balance span {
+      font-size: 14px;
+    }
+
+    .leave-balance strong {
+      color: var(--color-primary);
+      font-size: 22px;
+    }
+
+    .balance-note {
+      margin-top: 6px;
+      color: var(--color-muted);
+      font-size: 12px;
+    }
+
+    .leave-summary {
+      margin-bottom: 20px;
+      padding: 16px;
+      border: 1px solid var(--color-border);
+      border-radius: 14px;
+      background: #f8fafc;
+    }
+
+    .leave-summary h2 {
+      margin: 0 0 12px;
+      font-size: 18px;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 8px 0;
+      color: var(--color-text-soft);
+      font-size: 14px;
+    }
+
+    .summary-row strong {
+      color: var(--color-text);
+    }
+
+    .leave-actions {
+      margin-top: 24px;
+    }
+
+    @media (max-width: 700px) {
+      .leave-page {
+        width: calc(100% - 20px);
+      }
+
+      .leave-header {
+        margin-bottom: 14px;
+      }
+
+      .leave-header h1 {
+        font-size: 24px;
+      }
+
+      .leave-header p {
+        font-size: 14px;
+      }
+
+      .leave-form {
+        padding: 18px;
+      }
+
+      .leave-balance {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 6px;
+        margin-bottom: 16px;
+        padding: 15px;
+      }
+
+      .leave-balance strong {
+        font-size: 20px;
+      }
+
+      .leave-summary {
+        padding: 14px;
+      }
+
+      .summary-row {
+        font-size: 13px;
+      }
+
+      .back {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page leave-page">
+
+    <a class="back" href="index.html">
+      ← 返回員工首頁
+    </a>
+
+    <header class="leave-header">
+      <h1>請假申請</h1>
+      <p>
+        填寫請假日期與原因，下一步會先讓你確認資料，
+        再正式送出申請。
+      </p>
+    </header>
+
+    <form
+      class="form-card leave-form"
+      action="leave-confirm.html"
+    >
+      <section class="leave-balance">
+        <div>
+          <span>本年度特休剩餘</span>
+          <div class="balance-note">目前可使用的特休額度</div>
+        </div>
+
+        <strong>5 天</strong>
+      </section>
+
+      <section class="leave-summary">
+        <h2>申請人</h2>
+
+        <div class="summary-row">
+          <span>姓名</span>
+          <strong>陳員工</strong>
+        </div>
+
+        <div class="summary-row">
+          <span>部門</span>
+          <strong>資訊部</strong>
+        </div>
+
+        <div class="summary-row">
+          <span>直屬主管</span>
+          <strong>王主管</strong>
+        </div>
+      </section>
+
+      <div class="form-group">
+        <label for="leaveType">假別</label>
+
+        <select
+          id="leaveType"
+          name="leaveType"
+          required
+        >
+          <option value="">請選擇假別</option>
+          <option>特休假</option>
+          <option>事假</option>
+          <option>病假</option>
+          <option>公假</option>
+          <option>家庭照顧假</option>
+        </select>
+      </div>
+
+      <div class="two-column">
+        <div class="form-group">
+          <label for="startDate">開始日期</label>
+
+          <input
+            id="startDate"
+            name="startDate"
+            type="date"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="endDate">結束日期</label>
+
+          <input
+            id="endDate"
+            name="endDate"
+            type="date"
+            required
+          >
+        </div>
+      </div>
+
+      <div class="two-column">
+        <div class="form-group">
+          <label for="startTime">開始時段</label>
+
+          <select
+            id="startTime"
+            name="startTime"
+            required
+          >
+            <option>上午</option>
+            <option>下午</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="endTime">結束時段</label>
+
+          <select
+            id="endTime"
+            name="endTime"
+            required
+          >
+            <option>下午</option>
+            <option>上午</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="reason">請假原因</label>
+
+        <textarea
+          id="reason"
+          name="reason"
+          placeholder="請輸入請假原因"
+          required
+        ></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="attachment">附件</label>
+
+        <input
+          id="attachment"
+          name="attachment"
+          type="file"
+          accept=".pdf,.jpg,.jpeg,.png"
+        >
+
+        <p class="help">
+          病假或其他需要證明的假別，可上傳 PDF、JPG 或 PNG 文件。
+        </p>
+      </div>
+
+      <div class="notice">
+        送出前會先進入確認頁，請再次檢查假別、日期、時段與原因是否正確。
+      </div>
+
+      <div class="actions leave-actions">
+        <button
+          class="button primary"
+          type="submit"
+        >
+          下一步：確認資料
+        </button>
+
+        <a
+          class="button secondary"
+          href="index.html"
+        >
+          取消
+        </a>
+      </div>
+    </form>
+  </main>
+
+  <nav
+    class="mobile-nav"
+    aria-label="員工手機導覽"
+  >
+    <a href="index.html">
+      <span>⌂</span>
+      <small>首頁</small>
+    </a>
+
+    <a
+      class="active"
+      href="leave-apply.html"
+      aria-current="page"
+    >
+      <span>＋</span>
+      <small>請假</small>
+    </a>
+
+    <a href="notifications.html">
+      <span>●</span>
+      <small>通知</small>
+    </a>
+
+    <a href="profile.html">
+      <span>人</span>
+      <small>我的</small>
+    </a>
+  </nav>
+</body>
+</html>

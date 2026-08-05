@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <title>請假紀錄｜智慧人資管理平台</title>
+
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/mobile.css">
+
+  <style>
+    .history-page {
+      width: min(980px, calc(100% - 28px));
+    }
+
+    .history-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .history-header h1 {
+      margin: 0;
+      font-size: 30px;
+    }
+
+    .history-header p {
+      margin: 8px 0 0;
+      color: var(--color-muted);
+      line-height: 1.7;
+    }
+
+    .history-summary {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .history-filter {
+      display: flex;
+      gap: 12px;
+      margin-top: 18px;
+      padding: 18px;
+      border: 1px solid var(--color-border);
+      border-radius: 18px;
+      background: var(--color-surface);
+    }
+
+    .history-list {
+      display: grid;
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .history-card {
+      padding: 22px;
+      border: 1px solid var(--color-border);
+      border-radius: 20px;
+      background: var(--color-surface);
+      box-shadow: var(--shadow-small);
+    }
+
+    .history-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .history-head h2 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .application-no {
+      margin: 7px 0 0;
+      color: #8290a3;
+      font-size: 13px;
+    }
+
+    .history-details {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+      padding-top: 18px;
+      border-top: 1px solid #edf1f5;
+    }
+
+    .history-detail span {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--color-muted);
+      font-size: 13px;
+    }
+
+    .history-detail strong {
+      line-height: 1.6;
+      overflow-wrap: anywhere;
+    }
+
+    .history-reason {
+      margin-top: 18px;
+      padding: 15px;
+      border-radius: 12px;
+      background: #f8fafc;
+      color: var(--color-text-soft);
+      line-height: 1.7;
+    }
+
+    .history-link {
+      display: inline-flex;
+      margin-top: 16px;
+      color: var(--color-primary);
+      font-weight: 800;
+    }
+
+    @media (max-width: 700px) {
+      .history-page {
+        width: calc(100% - 20px);
+      }
+
+      .history-topbar {
+        align-items: stretch;
+        flex-direction: column;
+        margin-bottom: 14px;
+      }
+
+      .history-topbar .back {
+        display: none;
+      }
+
+      .history-header h1 {
+        font-size: 24px;
+      }
+
+      .history-header p {
+        font-size: 14px;
+      }
+
+      .history-summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .history-summary .summary-card:last-child {
+        grid-column: 1 / -1;
+      }
+
+      .history-filter {
+        flex-direction: column;
+        gap: 10px;
+        padding: 14px;
+      }
+
+      .history-card {
+        padding: 17px;
+        border-radius: 17px;
+      }
+
+      .history-head {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .history-head h2 {
+        font-size: 18px;
+      }
+
+      .application-no {
+        font-size: 12px;
+      }
+
+      .history-details {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 15px;
+        padding-top: 14px;
+      }
+
+      .history-detail:last-child {
+        grid-column: 1 / -1;
+      }
+
+      .history-detail span {
+        font-size: 11px;
+      }
+
+      .history-detail strong {
+        font-size: 13px;
+      }
+
+      .history-reason {
+        margin-top: 14px;
+        padding: 13px;
+        font-size: 13px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page history-page">
+
+    <div class="history-topbar">
+      <a class="back" href="index.html">
+        ← 返回員工首頁
+      </a>
+
+      <a
+        class="add-button"
+        href="leave-apply.html"
+      >
+        ＋ 新增請假申請
+      </a>
+    </div>
+
+    <header class="history-header">
+      <h1>請假紀錄</h1>
+      <p>
+        查看個人請假申請、主管審核狀態與歷史結果。
+      </p>
+    </header>
+
+    <section class="summary-grid history-summary">
+      <article class="summary-card">
+        <span>等待審核</span>
+        <strong>1</strong>
+      </article>
+
+      <article class="summary-card">
+        <span>本年度已核准</span>
+        <strong>3</strong>
+      </article>
+
+      <article class="summary-card">
+        <span>特休剩餘</span>
+        <strong>5 天</strong>
+      </article>
+    </section>
+
+    <section class="history-filter">
+      <select aria-label="選擇年份">
+        <option>全部年份</option>
+        <option>2026 年</option>
+        <option>2025 年</option>
+      </select>
+
+      <select aria-label="選擇狀態">
+        <option>全部狀態</option>
+        <option>等待審核</option>
+        <option>已核准</option>
+        <option>已退回</option>
+      </select>
+
+      <select aria-label="選擇假別">
+        <option>全部假別</option>
+        <option>特休假</option>
+        <option>病假</option>
+        <option>事假</option>
+      </select>
+    </section>
+
+    <section class="history-list">
+
+      <article class="history-card">
+        <div class="history-head">
+          <div>
+            <h2>特休假</h2>
+            <p class="application-no">
+              申請編號：LEAVE-20260730-001
+            </p>
+          </div>
+
+          <span class="status pending">
+            等待主管審核
+          </span>
+        </div>
+
+        <div class="history-details">
+          <div class="history-detail">
+            <span>請假日期</span>
+            <strong>2026/08/03－2026/08/04</strong>
+          </div>
+
+          <div class="history-detail">
+            <span>請假天數</span>
+            <strong>2 天</strong>
+          </div>
+
+          <div class="history-detail">
+            <span>審核主管</span>
+            <strong>王主管</strong>
+          </div>
+        </div>
+
+        <div class="history-reason">
+          請假原因：處理個人事務。
+        </div>
+
+        <a
+          class="history-link"
+          href="leave-confirm.html"
+        >
+          查看申請內容 →
+        </a>
+      </article>
+
+      <article class="history-card">
+        <div class="history-head">
+          <div>
+            <h2>病假</h2>
+            <p class="application-no">
+              申請編號：LEAVE-20260612-003
+            </p>
+          </div>
+
+          <span class="status approved">
+            已核准
+          </span>
+        </div>
+
+        <div class="history-details">
+          <div class="history-detail">
+            <span>請假日期</span>
+            <strong>2026/06/12</strong>
+          </div>
+
+          <div class="history-detail">
+            <span>請假天數</span>
+            <strong>1 天</strong>
+          </div>
+
+          <div class="history-detail">
+            <span>審核主管</span>
+            <strong>王主管</strong>
+          </div>
+        </div>
+
+        <div class="history-reason">
+          請假原因：身體不適，已檢附就醫證明。
+        </div>
+      </article>
+
+      <article class="history-card">
+        <div class="history-head">
+          <div>
+            <h2>事假</h2>
+            <p class="application-no">
+              申請編號：LEAVE-20260507-002
+            </p>
+          </div>
+
+          <span class="status rejected">
+            已退回
+          </span>
+        </div>
+
+        <div class="history-details">
+          <div class="history-detail">
+            <span>請假日期</span>
+            <strong>2026/05/08</strong>
+          </div>
+
+          <div class="history-detail">
+            <span>請假天數</span>
+            <strong>1 天</strong>
+          </div>
+
+          <div class="history-detail">
+            <span>審核主管</span>
+            <strong>王主管</strong>
+          </div>
+        </div>
+
+        <div class="history-reason">
+          退回原因：當日部門人力不足，請重新選擇日期。
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <nav
+    class="mobile-nav"
+    aria-label="員工手機導覽"
+  >
+    <a href="index.html">
+      <span>⌂</span>
+      <small>首頁</small>
+    </a>
+
+    <a
+      class="active"
+      href="leave-apply.html"
+      aria-current="page"
+    >
+      <span>＋</span>
+      <small>請假</small>
+    </a>
+
+    <a href="notifications.html">
+      <span>●</span>
+      <small>通知</small>
+    </a>
+
+    <a href="profile.html">
+      <span>人</span>
+      <small>我的</small>
+    </a>
+  </nav>
+</body>
+</html>

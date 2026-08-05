@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <title>通知中心｜智慧人資管理平台</title>
+
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/mobile.css">
+
+  <style>
+    .notification-page {
+      width: min(900px, calc(100% - 28px));
+    }
+
+    .notification-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .mark-read {
+      min-height: 42px;
+      padding: 0 14px;
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      color: var(--color-primary);
+      background: var(--color-surface);
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .notification-header h1 {
+      margin: 0;
+      font-size: 30px;
+    }
+
+    .notification-header p {
+      margin: 8px 0 0;
+      color: var(--color-muted);
+      line-height: 1.7;
+    }
+
+    .notification-summary {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .notification-list {
+      display: grid;
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .notification-card {
+      position: relative;
+      display: block;
+      padding: 20px 22px;
+      border: 1px solid var(--color-border);
+      border-radius: 18px;
+      background: var(--color-surface);
+      box-shadow: var(--shadow-small);
+      transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+    }
+
+    .notification-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-medium);
+    }
+
+    .notification-card.unread {
+      border-left: 5px solid var(--color-primary);
+      background: #f7fffd;
+    }
+
+    .notification-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 18px;
+    }
+
+    .notification-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .notification-title h2 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.4;
+    }
+
+    .notification-dot {
+      width: 9px;
+      height: 9px;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      background: var(--color-primary);
+    }
+
+    .notification-time {
+      flex: 0 0 auto;
+      color: #8290a3;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .notification-message {
+      margin: 10px 0 0;
+      color: #5f6f82;
+      line-height: 1.7;
+    }
+
+    .notification-tag {
+      display: inline-flex;
+      margin-top: 14px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .tag-approved {
+      color: var(--color-success);
+      background: var(--color-success-bg);
+    }
+
+    .tag-pending {
+      color: var(--color-warning);
+      background: var(--color-warning-bg);
+    }
+
+    .tag-system {
+      color: #1d4ed8;
+      background: #dbeafe;
+    }
+
+    .tag-rejected {
+      color: var(--color-danger);
+      background: var(--color-danger-bg);
+    }
+
+    @media (max-width: 700px) {
+      .notification-page {
+        width: calc(100% - 20px);
+      }
+
+      .notification-topbar {
+        align-items: stretch;
+        flex-direction: column;
+        margin-bottom: 14px;
+      }
+
+      .notification-topbar .back {
+        display: none;
+      }
+
+      .mark-read {
+        width: 100%;
+      }
+
+      .notification-header h1 {
+        font-size: 24px;
+      }
+
+      .notification-header p {
+        font-size: 14px;
+      }
+
+      .notification-summary {
+        gap: 10px;
+      }
+
+      .notification-card {
+        padding: 17px;
+        border-radius: 17px;
+      }
+
+      .notification-head {
+        flex-direction: column;
+        gap: 7px;
+      }
+
+      .notification-title h2 {
+        font-size: 16px;
+      }
+
+      .notification-time {
+        font-size: 12px;
+        white-space: normal;
+      }
+
+      .notification-message {
+        font-size: 13px;
+      }
+
+      .notification-tag {
+        margin-top: 11px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page notification-page">
+
+    <div class="notification-topbar">
+      <a class="back" href="index.html">
+        ← 返回員工首頁
+      </a>
+
+      <button
+        class="mark-read"
+        type="button"
+      >
+        全部標示為已讀
+      </button>
+    </div>
+
+    <header class="notification-header">
+      <h1>通知中心</h1>
+      <p>
+        查看請假審核、資料修改與系統公告等通知。
+      </p>
+    </header>
+
+    <section class="summary-grid notification-summary">
+      <article class="summary-card">
+        <span>未讀通知</span>
+        <strong>2</strong>
+      </article>
+
+      <article class="summary-card">
+        <span>全部通知</span>
+        <strong>4</strong>
+      </article>
+    </section>
+
+    <section class="notification-list">
+
+      <a
+        class="notification-card unread"
+        href="notification-detail.html"
+      >
+        <div class="notification-head">
+          <div class="notification-title">
+            <span class="notification-dot"></span>
+            <h2>請假申請已核准</h2>
+          </div>
+
+          <span class="notification-time">
+            今天 14:30
+          </span>
+        </div>
+
+        <p class="notification-message">
+          王主管已核准你於 2026/08/03 至 2026/08/04 的特休假申請。
+        </p>
+
+        <span class="notification-tag tag-approved">
+          已核准
+        </span>
+      </a>
+
+      <a
+        class="notification-card unread"
+        href="notification-detail.html"
+      >
+        <div class="notification-head">
+          <div class="notification-title">
+            <span class="notification-dot"></span>
+            <h2>個人資料修改申請已送出</h2>
+          </div>
+
+          <span class="notification-time">
+            今天 10:15
+          </span>
+        </div>
+
+        <p class="notification-message">
+          系統已收到你的資料修改申請，目前等待系統管理者確認。
+        </p>
+
+        <span class="notification-tag tag-pending">
+          等待處理
+        </span>
+      </a>
+
+      <a
+        class="notification-card"
+        href="notification-detail.html"
+      >
+        <div class="notification-head">
+          <div class="notification-title">
+            <h2>晚到通知已傳送</h2>
+          </div>
+
+          <span class="notification-time">
+            昨天 08:40
+          </span>
+        </div>
+
+        <p class="notification-message">
+          你的晚到通知已成功傳送給王主管，
+          預計到班時間為 10:00。
+        </p>
+
+        <span class="notification-tag tag-system">
+          系統通知
+        </span>
+      </a>
+
+      <a
+        class="notification-card"
+        href="notification-detail.html"
+      >
+        <div class="notification-head">
+          <div class="notification-title">
+            <h2>事假申請已退回</h2>
+          </div>
+
+          <span class="notification-time">
+            2026/05/07
+          </span>
+        </div>
+
+        <p class="notification-message">
+          主管因當日部門人力不足退回申請，
+          請重新選擇請假日期。
+        </p>
+
+        <span class="notification-tag tag-rejected">
+          已退回
+        </span>
+      </a>
+    </section>
+  </main>
+
+  <nav
+    class="mobile-nav"
+    aria-label="員工手機導覽"
+  >
+    <a href="index.html">
+      <span>⌂</span>
+      <small>首頁</small>
+    </a>
+
+    <a href="leave-apply.html">
+      <span>＋</span>
+      <small>請假</small>
+    </a>
+
+    <a
+      class="active"
+      href="notifications.html"
+      aria-current="page"
+    >
+      <span>●</span>
+      <small>通知</small>
+    </a>
+
+    <a href="profile.html">
+      <span>人</span>
+      <small>我的</small>
+    </a>
+  </nav>
+</body>
+</html>

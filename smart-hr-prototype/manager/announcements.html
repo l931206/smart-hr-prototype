@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>公告管理｜智慧人資管理平台</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, "Noto Sans TC", sans-serif;
+      background: #f4f7fb;
+      color: #18212f;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      width: min(1000px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 28px 0 48px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .back {
+      color: #0f766e;
+      font-weight: 800;
+    }
+
+    .add-button {
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 18px;
+      border-radius: 12px;
+      color: white;
+      background: #0f766e;
+      font-weight: 800;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 30px;
+    }
+
+    .header p {
+      margin: 8px 0 0;
+      color: #718096;
+      line-height: 1.7;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 22px;
+    }
+
+    .summary-card {
+      padding: 20px;
+      border: 1px solid #e5ebf2;
+      border-radius: 18px;
+      background: white;
+      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.05);
+    }
+
+    .summary-card span {
+      color: #718096;
+      font-size: 14px;
+    }
+
+    .summary-card strong {
+      display: block;
+      margin-top: 8px;
+      font-size: 27px;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 12px;
+      margin-top: 18px;
+      padding: 18px;
+      border: 1px solid #e5ebf2;
+      border-radius: 18px;
+      background: white;
+    }
+
+    input,
+    select {
+      min-height: 42px;
+      padding: 0 13px;
+      border: 1px solid #d8e2ec;
+      border-radius: 11px;
+      background: white;
+      color: #18212f;
+      font: inherit;
+      outline: none;
+    }
+
+    input {
+      flex: 1;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: #0f766e;
+      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
+    }
+
+    .announcement-list {
+      display: grid;
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .announcement-card {
+      padding: 22px;
+      border: 1px solid #e5ebf2;
+      border-radius: 20px;
+      background: white;
+      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.05);
+    }
+
+    .announcement-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 18px;
+    }
+
+    .title-group {
+      display: flex;
+      align-items: flex-start;
+      gap: 13px;
+    }
+
+    .icon {
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border-radius: 14px;
+      background: #f0fdfa;
+      font-size: 22px;
+    }
+
+    .title-group h2 {
+      margin: 0;
+      font-size: 19px;
+    }
+
+    .title-group p {
+      margin: 7px 0 0;
+      color: #718096;
+      font-size: 13px;
+    }
+
+    .status {
+      display: inline-flex;
+      flex: 0 0 auto;
+      padding: 6px 11px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .published {
+      color: #047857;
+      background: #d1fae5;
+    }
+
+    .draft {
+      color: #92400e;
+      background: #fef3c7;
+    }
+
+    .ended {
+      color: #64748b;
+      background: #e2e8f0;
+    }
+
+    .excerpt {
+      margin: 18px 0 0;
+      color: #475569;
+      line-height: 1.75;
+    }
+
+    .details {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid #edf1f5;
+    }
+
+    .detail span {
+      display: block;
+      margin-bottom: 6px;
+      color: #718096;
+      font-size: 12px;
+    }
+
+    .detail strong {
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .button {
+      min-height: 40px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 15px;
+      border-radius: 11px;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .primary {
+      color: white;
+      background: #0f766e;
+    }
+
+    .secondary {
+      color: #475569;
+      background: white;
+      border: 1px solid #d8e2ec;
+    }
+
+    .danger {
+      color: #b91c1c;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+    }
+
+    @media (max-width: 720px) {
+      .topbar,
+      .toolbar,
+      .announcement-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .summary-grid,
+      .details {
+        grid-template-columns: 1fr;
+      }
+
+      input,
+      select,
+      .add-button {
+        width: 100%;
+      }
+
+      .button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <div class="topbar">
+      <a class="back" href="index.html">← 返回主管工作台</a>
+      <a class="add-button" href="announcement-create.html">＋ 發布新公告</a>
+    </div>
+
+    <header class="header">
+      <h1>公告管理</h1>
+      <p>發布資訊部公告，並管理自己建立的公告內容與狀態。</p>
+    </header>
+
+    <section class="summary-grid">
+      <article class="summary-card">
+        <span>已發布公告</span>
+        <strong>4</strong>
+      </article>
+
+      <article class="summary-card">
+        <span>草稿</span>
+        <strong>1</strong>
+      </article>
+
+      <article class="summary-card">
+        <span>本月閱讀人次</span>
+        <strong>86</strong>
+      </article>
+    </section>
+
+    <section class="toolbar">
+      <input type="search" placeholder="搜尋公告標題或內容">
+
+      <select>
+        <option>全部狀態</option>
+        <option>已發布</option>
+        <option>草稿</option>
+        <option>已下架</option>
+      </select>
+
+      <select>
+        <option>全部類型</option>
+        <option>部門公告</option>
+        <option>行政通知</option>
+        <option>人事公告</option>
+        <option>緊急通知</option>
+      </select>
+    </section>
+
+    <section class="announcement-list">
+      <article class="announcement-card">
+        <div class="announcement-head">
+          <div class="title-group">
+            <div class="icon">📢</div>
+
+            <div>
+              <h2>資訊部八月份工作安排</h2>
+              <p>公告編號：ANN-20260731-001</p>
+            </div>
+          </div>
+
+          <span class="status published">已發布</span>
+        </div>
+
+        <p class="excerpt">
+          八月份將進行系統功能測試與伺服器環境調整，請各組依照時程完成指定工作。
+        </p>
+
+        <div class="details">
+          <div class="detail">
+            <span>公告類型</span>
+            <strong>部門公告</strong>
+          </div>
+
+          <div class="detail">
+            <span>發布範圍</span>
+            <strong>資訊部全體員工</strong>
+          </div>
+
+          <div class="detail">
+            <span>發布時間</span>
+            <strong>2026/07/31 09:00</strong>
+          </div>
+
+          <div class="detail">
+            <span>閱讀人數</span>
+            <strong>5／6 人</strong>
+          </div>
+        </div>
+
+        <div class="actions">
+          <a class="button primary" href="announcement-detail.html">查看詳情</a>
+          <a class="button secondary" href="announcement-edit.html">編輯公告</a>
+          <a class="button danger" href="announcement-deactivate.html">下架公告</a>
+        </div>
+      </article>
+
+      <article class="announcement-card">
+        <div class="announcement-head">
+          <div class="title-group">
+            <div class="icon">📝</div>
+
+            <div>
+              <h2>部門教育訓練規劃</h2>
+              <p>公告編號：ANN-DRAFT-002</p>
+            </div>
+          </div>
+
+          <span class="status draft">草稿</span>
+        </div>
+
+        <p class="excerpt">
+          預計於八月中旬安排內部技術分享與資訊安全教育訓練。
+        </p>
+
+        <div class="details">
+          <div class="detail">
+            <span>公告類型</span>
+            <strong>部門公告</strong>
+          </div>
+
+          <div class="detail">
+            <span>發布範圍</span>
+            <strong>資訊部全體員工</strong>
+          </div>
+
+          <div class="detail">
+            <span>最後修改</span>
+            <strong>2026/07/30 15:20</strong>
+          </div>
+
+          <div class="detail">
+            <span>建立人</span>
+            <strong>王主管</strong>
+          </div>
+        </div>
+
+        <div class="actions">
+          <a class="button secondary" href="announcement-edit.html">繼續編輯</a>
+          <a class="button primary" href="announcement-create-success.html">立即發布</a>
+          <a class="button danger" href="announcement-deactivate.html">刪除草稿</a>
+        </div>
+      </article>
+
+      <article class="announcement-card">
+        <div class="announcement-head">
+          <div class="title-group">
+            <div class="icon">🔧</div>
+
+            <div>
+              <h2>測試環境暫停使用</h2>
+              <p>公告編號：ANN-20260720-003</p>
+            </div>
+          </div>
+
+          <span class="status ended">已下架</span>
+        </div>
+
+        <p class="excerpt">
+          測試環境維護已完成，此公告已於 2026/07/22 下架。
+        </p>
+
+        <div class="details">
+          <div class="detail">
+            <span>公告類型</span>
+            <strong>系統通知</strong>
+          </div>
+
+          <div class="detail">
+            <span>發布範圍</span>
+            <strong>資訊部全體員工</strong>
+          </div>
+
+          <div class="detail">
+            <span>發布時間</span>
+            <strong>2026/07/20 18:00</strong>
+          </div>
+
+          <div class="detail">
+            <span>下架時間</span>
+            <strong>2026/07/22 10:00</strong>
+          </div>
+        </div>
+
+        <div class="actions">
+          <a class="button secondary" href="announcement-detail.html">查看紀錄</a>
+        </div>
+      </article>
+    </section>
+  </main>
+</body>
+</html>

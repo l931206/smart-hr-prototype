@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <title>我的團隊｜智慧人資管理平台</title>
+
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/mobile.css">
+
+  <style>
+    .team-page {
+      width: min(1050px, calc(100% - 28px));
+    }
+
+    .team-header h1 {
+      margin: 0;
+      font-size: 30px;
+    }
+
+    .team-header p {
+      margin: 8px 0 0;
+      color: var(--color-muted);
+      line-height: 1.7;
+    }
+
+    .team-summary {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .team-toolbar {
+      margin-top: 18px;
+    }
+
+    .team-toolbar input {
+      flex: 1;
+    }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    .team-member-card {
+      display: block;
+      padding: 22px;
+      border: 1px solid var(--color-border);
+      border-radius: 20px;
+      background: var(--color-surface);
+      box-shadow: var(--shadow-small);
+      transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+    }
+
+    .team-member-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-medium);
+    }
+
+    .team-member-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .team-member-main {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .team-member-avatar {
+      width: 54px;
+      height: 54px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      color: white;
+      background: var(--color-primary);
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .team-member-main h2 {
+      margin: 0;
+      font-size: 19px;
+      line-height: 1.4;
+    }
+
+    .team-member-main p {
+      margin: 6px 0 0;
+      color: var(--color-muted);
+      font-size: 13px;
+      overflow-wrap: anywhere;
+    }
+
+    .attendance-status {
+      display: inline-flex;
+      flex: 0 0 auto;
+      padding: 6px 11px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .attendance-status.normal {
+      color: var(--color-success);
+      background: var(--color-success-bg);
+    }
+
+    .attendance-status.late {
+      color: #1d4ed8;
+      background: #dbeafe;
+    }
+
+    .attendance-status.leave {
+      color: var(--color-warning);
+      background: var(--color-warning-bg);
+    }
+
+    .team-member-info {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 20px;
+      padding-top: 18px;
+      border-top: 1px solid #edf1f5;
+    }
+
+    .team-info-item {
+      min-width: 0;
+    }
+
+    .team-info-item span {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--color-muted);
+      font-size: 12px;
+    }
+
+    .team-info-item strong {
+      display: block;
+      font-size: 14px;
+      line-height: 1.6;
+      overflow-wrap: anywhere;
+    }
+
+    .team-view-link {
+      display: inline-flex;
+      margin-top: 18px;
+      color: var(--color-primary);
+      font-weight: 800;
+    }
+
+    @media (max-width: 760px) {
+      .team-page {
+        width: calc(100% - 20px);
+      }
+
+      .team-page .back {
+        display: none;
+      }
+
+      .team-header h1 {
+        font-size: 24px;
+      }
+
+      .team-header p {
+        font-size: 14px;
+      }
+
+      .team-summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .team-summary .summary-card:last-child {
+        grid-column: 1 / -1;
+      }
+
+      .team-toolbar {
+        padding: 14px;
+      }
+
+      .team-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .team-member-card {
+        padding: 17px;
+        border-radius: 17px;
+      }
+
+      .team-member-avatar {
+        width: 46px;
+        height: 46px;
+        font-size: 18px;
+      }
+
+      .team-member-main h2 {
+        font-size: 16px;
+      }
+
+      .team-member-main p {
+        font-size: 12px;
+      }
+
+      .team-member-info {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 15px;
+        padding-top: 14px;
+      }
+
+      .team-info-item span {
+        font-size: 11px;
+      }
+
+      .team-info-item strong {
+        font-size: 13px;
+      }
+
+      .team-view-link {
+        margin-top: 13px;
+        font-size: 14px;
+      }
+    }
+
+    @media (max-width: 430px) {
+      .team-member-head {
+        flex-direction: column;
+        gap: 10px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page team-page">
+
+    <a class="back" href="index.html">
+      ← 返回主管工作台
+    </a>
+
+    <header class="team-header">
+      <h1>我的團隊</h1>
+
+      <p>
+        查看直屬員工的職務、聯絡資訊與今日出勤狀態。
+      </p>
+    </header>
+
+    <section class="summary-grid team-summary">
+      <article class="summary-card">
+        <span>直屬員工</span>
+        <strong>6</strong>
+      </article>
+
+      <article class="summary-card">
+        <span>今日正常出勤</span>
+        <strong>4</strong>
+      </article>
+
+      <article class="summary-card">
+        <span>今日請假或晚到</span>
+        <strong>2</strong>
+      </article>
+    </section>
+
+    <section class="toolbar team-toolbar">
+      <input
+        type="search"
+        placeholder="搜尋員工姓名或職稱"
+        aria-label="搜尋團隊成員"
+      >
+
+      <select aria-label="篩選出勤狀態">
+        <option>全部出勤狀態</option>
+        <option>正常出勤</option>
+        <option>晚到</option>
+        <option>今日請假</option>
+      </select>
+    </section>
+
+    <section class="team-grid">
+
+      <a
+        class="team-member-card"
+        href="team-member-detail.html"
+      >
+        <div class="team-member-head">
+          <div class="team-member-main">
+            <div class="team-member-avatar">
+              陳
+            </div>
+
+            <div>
+              <h2>陳員工</h2>
+              <p>軟體工程師｜EMP0003</p>
+            </div>
+          </div>
+
+          <span class="attendance-status normal">
+            正常出勤
+          </span>
+        </div>
+
+        <div class="team-member-info">
+          <div class="team-info-item">
+            <span>電子郵件</span>
+            <strong>employee@example.com</strong>
+          </div>
+
+          <div class="team-info-item">
+            <span>聯絡電話</span>
+            <strong>0912-345-678</strong>
+          </div>
+
+          <div class="team-info-item">
+            <span>到職日期</span>
+            <strong>2026/01/01</strong>
+          </div>
+
+          <div class="team-info-item">
+            <span>剩餘特休</span>
+            <strong>5 天</strong>
+          </div>
+        </div>
+
+        <span class="team-view-link">
+          查看員工詳情 →
+        </span>
+      </a>
+
+      <a
+        class="team-member-card"
+        href="team-member-detail.html"
+      >
+        <div class="team-member-head">
+          <div class="team-member-main">
+            <div class="team-member-avatar">
+              林
+            </div>
+
+            <div>
+              <h2>林員工</h2>
+              <p>軟體工程師｜EMP0004</p>
+            </div>
+          </div>
+
+          <span class="attendance-status late">
+            預計 10:00 到班
+          </span>
+        </div>
+
+        <div class="team-member-info">
+          <div class="team-info-item">
+            <span>電子郵件</span>
+            <strong>lin@example.com</strong>
+          </div>
+
+          <div class="team-info-item">
+            <span>聯絡電話</span>
+            <strong>0912-345-679</strong>
+          </div>
+
+          <div class="team-info-item">
+            <span>到職日期</span>
+            <strong>2025/10/15</strong>
+          </div>
+
+          <div class="team-info-item">
+            <span>剩餘特休</span>
+            <strong>7 天</strong>
+          </div>
+        </div>
+
+        <span class="team-view-link">
+          查看員工詳情 →
+        </span>
+      </a>
+
+      <a
+        class="team-member-card"
+        href="team-member-detail.html"
+      >
+        <div class="team-member-head">
+          <div class="team-member-main">
+            <div class="team-member-avatar">
+              張
+            </div>
+
+            <div>
+              <h2>張員工</h2>
+              <p>系統工程師｜EMP0005</p>
+            </div>
+          </div>
+
+          <span class="attendance-status leave">
+            今日特休
+          </span>
+        </div>
+
+        <div class="team-member-info">
+          <div class="team-info-item">
+            <span>電子郵件</span>
+            <strong>chang@example.com</strong>
+          </div>
+
+          <div class="team-info-item">
+            <span>聯絡電話</span>
+            <strong>0912-345-680</strong>
+          </div>
+
+          <div class="team-info-item">
+            <span>到職日期</span>
+            <strong>2025/08/20</strong>
+          </div>
+
+          <div class="team-info-item">
+            <span>剩餘特休</span>
+            <strong>3 天</strong>
+          </div>
+        </div>
+
+        <span class="team-view-link">
+          查看員工詳情 →
+        </span>
+      </a>
+
+      <a
+        class="team-member-card"
+        href="team-member-detail.html"
+      >
+        <div class="team-member-head">
+          <div class="team-member-main">
+            <div class="team-member-avatar">
+              李
+            </div>
+
+            <div>
+              <h2>李員工</h2>
+              <p>前端工程師｜EMP0006</p>
+            </div>
+          </div>
+
+          <span class="attendance-status normal">
+            正常出勤
+          </span>
+        </div>
+
+        <div class="team-member-info">
+          <div class="team-info-item">
+            <span>電子郵件</span>
+            <strong>lee@example.com</strong>
+          </div>
+
+          <div class="team-info-item">
+            <span>聯絡電話</span>
+            <strong>0912-345-681</strong>
+          </div>
+
+          <div class="team-info-item">
+            <span>到職日期</span>
+            <strong>2026/03/03</strong>
+          </div>
+
+          <div class="team-info-item">
+            <span>剩餘特休</span>
+            <strong>4 天</strong>
+          </div>
+        </div>
+
+        <span class="team-view-link">
+          查看員工詳情 →
+        </span>
+      </a>
+    </section>
+  </main>
+
+  <nav
+    class="mobile-nav"
+    aria-label="主管手機導覽"
+  >
+    <a href="index.html">
+      <span>⌂</span>
+      <small>首頁</small>
+    </a>
+
+    <a href="leave-requests.html">
+      <span>✓</span>
+      <small>審核</small>
+    </a>
+
+    <a
+      class="active"
+      href="team.html"
+      aria-current="page"
+    >
+      <span>人</span>
+      <small>團隊</small>
+    </a>
+
+    <a href="notifications.html">
+      <span>•••</span>
+      <small>更多</small>
+    </a>
+  </nav>
+</body>
+</html>

@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>假別與規則｜智慧人資管理平台</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, "Noto Sans TC", sans-serif;
+      background: #f4f7fb;
+      color: #18212f;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      width: min(1080px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 28px 0 48px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .back {
+      color: #4338ca;
+      font-weight: 800;
+    }
+
+    .add-button {
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 18px;
+      border-radius: 12px;
+      color: white;
+      background: #4338ca;
+      font-weight: 800;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 30px;
+    }
+
+    .header p {
+      margin: 8px 0 0;
+      color: #718096;
+      line-height: 1.7;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-top: 22px;
+    }
+
+    .summary-card {
+      padding: 20px;
+      border: 1px solid #e5ebf2;
+      border-radius: 18px;
+      background: white;
+      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.05);
+    }
+
+    .summary-card span {
+      color: #718096;
+      font-size: 14px;
+    }
+
+    .summary-card strong {
+      display: block;
+      margin-top: 8px;
+      font-size: 27px;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 12px;
+      margin-top: 18px;
+      padding: 18px;
+      border: 1px solid #e5ebf2;
+      border-radius: 18px;
+      background: white;
+    }
+
+    input,
+    select {
+      min-height: 42px;
+      padding: 0 13px;
+      border: 1px solid #d8e2ec;
+      border-radius: 11px;
+      background: white;
+      color: #18212f;
+      font: inherit;
+      outline: none;
+    }
+
+    input {
+      flex: 1;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: #4338ca;
+      box-shadow: 0 0 0 3px rgba(67, 56, 202, 0.1);
+    }
+
+    .leave-list {
+      display: grid;
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .leave-card {
+      padding: 22px;
+      border: 1px solid #e5ebf2;
+      border-radius: 20px;
+      background: white;
+      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.05);
+    }
+
+    .leave-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 18px;
+    }
+
+    .leave-main {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .icon {
+      width: 50px;
+      height: 50px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border-radius: 15px;
+      background: #eef2ff;
+      font-size: 24px;
+    }
+
+    .leave-main h2 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .leave-main p {
+      margin: 6px 0 0;
+      color: #718096;
+      font-size: 13px;
+    }
+
+    .status {
+      display: inline-flex;
+      flex: 0 0 auto;
+      padding: 6px 11px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .active {
+      color: #047857;
+      background: #d1fae5;
+    }
+
+    .inactive {
+      color: #b91c1c;
+      background: #fee2e2;
+    }
+
+    .details {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px;
+      margin-top: 20px;
+      padding-top: 18px;
+      border-top: 1px solid #edf1f5;
+    }
+
+    .detail span {
+      display: block;
+      margin-bottom: 6px;
+      color: #718096;
+      font-size: 12px;
+    }
+
+    .detail strong {
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .rule-box {
+      margin-top: 18px;
+      padding: 15px;
+      border-radius: 12px;
+      background: #f8fafc;
+      color: #475569;
+      line-height: 1.7;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .button {
+      min-height: 40px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 15px;
+      border-radius: 11px;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .primary {
+      color: white;
+      background: #4338ca;
+    }
+
+    .secondary {
+      color: #475569;
+      background: white;
+      border: 1px solid #d8e2ec;
+    }
+
+    .danger {
+      color: #b91c1c;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+    }
+
+    .notice {
+      margin-top: 20px;
+      padding: 16px 18px;
+      border-left: 4px solid #4338ca;
+      border-radius: 12px;
+      background: #eef2ff;
+      color: #475569;
+      line-height: 1.7;
+    }
+
+    @media (max-width: 850px) {
+      .summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .details {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 650px) {
+      .topbar,
+      .toolbar,
+      .leave-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .summary-grid,
+      .details {
+        grid-template-columns: 1fr;
+      }
+
+      input,
+      select,
+      .add-button {
+        width: 100%;
+      }
+
+      .button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <div class="topbar">
+      <a class="back" href="index.html">← 返回管理工作台</a>
+      <a class="add-button" href="leave-type-create.html">＋ 新增假別</a>
+    </div>
+
+    <header class="header">
+      <h1>假別與規則</h1>
+      <p>管理公司假別、年度額度、附件需求與請假計算方式。</p>
+    </header>
+
+    <section class="summary-grid">
+      <article class="summary-card">
+        <span>全部假別</span>
+        <strong>7</strong>
+      </article>
+
+      <article class="summary-card">
+        <span>啟用中</span>
+        <strong>6</strong>
+      </article>
+
+      <article class="summary-card">
+        <span>需上傳附件</span>
+        <strong>2</strong>
+      </article>
+
+      <article class="summary-card">
+        <span>需扣除額度</span>
+        <strong>4</strong>
+      </article>
+    </section>
+
+    <section class="toolbar">
+      <input type="search" placeholder="搜尋假別名稱或說明">
+
+      <select>
+        <option>全部狀態</option>
+        <option>啟用中</option>
+        <option>已停用</option>
+      </select>
+
+      <select>
+        <option>全部計薪方式</option>
+        <option>有薪</option>
+        <option>無薪</option>
+        <option>部分給薪</option>
+      </select>
+    </section>
+
+    <section class="leave-list">
+      <article class="leave-card">
+        <div class="leave-head">
+          <div class="leave-main">
+            <div class="icon">🏖️</div>
+
+            <div>
+              <h2>特休假</h2>
+              <p>假別代碼：ANNUAL</p>
+            </div>
+          </div>
+
+          <span class="status active">啟用中</span>
+        </div>
+
+        <div class="details">
+          <div class="detail">
+            <span>年度額度</span>
+            <strong>依年資設定</strong>
+          </div>
+
+          <div class="detail">
+            <span>最小請假單位</span>
+            <strong>1 小時</strong>
+          </div>
+
+          <div class="detail">
+            <span>計薪方式</span>
+            <strong>全薪</strong>
+          </div>
+
+          <div class="detail">
+            <span>附件需求</span>
+            <strong>不需要</strong>
+          </div>
+
+          <div class="detail">
+            <span>主管審核</span>
+            <strong>需要</strong>
+          </div>
+        </div>
+
+        <div class="rule-box">
+          依員工到職年資計算年度特休額度，請假後扣除剩餘特休時數，未使用額度依公司規定處理。
+        </div>
+
+        <div class="actions">
+          <a class="button primary" href="leave-type-detail.html">查看詳情</a>
+          <a class="button secondary" href="leave-type-edit.html">編輯規則</a>
+          <a class="button danger" href="leave-type-deactivate.html">停用假別</a>
+        </div>
+      </article>
+
+      <article class="leave-card">
+        <div class="leave-head">
+          <div class="leave-main">
+            <div class="icon">🤒</div>
+
+            <div>
+              <h2>病假</h2>
+              <p>假別代碼：SICK</p>
+            </div>
+          </div>
+
+          <span class="status active">啟用中</span>
+        </div>
+
+        <div class="details">
+          <div class="detail">
+            <span>年度額度</span>
+            <strong>30 天</strong>
+          </div>
+
+          <div class="detail">
+            <span>最小請假單位</span>
+            <strong>1 小時</strong>
+          </div>
+
+          <div class="detail">
+            <span>計薪方式</span>
+            <strong>半薪</strong>
+          </div>
+
+          <div class="detail">
+            <span>附件需求</span>
+            <strong>連續 2 天需上傳</strong>
+          </div>
+
+          <div class="detail">
+            <span>主管審核</span>
+            <strong>需要</strong>
+          </div>
+        </div>
+
+        <div class="rule-box">
+          連續請病假達 2 天以上時需上傳就醫證明；全年病假時數不得超過公司規定上限。
+        </div>
+
+        <div class="actions">
+          <a class="button primary" href="leave-type-detail.html">查看詳情</a>
+          <a class="button secondary" href="leave-type-edit.html">編輯規則</a>
+          <a class="button danger" href="leave-type-deactivate.html">停用假別</a>
+        </div>
+      </article>
+
+      <article class="leave-card">
+        <div class="leave-head">
+          <div class="leave-main">
+            <div class="icon">📝</div>
+
+            <div>
+              <h2>事假</h2>
+              <p>假別代碼：PERSONAL</p>
+            </div>
+          </div>
+
+          <span class="status active">啟用中</span>
+        </div>
+
+        <div class="details">
+          <div class="detail">
+            <span>年度額度</span>
+            <strong>14 天</strong>
+          </div>
+
+          <div class="detail">
+            <span>最小請假單位</span>
+            <strong>1 小時</strong>
+          </div>
+
+          <div class="detail">
+            <span>計薪方式</span>
+            <strong>無薪</strong>
+          </div>
+
+          <div class="detail">
+            <span>附件需求</span>
+            <strong>不需要</strong>
+          </div>
+
+          <div class="detail">
+            <span>主管審核</span>
+            <strong>需要</strong>
+          </div>
+        </div>
+
+        <div class="rule-box">
+          因個人事務無法出勤時使用，須事先提出申請並經直屬主管核准。
+        </div>
+
+        <div class="actions">
+          <a class="button primary" href="leave-type-detail.html">查看詳情</a>
+          <a class="button secondary" href="leave-type-edit.html">編輯規則</a>
+          <a class="button danger" href="leave-type-deactivate.html">停用假別</a>
+        </div>
+      </article>
+
+      <article class="leave-card">
+        <div class="leave-head">
+          <div class="leave-main">
+            <div class="icon">💍</div>
+
+            <div>
+              <h2>婚假</h2>
+              <p>假別代碼：MARRIAGE</p>
+            </div>
+          </div>
+
+          <span class="status active">啟用中</span>
+        </div>
+
+        <div class="details">
+          <div class="detail">
+            <span>年度額度</span>
+            <strong>8 天</strong>
+          </div>
+
+          <div class="detail">
+            <span>最小請假單位</span>
+            <strong>1 天</strong>
+          </div>
+
+          <div class="detail">
+            <span>計薪方式</span>
+            <strong>全薪</strong>
+          </div>
+
+          <div class="detail">
+            <span>附件需求</span>
+            <strong>需要證明</strong>
+          </div>
+
+          <div class="detail">
+            <span>主管審核</span>
+            <strong>需要</strong>
+          </div>
+        </div>
+
+        <div class="rule-box">
+          申請婚假時需提供相關證明文件，並於規定期間內使用完畢。
+        </div>
+
+        <div class="actions">
+          <a class="button primary" href="leave-type-detail.html">查看詳情</a>
+          <a class="button secondary" href="leave-type-edit.html">編輯規則</a>
+          <a class="button danger" href="leave-type-deactivate.html">停用假別</a>
+        </div>
+      </article>
+
+      <article class="leave-card">
+        <div class="leave-head">
+          <div class="leave-main">
+            <div class="icon">🏠</div>
+
+            <div>
+              <h2>居家辦公假</h2>
+              <p>假別代碼：REMOTE</p>
+            </div>
+          </div>
+
+          <span class="status inactive">已停用</span>
+        </div>
+
+        <div class="details">
+          <div class="detail">
+            <span>年度額度</span>
+            <strong>不限</strong>
+          </div>
+
+          <div class="detail">
+            <span>最小請假單位</span>
+            <strong>半天</strong>
+          </div>
+
+          <div class="detail">
+            <span>計薪方式</span>
+            <strong>全薪</strong>
+          </div>
+
+          <div class="detail">
+            <span>附件需求</span>
+            <strong>不需要</strong>
+          </div>
+
+          <div class="detail">
+            <span>主管審核</span>
+            <strong>需要</strong>
+          </div>
+        </div>
+
+        <div class="rule-box">
+          此假別目前已停止使用，歷史申請與審核紀錄仍會保留。
+        </div>
+
+        <div class="actions">
+          <a class="button primary" href="leave-type-detail.html">查看詳情</a>
+          <a class="button secondary" href="leave-type-edit.html">編輯規則</a>
+        </div>
+      </article>
+    </section>
+
+    <div class="notice">
+      修改假別規則後，只影響之後送出的申請；已完成審核的歷史資料不會被重新計算。
+    </div>
+  </main>
+</body>
+</html>

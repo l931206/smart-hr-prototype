@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>編輯員工資料｜智慧人資管理平台</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, "Noto Sans TC", sans-serif;
+      background: #f4f7fb;
+      color: #18212f;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      width: min(820px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 28px 0 48px;
+    }
+
+    .back {
+      display: inline-flex;
+      margin-bottom: 22px;
+      color: #4338ca;
+      font-weight: 800;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 30px;
+    }
+
+    .header p {
+      margin: 8px 0 0;
+      color: #718096;
+      line-height: 1.7;
+    }
+
+    .form-card {
+      margin-top: 22px;
+      padding: 26px;
+      border: 1px solid #e5ebf2;
+      border-radius: 24px;
+      background: white;
+      box-shadow: 0 14px 38px rgba(15, 23, 42, 0.07);
+    }
+
+    .section-title {
+      margin: 0 0 18px;
+      font-size: 20px;
+    }
+
+    .section-title:not(:first-child) {
+      margin-top: 28px;
+      padding-top: 24px;
+      border-top: 1px solid #edf1f5;
+    }
+
+    .two-column {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    input,
+    select {
+      width: 100%;
+      min-height: 46px;
+      padding: 0 14px;
+      border: 1px solid #d8e2ec;
+      border-radius: 12px;
+      background: white;
+      color: #18212f;
+      font: inherit;
+      outline: none;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: #4338ca;
+      box-shadow: 0 0 0 3px rgba(67, 56, 202, 0.1);
+    }
+
+    input[disabled] {
+      background: #f3f6f9;
+      color: #8290a3;
+    }
+
+    .help {
+      margin: 7px 0 0;
+      color: #8290a3;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .notice {
+      margin-top: 4px;
+      padding: 16px 18px;
+      border-left: 4px solid #4338ca;
+      border-radius: 12px;
+      background: #eef2ff;
+      color: #475569;
+      line-height: 1.7;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 26px;
+    }
+
+    .button {
+      min-height: 46px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 20px;
+      border: 0;
+      border-radius: 12px;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .primary {
+      color: white;
+      background: #4338ca;
+    }
+
+    .secondary {
+      color: #475569;
+      background: white;
+      border: 1px solid #d8e2ec;
+    }
+
+    @media (max-width: 620px) {
+      .form-card {
+        padding: 22px 18px;
+      }
+
+      .two-column {
+        grid-template-columns: 1fr;
+      }
+
+      .actions {
+        flex-direction: column;
+      }
+
+      .button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <a class="back" href="employee-detail.html">← 返回員工資料</a>
+
+    <header class="header">
+      <h1>編輯員工資料</h1>
+      <p>更新員工的個人資料、職務資訊與直屬主管。</p>
+    </header>
+
+    <form class="form-card" action="employee-edit-success.html">
+      <h2 class="section-title">基本資料</h2>
+
+      <div class="two-column">
+        <div class="form-group">
+          <label for="employeeNo">員工編號</label>
+          <input id="employeeNo" type="text" value="EMP0003" disabled>
+          <p class="help">員工編號建立後不可修改。</p>
+        </div>
+
+        <div class="form-group">
+          <label for="name">姓名</label>
+          <input id="name" type="text" value="陳員工" required>
+        </div>
+      </div>
+
+      <div class="two-column">
+        <div class="form-group">
+          <label for="email">電子郵件</label>
+          <input id="email" type="email" value="employee@example.com" required>
+        </div>
+
+        <div class="form-group">
+          <label for="phone">聯絡電話</label>
+          <input id="phone" type="tel" value="0912-345-678" required>
+        </div>
+      </div>
+
+      <h2 class="section-title">職務資訊</h2>
+
+      <div class="two-column">
+        <div class="form-group">
+          <label for="department">部門</label>
+          <select id="department" required>
+            <option selected>資訊部</option>
+            <option>行政部</option>
+            <option>業務部</option>
+            <option>財務部</option>
+            <option>管理部</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="position">職稱</label>
+          <input id="position" type="text" value="軟體工程師" required>
+        </div>
+      </div>
+
+      <div class="two-column">
+        <div class="form-group">
+          <label for="manager">直屬主管</label>
+          <select id="manager" required>
+            <option selected>王主管</option>
+            <option>吳主管</option>
+            <option>林主管</option>
+            <option>無直屬主管</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="hireDate">到職日期</label>
+          <input id="hireDate" type="date" value="2026-01-01" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="status">在職狀態</label>
+        <select id="status" required>
+          <option selected>在職</option>
+          <option>留職停薪</option>
+          <option>已離職</option>
+        </select>
+      </div>
+
+      <div class="notice">
+        修改部門、主管或在職狀態後，系統應同步更新該員工的權限與審核流程。
+      </div>
+
+      <div class="actions">
+        <button class="button primary" type="submit">儲存變更</button>
+        <a class="button secondary" href="employee-detail.html">取消</a>
+      </div>
+    </form>
+  </main>
+</body>
+</html>

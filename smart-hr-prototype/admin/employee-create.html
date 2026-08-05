@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>新增員工｜智慧人資管理平台</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, "Noto Sans TC", sans-serif;
+      background: #f4f7fb;
+      color: #18212f;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      width: min(840px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 28px 0 48px;
+    }
+
+    .back {
+      display: inline-flex;
+      margin-bottom: 22px;
+      color: #4338ca;
+      font-weight: 800;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 30px;
+    }
+
+    .header p {
+      margin: 8px 0 0;
+      color: #718096;
+      line-height: 1.7;
+    }
+
+    .form-card {
+      margin-top: 22px;
+      padding: 26px;
+      border: 1px solid #e5ebf2;
+      border-radius: 24px;
+      background: white;
+      box-shadow: 0 14px 38px rgba(15, 23, 42, 0.07);
+    }
+
+    .section-title {
+      margin: 0 0 18px;
+      font-size: 20px;
+    }
+
+    .section-title:not(:first-child) {
+      margin-top: 28px;
+      padding-top: 24px;
+      border-top: 1px solid #edf1f5;
+    }
+
+    .two-column {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    input,
+    select {
+      width: 100%;
+      min-height: 46px;
+      padding: 0 14px;
+      border: 1px solid #d8e2ec;
+      border-radius: 12px;
+      background: white;
+      color: #18212f;
+      font: inherit;
+      outline: none;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: #4338ca;
+      box-shadow: 0 0 0 3px rgba(67, 56, 202, 0.1);
+    }
+
+    .help {
+      margin: 7px 0 0;
+      color: #8290a3;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 16px;
+      border-radius: 14px;
+      background: #f8fafc;
+    }
+
+    .checkbox-row input {
+      width: 18px;
+      height: 18px;
+      min-height: auto;
+      margin-top: 2px;
+      flex: 0 0 auto;
+    }
+
+    .checkbox-row label {
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    .notice {
+      margin-top: 22px;
+      padding: 16px 18px;
+      border-left: 4px solid #4338ca;
+      border-radius: 12px;
+      background: #eef2ff;
+      color: #475569;
+      line-height: 1.7;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 26px;
+    }
+
+    .button {
+      min-height: 46px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 20px;
+      border: 0;
+      border-radius: 12px;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .primary {
+      color: white;
+      background: #4338ca;
+    }
+
+    .secondary {
+      color: #475569;
+      background: white;
+      border: 1px solid #d8e2ec;
+    }
+
+    @media (max-width: 620px) {
+      .form-card {
+        padding: 22px 18px;
+      }
+
+      .two-column {
+        grid-template-columns: 1fr;
+      }
+
+      .actions {
+        flex-direction: column;
+      }
+
+      .button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <a class="back" href="employees.html">← 返回員工管理</a>
+
+    <header class="header">
+      <h1>新增員工</h1>
+      <p>建立員工基本資料、職務資訊與登入帳號。</p>
+    </header>
+
+    <form class="form-card" action="employee-create-success.html">
+      <h2 class="section-title">基本資料</h2>
+
+      <div class="two-column">
+        <div class="form-group">
+          <label for="employeeNo">員工編號</label>
+          <input
+            id="employeeNo"
+            type="text"
+            placeholder="例如：EMP0031"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="name">姓名</label>
+          <input
+            id="name"
+            type="text"
+            placeholder="請輸入員工姓名"
+            required
+          >
+        </div>
+      </div>
+
+      <div class="two-column">
+        <div class="form-group">
+          <label for="email">電子郵件</label>
+          <input
+            id="email"
+            type="email"
+            placeholder="employee@example.com"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="phone">聯絡電話</label>
+          <input
+            id="phone"
+            type="tel"
+            placeholder="0912-345-678"
+            required
+          >
+        </div>
+      </div>
+
+      <h2 class="section-title">職務資訊</h2>
+
+      <div class="two-column">
+        <div class="form-group">
+          <label for="department">部門</label>
+          <select id="department" required>
+            <option value="">請選擇部門</option>
+            <option>資訊部</option>
+            <option>行政部</option>
+            <option>業務部</option>
+            <option>財務部</option>
+            <option>管理部</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="position">職稱</label>
+          <input
+            id="position"
+            type="text"
+            placeholder="例如：軟體工程師"
+            required
+          >
+        </div>
+      </div>
+
+      <div class="two-column">
+        <div class="form-group">
+          <label for="manager">直屬主管</label>
+          <select id="manager" required>
+            <option value="">請選擇直屬主管</option>
+            <option>王主管</option>
+            <option>吳主管</option>
+            <option>林主管</option>
+            <option>無直屬主管</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="hireDate">到職日期</label>
+          <input id="hireDate" type="date" required>
+        </div>
+      </div>
+
+      <h2 class="section-title">帳號與角色</h2>
+
+      <div class="two-column">
+        <div class="form-group">
+          <label for="username">登入帳號</label>
+          <input
+            id="username"
+            type="text"
+            placeholder="例如：employee31"
+            required
+          >
+          <p class="help">登入帳號不可與既有帳號重複。</p>
+        </div>
+
+        <div class="form-group">
+          <label for="role">系統角色</label>
+          <select id="role" required>
+            <option value="">請選擇角色</option>
+            <option>Employee</option>
+            <option>Manager</option>
+            <option>Admin</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="checkbox-row">
+        <input id="sendMail" type="checkbox" checked>
+
+        <label for="sendMail">
+          建立完成後寄送帳號啟用通知與初始密碼設定連結給員工。
+        </label>
+      </div>
+
+      <div class="notice">
+        新增員工後，系統會同時建立員工資料與登入帳號，並依角色設定可使用的功能。
+      </div>
+
+      <div class="actions">
+        <button class="button primary" type="submit">建立員工</button>
+        <a class="button secondary" href="employees.html">取消</a>
+      </div>
+    </form>
+  </main>
+</body>
+</html>

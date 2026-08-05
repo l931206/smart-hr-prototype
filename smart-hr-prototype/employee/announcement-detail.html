@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <title>公告詳情｜智慧人資管理平台</title>
+
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/mobile.css">
+
+  <style>
+    .announcement-detail-page {
+      width: min(800px, calc(100% - 28px));
+    }
+
+    .announcement-detail-card {
+      padding: 30px;
+    }
+
+    .announcement-detail-head {
+      padding-bottom: 22px;
+      border-bottom: 1px solid #edf1f5;
+    }
+
+    .announcement-detail-tag {
+      display: inline-flex;
+      padding: 6px 11px;
+      border-radius: 999px;
+      color: var(--color-success);
+      background: var(--color-success-bg);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .announcement-detail-head h1 {
+      margin: 16px 0 0;
+      font-size: 30px;
+      line-height: 1.35;
+    }
+
+    .announcement-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-top: 14px;
+      color: var(--color-muted);
+      font-size: 14px;
+    }
+
+    .announcement-content {
+      margin-top: 24px;
+      color: var(--color-text-soft);
+      line-height: 1.9;
+    }
+
+    .announcement-content h2 {
+      margin: 26px 0 10px;
+      color: var(--color-text);
+      font-size: 20px;
+    }
+
+    .announcement-content p {
+      margin: 0 0 16px;
+    }
+
+    .activity-info {
+      margin-top: 20px;
+      padding: 18px;
+      border-left: 4px solid var(--color-primary);
+      border-radius: 12px;
+      background: #f0fdfa;
+    }
+
+    .activity-row {
+      display: grid;
+      grid-template-columns: 110px minmax(0, 1fr);
+      gap: 14px;
+      padding: 10px 0;
+    }
+
+    .activity-row span {
+      color: var(--color-muted);
+      font-size: 14px;
+    }
+
+    .activity-row strong {
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .attachment-box {
+      margin-top: 22px;
+      padding: 18px;
+      border-radius: 14px;
+      background: #f8fafc;
+    }
+
+    .attachment-box h2 {
+      margin: 0 0 12px;
+      font-size: 18px;
+    }
+
+    .attachment-file {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      padding: 13px;
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      background: var(--color-surface);
+    }
+
+    .attachment-file strong {
+      min-width: 0;
+      font-size: 14px;
+      overflow-wrap: anywhere;
+    }
+
+    .attachment-file span {
+      flex: 0 0 auto;
+      color: var(--color-primary);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .announcement-detail-actions {
+      margin-top: 26px;
+    }
+
+    @media (max-width: 700px) {
+      .announcement-detail-page {
+        width: calc(100% - 20px);
+      }
+
+      .announcement-detail-page .back {
+        display: none;
+      }
+
+      .announcement-detail-card {
+        padding: 18px;
+      }
+
+      .announcement-detail-head {
+        padding-bottom: 16px;
+      }
+
+      .announcement-detail-head h1 {
+        margin-top: 12px;
+        font-size: 23px;
+      }
+
+      .announcement-meta {
+        flex-direction: column;
+        gap: 5px;
+        margin-top: 11px;
+        font-size: 12px;
+      }
+
+      .announcement-content {
+        margin-top: 18px;
+        font-size: 14px;
+        line-height: 1.8;
+      }
+
+      .announcement-content h2 {
+        margin-top: 22px;
+        font-size: 18px;
+      }
+
+      .activity-info {
+        padding: 15px;
+      }
+
+      .activity-row {
+        grid-template-columns: 1fr;
+        gap: 4px;
+        padding: 9px 0;
+      }
+
+      .activity-row span {
+        font-size: 12px;
+      }
+
+      .activity-row strong {
+        font-size: 14px;
+      }
+
+      .attachment-box {
+        padding: 15px;
+      }
+
+      .attachment-file {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .announcement-detail-actions {
+        margin-top: 18px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page announcement-detail-page">
+
+    <a class="back" href="announcements.html">
+      ← 返回公告中心
+    </a>
+
+    <article class="card announcement-detail-card">
+
+      <header class="announcement-detail-head">
+        <span class="announcement-detail-tag">
+          公司公告
+        </span>
+
+        <h1>公司聚餐活動</h1>
+
+        <div class="announcement-meta">
+          <span>發布人：行政部</span>
+
+          <time datetime="2026-07-30">
+            發布日期：2026/07/30
+          </time>
+
+          <span>公告編號：ANN-20260730-001</span>
+        </div>
+      </header>
+
+      <section class="announcement-content">
+        <p>
+          為增進同仁交流，公司將於本週五晚上舉辦員工聚餐，
+          歡迎所有同仁踴躍參加。
+        </p>
+
+        <h2>活動資訊</h2>
+
+        <div class="activity-info">
+          <div class="activity-row">
+            <span>活動日期</span>
+            <strong>2026/07/31</strong>
+          </div>
+
+          <div class="activity-row">
+            <span>活動時間</span>
+            <strong>晚上 18:30</strong>
+          </div>
+
+          <div class="activity-row">
+            <span>活動地點</span>
+            <strong>幸福餐廳二樓宴會廳</strong>
+          </div>
+
+          <div class="activity-row">
+            <span>參加對象</span>
+            <strong>全體員工</strong>
+          </div>
+        </div>
+
+        <h2>注意事項</h2>
+
+        <p>
+          請同仁於當日下午五點前完成工作交接，
+          並於六點二十分前抵達活動地點。
+          如因工作或個人因素無法參加，請提前通知行政部。
+        </p>
+      </section>
+
+      <section class="attachment-box">
+        <h2>附件</h2>
+
+        <a
+          class="attachment-file"
+          href="#"
+          aria-label="查看公司聚餐活動資訊附件"
+        >
+          <strong>公司聚餐活動資訊.pdf</strong>
+          <span>查看附件 →</span>
+        </a>
+      </section>
+
+      <div class="actions announcement-detail-actions">
+        <a
+          class="button primary"
+          href="announcements.html"
+        >
+          返回公告中心
+        </a>
+
+        <a
+          class="button secondary"
+          href="index.html"
+        >
+          返回員工首頁
+        </a>
+      </div>
+    </article>
+  </main>
+
+  <nav
+    class="mobile-nav"
+    aria-label="員工手機導覽"
+  >
+    <a
+      class="active"
+      href="index.html"
+    >
+      <span>⌂</span>
+      <small>首頁</small>
+    </a>
+
+    <a href="leave-apply.html">
+      <span>＋</span>
+      <small>請假</small>
+    </a>
+
+    <a href="notifications.html">
+      <span>●</span>
+      <small>通知</small>
+    </a>
+
+    <a href="profile.html">
+      <span>人</span>
+      <small>我的</small>
+    </a>
+  </nav>
+</body>
+</html>

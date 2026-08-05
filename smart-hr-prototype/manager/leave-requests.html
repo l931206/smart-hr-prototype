@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <title>請假審核｜智慧人資管理平台</title>
+
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/mobile.css">
+
+  <style>
+    .request-page {
+      width: min(980px, calc(100% - 28px));
+    }
+
+    .request-header h1 {
+      margin: 0;
+      font-size: 30px;
+    }
+
+    .request-header p {
+      margin: 8px 0 0;
+      color: var(--color-muted);
+      line-height: 1.7;
+    }
+
+    .request-summary {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .request-filter {
+      display: flex;
+      gap: 12px;
+      margin-top: 18px;
+      padding: 18px;
+      border: 1px solid var(--color-border);
+      border-radius: 18px;
+      background: var(--color-surface);
+    }
+
+    .request-list {
+      display: grid;
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .request-card {
+      display: block;
+      padding: 22px;
+      border: 1px solid var(--color-border);
+      border-radius: 20px;
+      background: var(--color-surface);
+      box-shadow: var(--shadow-small);
+      transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+    }
+
+    .request-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-medium);
+    }
+
+    .request-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .request-employee {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      min-width: 0;
+    }
+
+    .request-avatar {
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      color: white;
+      background: var(--color-primary);
+      font-weight: 800;
+    }
+
+    .request-employee h2 {
+      margin: 0;
+      font-size: 19px;
+      line-height: 1.4;
+    }
+
+    .request-employee p {
+      margin: 5px 0 0;
+      color: var(--color-muted);
+      font-size: 13px;
+      overflow-wrap: anywhere;
+    }
+
+    .request-status {
+      display: inline-flex;
+      flex: 0 0 auto;
+      padding: 6px 11px;
+      border-radius: 999px;
+      color: var(--color-warning);
+      background: var(--color-warning-bg);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .request-details {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+      padding-top: 18px;
+      border-top: 1px solid #edf1f5;
+    }
+
+    .request-detail span {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--color-muted);
+      font-size: 13px;
+    }
+
+    .request-detail strong {
+      line-height: 1.6;
+      overflow-wrap: anywhere;
+    }
+
+    .request-reason {
+      margin-top: 18px;
+      padding: 15px;
+      border-radius: 12px;
+      background: #f8fafc;
+      color: var(--color-text-soft);
+      line-height: 1.7;
+    }
+
+    .request-view-link {
+      display: inline-flex;
+      margin-top: 18px;
+      color: var(--color-primary);
+      font-weight: 800;
+    }
+
+    @media (max-width: 700px) {
+      .request-page {
+        width: calc(100% - 20px);
+      }
+
+      .request-page .back {
+        display: none;
+      }
+
+      .request-header h1 {
+        font-size: 24px;
+      }
+
+      .request-header p {
+        font-size: 14px;
+      }
+
+      .request-summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .request-summary .summary-card:last-child {
+        grid-column: 1 / -1;
+      }
+
+      .request-filter {
+        flex-direction: column;
+        gap: 10px;
+        padding: 14px;
+      }
+
+      .request-card {
+        padding: 17px;
+        border-radius: 17px;
+      }
+
+      .request-head {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .request-avatar {
+        width: 42px;
+        height: 42px;
+      }
+
+      .request-employee h2 {
+        font-size: 16px;
+      }
+
+      .request-employee p {
+        font-size: 12px;
+      }
+
+      .request-details {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 15px;
+        padding-top: 14px;
+      }
+
+      .request-detail:last-child {
+        grid-column: 1 / -1;
+      }
+
+      .request-detail span {
+        font-size: 11px;
+      }
+
+      .request-detail strong {
+        font-size: 13px;
+      }
+
+      .request-reason {
+        margin-top: 14px;
+        padding: 13px;
+        font-size: 13px;
+      }
+
+      .request-view-link {
+        margin-top: 13px;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page request-page">
+
+    <a class="back" href="index.html">
+      ← 返回主管工作台
+    </a>
+
+    <header class="request-header">
+      <h1>請假審核</h1>
+      <p>
+        查看直屬員工的請假申請，
+        進入詳細頁後執行核准或退回。
+      </p>
+    </header>
+
+    <section class="summary-grid request-summary">
+      <article class="summary-card">
+        <span>等待審核</span>
+        <strong>2</strong>
+      </article>
+
+      <article class="summary-card">
+        <span>今日已處理</span>
+        <strong>1</strong>
+      </article>
+
+      <article class="summary-card">
+        <span>本月申請</span>
+        <strong>8</strong>
+      </article>
+    </section>
+
+    <section class="request-filter">
+      <select aria-label="篩選審核狀態">
+        <option>全部狀態</option>
+        <option>等待審核</option>
+        <option>已核准</option>
+        <option>已退回</option>
+      </select>
+
+      <select aria-label="篩選假別">
+        <option>全部假別</option>
+        <option>特休假</option>
+        <option>病假</option>
+        <option>事假</option>
+      </select>
+
+      <select aria-label="選擇排序方式">
+        <option>依申請時間排序</option>
+        <option>依請假日期排序</option>
+      </select>
+    </section>
+
+    <section class="request-list">
+
+      <a
+        class="request-card"
+        href="leave-request-detail.html"
+      >
+        <div class="request-head">
+          <div class="request-employee">
+            <div class="request-avatar">
+              陳
+            </div>
+
+            <div>
+              <h2>陳員工－特休假</h2>
+              <p>申請編號：LEAVE-20260730-001</p>
+            </div>
+          </div>
+
+          <span class="request-status">
+            等待審核
+          </span>
+        </div>
+
+        <div class="request-details">
+          <div class="request-detail">
+            <span>請假日期</span>
+            <strong>2026/08/03－2026/08/04</strong>
+          </div>
+
+          <div class="request-detail">
+            <span>請假天數</span>
+            <strong>2 天</strong>
+          </div>
+
+          <div class="request-detail">
+            <span>申請時間</span>
+            <strong>2026/07/30 13:45</strong>
+          </div>
+        </div>
+
+        <div class="request-reason">
+          請假原因：處理個人事務。
+        </div>
+
+        <span class="request-view-link">
+          查看申請詳情 →
+        </span>
+      </a>
+
+      <a
+        class="request-card"
+        href="leave-request-detail.html"
+      >
+        <div class="request-head">
+          <div class="request-employee">
+            <div class="request-avatar">
+              林
+            </div>
+
+            <div>
+              <h2>林員工－病假</h2>
+              <p>申請編號：LEAVE-20260730-002</p>
+            </div>
+          </div>
+
+          <span class="request-status">
+            等待審核
+          </span>
+        </div>
+
+        <div class="request-details">
+          <div class="request-detail">
+            <span>請假日期</span>
+            <strong>2026/07/31</strong>
+          </div>
+
+          <div class="request-detail">
+            <span>請假天數</span>
+            <strong>1 天</strong>
+          </div>
+
+          <div class="request-detail">
+            <span>申請時間</span>
+            <strong>2026/07/30 09:10</strong>
+          </div>
+        </div>
+
+        <div class="request-reason">
+          請假原因：身體不適，已上傳就醫證明。
+        </div>
+
+        <span class="request-view-link">
+          查看申請詳情 →
+        </span>
+      </a>
+    </section>
+  </main>
+
+  <nav
+    class="mobile-nav"
+    aria-label="主管手機導覽"
+  >
+    <a href="index.html">
+      <span>⌂</span>
+      <small>首頁</small>
+    </a>
+
+    <a
+      class="active"
+      href="leave-requests.html"
+      aria-current="page"
+    >
+      <span>✓</span>
+      <small>審核</small>
+    </a>
+
+    <a href="team.html">
+      <span>人</span>
+      <small>團隊</small>
+    </a>
+
+    <a href="notifications.html">
+      <span>•••</span>
+      <small>更多</small>
+    </a>
+  </nav>
+</body>
+</html>

@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>員工管理｜智慧人資管理平台</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, "Noto Sans TC", sans-serif;
+      background: #f4f7fb;
+      color: #18212f;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      width: min(1100px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 28px 0 48px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .back {
+      color: #4338ca;
+      font-weight: 800;
+    }
+
+    .add-button {
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 18px;
+      border-radius: 12px;
+      color: white;
+      background: #4338ca;
+      font-weight: 800;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 30px;
+    }
+
+    .header p {
+      margin: 8px 0 0;
+      color: #718096;
+      line-height: 1.7;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-top: 22px;
+    }
+
+    .summary-card {
+      padding: 20px;
+      border: 1px solid #e5ebf2;
+      border-radius: 18px;
+      background: white;
+      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.05);
+    }
+
+    .summary-card span {
+      color: #718096;
+      font-size: 14px;
+    }
+
+    .summary-card strong {
+      display: block;
+      margin-top: 8px;
+      font-size: 27px;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 12px;
+      margin-top: 18px;
+      padding: 18px;
+      border: 1px solid #e5ebf2;
+      border-radius: 18px;
+      background: white;
+    }
+
+    input,
+    select {
+      min-height: 42px;
+      padding: 0 13px;
+      border: 1px solid #d8e2ec;
+      border-radius: 11px;
+      background: white;
+      color: #18212f;
+      font: inherit;
+      outline: none;
+    }
+
+    input {
+      flex: 1;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: #4338ca;
+      box-shadow: 0 0 0 3px rgba(67, 56, 202, 0.1);
+    }
+
+    .employee-list {
+      display: grid;
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .employee-card {
+      display: block;
+      padding: 22px;
+      border: 1px solid #e5ebf2;
+      border-radius: 20px;
+      background: white;
+      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.05);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .employee-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 34px rgba(15, 23, 42, 0.08);
+    }
+
+    .employee-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .employee-main {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .avatar {
+      width: 52px;
+      height: 52px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      color: white;
+      background: #4338ca;
+      font-size: 19px;
+      font-weight: 800;
+    }
+
+    .employee-main h2 {
+      margin: 0;
+      font-size: 19px;
+    }
+
+    .employee-main p {
+      margin: 6px 0 0;
+      color: #718096;
+      font-size: 13px;
+    }
+
+    .status {
+      display: inline-flex;
+      flex: 0 0 auto;
+      padding: 6px 11px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .active {
+      color: #047857;
+      background: #d1fae5;
+    }
+
+    .inactive {
+      color: #b91c1c;
+      background: #fee2e2;
+    }
+
+    .employee-info {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-top: 20px;
+      padding-top: 18px;
+      border-top: 1px solid #edf1f5;
+    }
+
+    .info-item span {
+      display: block;
+      margin-bottom: 6px;
+      color: #718096;
+      font-size: 13px;
+    }
+
+    .info-item strong {
+      font-size: 14px;
+      line-height: 1.6;
+      word-break: break-word;
+    }
+
+    .view-link {
+      display: inline-flex;
+      margin-top: 18px;
+      color: #4338ca;
+      font-weight: 800;
+    }
+
+    @media (max-width: 800px) {
+      .summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .employee-info {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 620px) {
+      .topbar,
+      .toolbar,
+      .employee-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .summary-grid,
+      .employee-info {
+        grid-template-columns: 1fr;
+      }
+
+      input,
+      select,
+      .add-button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <div class="topbar">
+      <a class="back" href="index.html">← 返回管理工作台</a>
+      <a class="add-button" href="employee-create.html">＋ 新增員工</a>
+    </div>
+
+    <header class="header">
+      <h1>員工管理</h1>
+      <p>查看、搜尋及管理公司員工的基本資料與在職狀態。</p>
+    </header>
+
+    <section class="summary-grid">
+      <article class="summary-card">
+        <span>全部員工</span>
+        <strong>30</strong>
+      </article>
+
+      <article class="summary-card">
+        <span>在職員工</span>
+        <strong>28</strong>
+      </article>
+
+      <article class="summary-card">
+        <span>主管人數</span>
+        <strong>5</strong>
+      </article>
+
+      <article class="summary-card">
+        <span>已離職</span>
+        <strong>2</strong>
+      </article>
+    </section>
+
+    <section class="toolbar">
+      <input type="search" placeholder="搜尋姓名、員工編號或電子郵件">
+
+      <select>
+        <option>全部部門</option>
+        <option>資訊部</option>
+        <option>行政部</option>
+        <option>業務部</option>
+        <option>財務部</option>
+        <option>管理部</option>
+      </select>
+
+      <select>
+        <option>全部狀態</option>
+        <option>在職</option>
+        <option>已離職</option>
+      </select>
+    </section>
+
+    <section class="employee-list">
+      <a class="employee-card" href="employee-detail.html">
+        <div class="employee-head">
+          <div class="employee-main">
+            <div class="avatar">陳</div>
+
+            <div>
+              <h2>陳員工</h2>
+              <p>員工編號：EMP0003｜軟體工程師</p>
+            </div>
+          </div>
+
+          <span class="status active">在職</span>
+        </div>
+
+        <div class="employee-info">
+          <div class="info-item">
+            <span>部門</span>
+            <strong>資訊部</strong>
+          </div>
+
+          <div class="info-item">
+            <span>直屬主管</span>
+            <strong>王主管</strong>
+          </div>
+
+          <div class="info-item">
+            <span>電子郵件</span>
+            <strong>employee@example.com</strong>
+          </div>
+
+          <div class="info-item">
+            <span>到職日期</span>
+            <strong>2026/01/01</strong>
+          </div>
+        </div>
+
+        <span class="view-link">查看與編輯員工資料 →</span>
+      </a>
+
+      <a class="employee-card" href="employee-detail.html">
+        <div class="employee-head">
+          <div class="employee-main">
+            <div class="avatar">林</div>
+
+            <div>
+              <h2>林員工</h2>
+              <p>員工編號：EMP0004｜軟體工程師</p>
+            </div>
+          </div>
+
+          <span class="status active">在職</span>
+        </div>
+
+        <div class="employee-info">
+          <div class="info-item">
+            <span>部門</span>
+            <strong>資訊部</strong>
+          </div>
+
+          <div class="info-item">
+            <span>直屬主管</span>
+            <strong>王主管</strong>
+          </div>
+
+          <div class="info-item">
+            <span>電子郵件</span>
+            <strong>lin@example.com</strong>
+          </div>
+
+          <div class="info-item">
+            <span>到職日期</span>
+            <strong>2025/10/15</strong>
+          </div>
+        </div>
+
+        <span class="view-link">查看與編輯員工資料 →</span>
+      </a>
+
+      <a class="employee-card" href="employee-detail.html">
+        <div class="employee-head">
+          <div class="employee-main">
+            <div class="avatar">張</div>
+
+            <div>
+              <h2>張員工</h2>
+              <p>員工編號：EMP0005｜系統工程師</p>
+            </div>
+          </div>
+
+          <span class="status active">在職</span>
+        </div>
+
+        <div class="employee-info">
+          <div class="info-item">
+            <span>部門</span>
+            <strong>資訊部</strong>
+          </div>
+
+          <div class="info-item">
+            <span>直屬主管</span>
+            <strong>王主管</strong>
+          </div>
+
+          <div class="info-item">
+            <span>電子郵件</span>
+            <strong>chang@example.com</strong>
+          </div>
+
+          <div class="info-item">
+            <span>到職日期</span>
+            <strong>2025/08/20</strong>
+          </div>
+        </div>
+
+        <span class="view-link">查看與編輯員工資料 →</span>
+      </a>
+
+      <a class="employee-card" href="employee-detail.html">
+        <div class="employee-head">
+          <div class="employee-main">
+            <div class="avatar">周</div>
+
+            <div>
+              <h2>周員工</h2>
+              <p>員工編號：EMP0012｜行政專員</p>
+            </div>
+          </div>
+
+          <span class="status inactive">已離職</span>
+        </div>
+
+        <div class="employee-info">
+          <div class="info-item">
+            <span>部門</span>
+            <strong>行政部</strong>
+          </div>
+
+          <div class="info-item">
+            <span>直屬主管</span>
+            <strong>吳主管</strong>
+          </div>
+
+          <div class="info-item">
+            <span>電子郵件</span>
+            <strong>chou@example.com</strong>
+          </div>
+
+          <div class="info-item">
+            <span>離職日期</span>
+            <strong>2026/07/15</strong>
+          </div>
+        </div>
+
+        <span class="view-link">查看與編輯員工資料 →</span>
+      </a>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>下架公告｜智慧人資管理平台</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, "Noto Sans TC", sans-serif;
+      background: #f4f7fb;
+      color: #18212f;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      width: min(760px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 28px 0 48px;
+    }
+
+    .back {
+      display: inline-flex;
+      margin-bottom: 22px;
+      color: #0f766e;
+      font-weight: 800;
+    }
+
+    .card {
+      padding: 28px;
+      border: 1px solid #e5ebf2;
+      border-radius: 24px;
+      background: white;
+      box-shadow: 0 14px 38px rgba(15, 23, 42, 0.07);
+    }
+
+    .warning {
+      display: flex;
+      gap: 14px;
+      padding: 18px;
+      border-left: 5px solid #dc2626;
+      border-radius: 14px;
+      background: #fef2f2;
+    }
+
+    .warning-icon {
+      font-size: 30px;
+    }
+
+    .warning h1 {
+      margin: 0 0 8px;
+      color: #991b1b;
+      font-size: 26px;
+    }
+
+    .warning p {
+      margin: 0;
+      color: #5f6f82;
+      line-height: 1.7;
+    }
+
+    .info-box {
+      margin-top: 22px;
+      padding: 18px;
+      border-radius: 16px;
+      background: #f8fafc;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 130px 1fr;
+      gap: 16px;
+      padding: 13px 0;
+      border-bottom: 1px solid #e8edf2;
+    }
+
+    .row:last-child {
+      border-bottom: 0;
+    }
+
+    .row span {
+      color: #718096;
+      font-size: 14px;
+    }
+
+    .row strong {
+      line-height: 1.7;
+    }
+
+    .form-group {
+      margin-top: 22px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 120px;
+      padding: 13px 14px;
+      border: 1px solid #d8e2ec;
+      border-radius: 12px;
+      color: #18212f;
+      font: inherit;
+      resize: vertical;
+      outline: none;
+    }
+
+    textarea:focus {
+      border-color: #0f766e;
+      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
+    }
+
+    .notice {
+      margin-top: 22px;
+      padding: 16px 18px;
+      border-left: 4px solid #f59e0b;
+      border-radius: 12px;
+      background: #fffbeb;
+      color: #6b5b34;
+      line-height: 1.7;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 26px;
+    }
+
+    .button {
+      min-height: 46px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      padding: 0 20px;
+      border-radius: 12px;
+      font-weight: 800;
+    }
+
+    .danger {
+      color: white;
+      background: #b91c1c;
+    }
+
+    .secondary {
+      color: #475569;
+      background: white;
+      border: 1px solid #d8e2ec;
+    }
+
+    @media (max-width: 620px) {
+      .card {
+        padding: 22px 18px;
+      }
+
+      .warning,
+      .actions {
+        flex-direction: column;
+      }
+
+      .row {
+        grid-template-columns: 1fr;
+        gap: 5px;
+      }
+
+      .button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <a class="back" href="announcement-detail.html">← 返回公告詳情</a>
+
+    <section class="card">
+      <div class="warning">
+        <div class="warning-icon">⚠️</div>
+
+        <div>
+          <h1>確認下架這則公告？</h1>
+          <p>
+            下架後，員工首頁與公告中心將不再顯示這則公告，
+            但系統仍會保留發布與修改紀錄。
+          </p>
+        </div>
+      </div>
+
+      <section class="info-box">
+        <div class="row">
+          <span>公告標題</span>
+          <strong>資訊部八月份工作安排</strong>
+        </div>
+
+        <div class="row">
+          <span>公告編號</span>
+          <strong>ANN-20260731-001</strong>
+        </div>
+
+        <div class="row">
+          <span>發布範圍</span>
+          <strong>資訊部全體員工</strong>
+        </div>
+
+        <div class="row">
+          <span>目前狀態</span>
+          <strong>已發布</strong>
+        </div>
+
+        <div class="row">
+          <span>閱讀人數</span>
+          <strong>5／6 人</strong>
+        </div>
+      </section>
+
+      <div class="form-group">
+        <label for="reason">下架原因</label>
+        <textarea
+          id="reason"
+          placeholder="請說明下架原因，例如：活動結束、內容已失效或資料需重新確認"
+          required
+        ></textarea>
+      </div>
+
+      <div class="notice">
+        下架後仍可在公告管理中查看紀錄，但若要再次顯示，需重新編輯並發布。
+      </div>
+
+      <div class="actions">
+        <a class="button danger" href="announcement-deactivate-success.html">
+          確認下架公告
+        </a>
+
+        <a class="button secondary" href="announcement-detail.html">
+          取消
+        </a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

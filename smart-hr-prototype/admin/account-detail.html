@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>帳號權限詳情｜智慧人資管理平台</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, "Noto Sans TC", sans-serif;
+      background: #f4f7fb;
+      color: #18212f;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      width: min(860px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 28px 0 48px;
+    }
+
+    .back {
+      display: inline-flex;
+      margin-bottom: 22px;
+      color: #4338ca;
+      font-weight: 800;
+    }
+
+    .profile-card {
+      padding: 28px;
+      border-radius: 26px;
+      color: white;
+      background: linear-gradient(135deg, #4338ca, #0f766e);
+      box-shadow: 0 20px 50px rgba(67, 56, 202, 0.18);
+    }
+
+    .profile-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+    }
+
+    .account-main {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .avatar {
+      width: 76px;
+      height: 76px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border: 2px solid rgba(255,255,255,0.28);
+      border-radius: 50%;
+      background: rgba(255,255,255,0.18);
+      font-size: 28px;
+      font-weight: 900;
+    }
+
+    .account-main h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+
+    .account-main p {
+      margin: 7px 0 0;
+      line-height: 1.6;
+      opacity: 0.9;
+    }
+
+    .status {
+      display: inline-flex;
+      padding: 7px 12px;
+      border-radius: 999px;
+      color: #047857;
+      background: #d1fae5;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-top: 20px;
+    }
+
+    .card {
+      padding: 24px;
+      border: 1px solid #e5ebf2;
+      border-radius: 20px;
+      background: white;
+      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.05);
+    }
+
+    .card h2 {
+      margin: 0 0 18px;
+      font-size: 20px;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 14px;
+      padding: 13px 0;
+      border-bottom: 1px solid #edf1f5;
+    }
+
+    .row:last-child {
+      border-bottom: 0;
+    }
+
+    .row span {
+      color: #718096;
+      font-size: 14px;
+    }
+
+    .row strong {
+      line-height: 1.6;
+      word-break: break-word;
+    }
+
+    .role-tag {
+      display: inline-flex;
+      padding: 6px 11px;
+      border-radius: 999px;
+      color: #4338ca;
+      background: #eef2ff;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .permission-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .permission {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 13px;
+      border-radius: 13px;
+      background: #f8fafc;
+    }
+
+    .check {
+      width: 24px;
+      height: 24px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      color: white;
+      background: #0f766e;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .permission strong {
+      display: block;
+      font-size: 14px;
+    }
+
+    .permission span {
+      display: block;
+      margin-top: 4px;
+      color: #718096;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .notice {
+      margin-top: 20px;
+      padding: 16px 18px;
+      border-left: 4px solid #4338ca;
+      border-radius: 12px;
+      background: #eef2ff;
+      color: #475569;
+      line-height: 1.7;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .button {
+      min-height: 46px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 20px;
+      border-radius: 12px;
+      font-weight: 800;
+    }
+
+    .primary {
+      color: white;
+      background: #4338ca;
+    }
+
+    .danger {
+      color: white;
+      background: #b91c1c;
+    }
+
+    .secondary {
+      color: #475569;
+      background: white;
+      border: 1px solid #d8e2ec;
+    }
+
+    @media (max-width: 720px) {
+      .profile-head,
+      .account-main,
+      .actions {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .content-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .row {
+        grid-template-columns: 1fr;
+        gap: 5px;
+      }
+
+      .button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <a class="back" href="accounts.html">← 返回帳號與權限</a>
+
+    <section class="profile-card">
+      <div class="profile-head">
+        <div class="account-main">
+          <div class="avatar">陳</div>
+
+          <div>
+            <h1>陳員工</h1>
+            <p>登入帳號：employee03</p>
+            <p>員工編號：EMP0003｜資訊部</p>
+          </div>
+        </div>
+
+        <span class="status">已啟用</span>
+      </div>
+    </section>
+
+    <section class="content-grid">
+      <article class="card">
+        <h2>帳號資料</h2>
+
+        <div class="row">
+          <span>使用者名稱</span>
+          <strong>employee03</strong>
+        </div>
+
+        <div class="row">
+          <span>電子郵件</span>
+          <strong>employee@example.com</strong>
+        </div>
+
+        <div class="row">
+          <span>系統角色</span>
+          <strong><span class="role-tag">Employee</span></strong>
+        </div>
+
+        <div class="row">
+          <span>帳號狀態</span>
+          <strong>已啟用</strong>
+        </div>
+
+        <div class="row">
+          <span>最後登入</span>
+          <strong>2026/07/31 08:55</strong>
+        </div>
+
+        <div class="row">
+          <span>建立日期</span>
+          <strong>2026/01/01</strong>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>目前權限</h2>
+
+        <div class="permission-list">
+          <div class="permission">
+            <div class="check">✓</div>
+            <div>
+              <strong>查看個人資料</strong>
+              <span>可查看自己的員工與職務資訊。</span>
+            </div>
+          </div>
+
+          <div class="permission">
+            <div class="check">✓</div>
+            <div>
+              <strong>提出請假申請</strong>
+              <span>可新增請假並查看審核結果。</span>
+            </div>
+          </div>
+
+          <div class="permission">
+            <div class="check">✓</div>
+            <div>
+              <strong>送出晚到通知</strong>
+              <span>可通知直屬主管預計到班時間。</span>
+            </div>
+          </div>
+
+          <div class="permission">
+            <div class="check">✓</div>
+            <div>
+              <strong>查看個人通知</strong>
+              <span>可查看審核、資料修改與系統通知。</span>
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <div class="notice">
+      系統權限主要依角色設定。將 Employee 改為 Manager 後，系統會開放團隊管理與請假審核功能。
+    </div>
+
+    <div class="actions">
+      <a class="button primary" href="account-edit.html">編輯角色與權限</a>
+      <a class="button secondary" href="account-reset-password.html">重設密碼</a>
+      <a class="button danger" href="account-disable.html">停用帳號</a>
+    </div>
+  </main>
+</body>
+</html>

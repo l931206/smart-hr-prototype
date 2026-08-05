@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>假別詳情｜智慧人資管理平台</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, "Noto Sans TC", sans-serif;
+      background: #f4f7fb;
+      color: #18212f;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      width: min(900px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 28px 0 48px;
+    }
+
+    .back {
+      display: inline-flex;
+      margin-bottom: 22px;
+      color: #4338ca;
+      font-weight: 800;
+    }
+
+    .hero {
+      padding: 28px;
+      border-radius: 26px;
+      color: white;
+      background: linear-gradient(135deg, #4338ca, #0f766e);
+      box-shadow: 0 20px 50px rgba(67, 56, 202, 0.18);
+    }
+
+    .hero-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+    }
+
+    .leave-main {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .icon {
+      width: 76px;
+      height: 76px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border-radius: 20px;
+      border: 2px solid rgba(255,255,255,0.28);
+      background: rgba(255,255,255,0.18);
+      font-size: 32px;
+    }
+
+    .leave-main h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+
+    .leave-main p {
+      margin: 7px 0 0;
+      line-height: 1.6;
+      opacity: 0.9;
+    }
+
+    .status {
+      display: inline-flex;
+      padding: 7px 12px;
+      border-radius: 999px;
+      color: #047857;
+      background: #d1fae5;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .summary-card {
+      padding: 18px;
+      border: 1px solid #e5ebf2;
+      border-radius: 18px;
+      background: white;
+      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.05);
+    }
+
+    .summary-card span {
+      color: #718096;
+      font-size: 13px;
+    }
+
+    .summary-card strong {
+      display: block;
+      margin-top: 8px;
+      font-size: 23px;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    .card {
+      padding: 24px;
+      border: 1px solid #e5ebf2;
+      border-radius: 20px;
+      background: white;
+      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.05);
+    }
+
+    .card h2 {
+      margin: 0 0 18px;
+      font-size: 20px;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 130px 1fr;
+      gap: 14px;
+      padding: 13px 0;
+      border-bottom: 1px solid #edf1f5;
+    }
+
+    .row:last-child {
+      border-bottom: 0;
+    }
+
+    .row span {
+      color: #718096;
+      font-size: 14px;
+    }
+
+    .row strong {
+      line-height: 1.6;
+      word-break: break-word;
+    }
+
+    .rule-box {
+      padding: 18px;
+      border-left: 4px solid #4338ca;
+      border-radius: 12px;
+      background: #eef2ff;
+      color: #475569;
+      line-height: 1.8;
+    }
+
+    .seniority-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .seniority-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 13px;
+      border-radius: 12px;
+      background: #f8fafc;
+    }
+
+    .seniority-item span {
+      color: #718096;
+      font-size: 14px;
+    }
+
+    .seniority-item strong {
+      color: #4338ca;
+    }
+
+    .notice {
+      margin-top: 18px;
+      padding: 16px 18px;
+      border-left: 4px solid #f59e0b;
+      border-radius: 12px;
+      background: #fffbeb;
+      color: #6b5b34;
+      line-height: 1.7;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .button {
+      min-height: 46px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 20px;
+      border-radius: 12px;
+      font-weight: 800;
+    }
+
+    .primary {
+      color: white;
+      background: #4338ca;
+    }
+
+    .danger {
+      color: white;
+      background: #b91c1c;
+    }
+
+    .secondary {
+      color: #475569;
+      background: white;
+      border: 1px solid #d8e2ec;
+    }
+
+    @media (max-width: 760px) {
+      .hero-head,
+      .leave-main,
+      .actions {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .content-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .button {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .row {
+        grid-template-columns: 1fr;
+        gap: 5px;
+      }
+
+      .seniority-item {
+        flex-direction: column;
+        gap: 5px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <a class="back" href="leave-settings.html">← 返回假別與規則</a>
+
+    <section class="hero">
+      <div class="hero-head">
+        <div class="leave-main">
+          <div class="icon">🏖️</div>
+
+          <div>
+            <h1>特休假</h1>
+            <p>假別代碼：ANNUAL</p>
+            <p>依員工到職年資計算年度可使用額度。</p>
+          </div>
+        </div>
+
+        <span class="status">啟用中</span>
+      </div>
+    </section>
+
+    <section class="summary-grid">
+      <article class="summary-card">
+        <span>本年度申請</span>
+        <strong>46 件</strong>
+      </article>
+
+      <article class="summary-card">
+        <span>已核准時數</span>
+        <strong>312 小時</strong>
+      </article>
+
+      <article class="summary-card">
+        <span>使用員工</span>
+        <strong>24 人</strong>
+      </article>
+
+      <article class="summary-card">
+        <span>待審核申請</span>
+        <strong>3 件</strong>
+      </article>
+    </section>
+
+    <section class="content-grid">
+      <article class="card">
+        <h2>基本規則</h2>
+
+        <div class="row">
+          <span>假別名稱</span>
+          <strong>特休假</strong>
+        </div>
+
+        <div class="row">
+          <span>假別代碼</span>
+          <strong>ANNUAL</strong>
+        </div>
+
+        <div class="row">
+          <span>最小請假單位</span>
+          <strong>1 小時</strong>
+        </div>
+
+        <div class="row">
+          <span>計薪方式</span>
+          <strong>全薪</strong>
+        </div>
+
+        <div class="row">
+          <span>是否扣除額度</span>
+          <strong>是</strong>
+        </div>
+
+        <div class="row">
+          <span>是否需附件</span>
+          <strong>否</strong>
+        </div>
+
+        <div class="row">
+          <span>是否需主管審核</span>
+          <strong>是</strong>
+        </div>
+
+        <div class="row">
+          <span>可否跨年度</span>
+          <strong>依公司規定</strong>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>年資額度</h2>
+
+        <div class="seniority-list">
+          <div class="seniority-item">
+            <span>滿 6 個月至未滿 1 年</span>
+            <strong>3 天</strong>
+          </div>
+
+          <div class="seniority-item">
+            <span>滿 1 年至未滿 2 年</span>
+            <strong>7 天</strong>
+          </div>
+
+          <div class="seniority-item">
+            <span>滿 2 年至未滿 3 年</span>
+            <strong>10 天</strong>
+          </div>
+
+          <div class="seniority-item">
+            <span>滿 3 年至未滿 5 年</span>
+            <strong>14 天</strong>
+          </div>
+
+          <div class="seniority-item">
+            <span>滿 5 年至未滿 10 年</span>
+            <strong>15 天</strong>
+          </div>
+
+          <div class="seniority-item">
+            <span>滿 10 年以上</span>
+            <strong>依公司規則增加</strong>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="card" style="margin-top:18px;">
+      <h2>使用說明</h2>
+
+      <div class="rule-box">
+        員工可依剩餘特休時數提出申請，送出後由直屬主管審核。核准後系統扣除相應時數；申請取消、退回或未核准時，不扣除額度。
+      </div>
+
+      <div class="notice">
+        修改年資額度或計算方式後，只影響新產生的年度額度，不會直接改寫已完成審核的歷史申請。
+      </div>
+    </section>
+
+    <div class="actions">
+      <a class="button primary" href="leave-type-edit.html">編輯假別規則</a>
+      <a class="button danger" href="leave-type-deactivate.html">停用假別</a>
+      <a class="button secondary" href="leave-settings.html">返回假別列表</a>
+    </div>
+  </main>
+</body>
+</html>

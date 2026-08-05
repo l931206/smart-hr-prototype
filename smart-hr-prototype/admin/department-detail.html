@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>部門詳情｜智慧人資管理平台</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, "Noto Sans TC", sans-serif;
+      background: #f4f7fb;
+      color: #18212f;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      width: min(920px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 28px 0 48px;
+    }
+
+    .back {
+      display: inline-flex;
+      margin-bottom: 22px;
+      color: #4338ca;
+      font-weight: 800;
+    }
+
+    .department-card {
+      padding: 28px;
+      border-radius: 26px;
+      color: white;
+      background: linear-gradient(135deg, #4338ca, #0f766e);
+      box-shadow: 0 20px 50px rgba(67, 56, 202, 0.18);
+    }
+
+    .department-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+    }
+
+    .department-main {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .icon {
+      width: 78px;
+      height: 78px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border-radius: 20px;
+      border: 2px solid rgba(255,255,255,0.28);
+      background: rgba(255,255,255,0.18);
+      font-size: 34px;
+    }
+
+    .department-main h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+
+    .department-main p {
+      margin: 7px 0 0;
+      line-height: 1.6;
+      opacity: 0.9;
+    }
+
+    .status {
+      display: inline-flex;
+      padding: 7px 12px;
+      border-radius: 999px;
+      color: #047857;
+      background: #d1fae5;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .summary-card {
+      padding: 18px;
+      border: 1px solid #e5ebf2;
+      border-radius: 18px;
+      background: white;
+      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.05);
+    }
+
+    .summary-card span {
+      color: #718096;
+      font-size: 13px;
+    }
+
+    .summary-card strong {
+      display: block;
+      margin-top: 8px;
+      font-size: 24px;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    .card {
+      padding: 24px;
+      border: 1px solid #e5ebf2;
+      border-radius: 20px;
+      background: white;
+      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.05);
+    }
+
+    .card h2 {
+      margin: 0 0 18px;
+      font-size: 20px;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 115px 1fr;
+      gap: 14px;
+      padding: 13px 0;
+      border-bottom: 1px solid #edf1f5;
+    }
+
+    .row:last-child {
+      border-bottom: 0;
+    }
+
+    .row span {
+      color: #718096;
+      font-size: 14px;
+    }
+
+    .row strong {
+      line-height: 1.6;
+      word-break: break-word;
+    }
+
+    .employee-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .employee {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 14px;
+      border-radius: 14px;
+      background: #f8fafc;
+    }
+
+    .employee-main {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .avatar {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      color: white;
+      background: #4338ca;
+      font-weight: 800;
+    }
+
+    .employee h3 {
+      margin: 0;
+      font-size: 15px;
+    }
+
+    .employee p {
+      margin: 5px 0 0;
+      color: #718096;
+      font-size: 13px;
+    }
+
+    .role-tag {
+      flex: 0 0 auto;
+      padding: 5px 9px;
+      border-radius: 999px;
+      color: #4338ca;
+      background: #eef2ff;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .button {
+      min-height: 46px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 20px;
+      border-radius: 12px;
+      font-weight: 800;
+    }
+
+    .primary {
+      color: white;
+      background: #4338ca;
+    }
+
+    .danger {
+      color: white;
+      background: #b91c1c;
+    }
+
+    .secondary {
+      color: #475569;
+      background: white;
+      border: 1px solid #d8e2ec;
+    }
+
+    @media (max-width: 760px) {
+      .department-head,
+      .department-main,
+      .actions {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .content-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .button {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .row {
+        grid-template-columns: 1fr;
+        gap: 5px;
+      }
+
+      .employee {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <a class="back" href="departments.html">← 返回部門管理</a>
+
+    <section class="department-card">
+      <div class="department-head">
+        <div class="department-main">
+          <div class="icon">💻</div>
+
+          <div>
+            <h1>資訊部</h1>
+            <p>部門代碼：IT</p>
+            <p>負責公司系統開發、資訊設備與技術支援。</p>
+          </div>
+        </div>
+
+        <span class="status">啟用中</span>
+      </div>
+    </section>
+
+    <section class="summary-grid">
+      <article class="summary-card">
+        <span>在職員工</span>
+        <strong>6 人</strong>
+      </article>
+
+      <article class="summary-card">
+        <span>主管人數</span>
+        <strong>1 人</strong>
+      </article>
+
+      <article class="summary-card">
+        <span>待審核請假</span>
+        <strong>2 件</strong>
+      </article>
+
+      <article class="summary-card">
+        <span>今日請假或晚到</span>
+        <strong>2 人</strong>
+      </article>
+    </section>
+
+    <section class="content-grid">
+      <article class="card">
+        <h2>部門資料</h2>
+
+        <div class="row">
+          <span>部門名稱</span>
+          <strong>資訊部</strong>
+        </div>
+
+        <div class="row">
+          <span>部門代碼</span>
+          <strong>IT</strong>
+        </div>
+
+        <div class="row">
+          <span>部門主管</span>
+          <strong>王主管</strong>
+        </div>
+
+        <div class="row">
+          <span>主管帳號</span>
+          <strong>manager01</strong>
+        </div>
+
+        <div class="row">
+          <span>建立日期</span>
+          <strong>2025/01/01</strong>
+        </div>
+
+        <div class="row">
+          <span>部門狀態</span>
+          <strong>啟用中</strong>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>部門成員</h2>
+
+        <div class="employee-list">
+          <div class="employee">
+            <div class="employee-main">
+              <div class="avatar">王</div>
+              <div>
+                <h3>王主管</h3>
+                <p>資訊部主管｜EMP0002</p>
+              </div>
+            </div>
+
+            <span class="role-tag">Manager</span>
+          </div>
+
+          <div class="employee">
+            <div class="employee-main">
+              <div class="avatar">陳</div>
+              <div>
+                <h3>陳員工</h3>
+                <p>軟體工程師｜EMP0003</p>
+              </div>
+            </div>
+
+            <span class="role-tag">Employee</span>
+          </div>
+
+          <div class="employee">
+            <div class="employee-main">
+              <div class="avatar">林</div>
+              <div>
+                <h3>林員工</h3>
+                <p>軟體工程師｜EMP0004</p>
+              </div>
+            </div>
+
+            <span class="role-tag">Employee</span>
+          </div>
+
+          <div class="employee">
+            <div class="employee-main">
+              <div class="avatar">張</div>
+              <div>
+                <h3>張員工</h3>
+                <p>系統工程師｜EMP0005</p>
+              </div>
+            </div>
+
+            <span class="role-tag">Employee</span>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <div class="actions">
+      <a class="button primary" href="department-edit.html">編輯部門資料</a>
+      <a class="button secondary" href="employees.html">查看所有員工</a>
+      <a class="button danger" href="department-deactivate.html">停用部門</a>
+    </div>
+  </main>
+</body>
+</html>

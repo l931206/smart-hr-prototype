@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <title>確認請假資料｜智慧人資管理平台</title>
+
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/mobile.css">
+
+  <style>
+    .confirm-page {
+      width: min(760px, calc(100% - 28px));
+    }
+
+    .confirm-header {
+      margin-bottom: 20px;
+    }
+
+    .confirm-header h1 {
+      margin: 0;
+      font-size: 30px;
+    }
+
+    .confirm-header p {
+      margin: 8px 0 0;
+      color: var(--color-muted);
+      line-height: 1.7;
+    }
+
+    .confirm-card {
+      margin-top: 0;
+    }
+
+    .confirm-card h2 {
+      margin: 0 0 14px;
+      font-size: 21px;
+    }
+
+    .confirm-row {
+      display: grid;
+      grid-template-columns: 120px minmax(0, 1fr);
+      gap: 16px;
+      padding: 15px 0;
+      border-bottom: 1px solid #edf1f5;
+    }
+
+    .confirm-row:last-child {
+      border-bottom: 0;
+    }
+
+    .confirm-row span {
+      color: var(--color-muted);
+      font-size: 14px;
+    }
+
+    .confirm-row strong {
+      min-width: 0;
+      line-height: 1.6;
+      overflow-wrap: anywhere;
+    }
+
+    .confirm-status {
+      display: inline-flex;
+      width: fit-content;
+      padding: 6px 11px;
+      border-radius: 999px;
+      color: var(--color-warning);
+      background: var(--color-warning-bg);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .confirm-notice {
+      margin-top: 18px;
+      border-left-color: #f59e0b;
+      background: #fffbeb;
+      color: #6b5b34;
+    }
+
+    .confirm-actions {
+      margin-top: 20px;
+    }
+
+    @media (max-width: 700px) {
+      .confirm-page {
+        width: calc(100% - 20px);
+      }
+
+      .confirm-header {
+        margin-bottom: 14px;
+      }
+
+      .confirm-header h1 {
+        font-size: 24px;
+      }
+
+      .confirm-header p {
+        font-size: 14px;
+      }
+
+      .confirm-card {
+        padding: 18px;
+      }
+
+      .confirm-card h2 {
+        font-size: 18px;
+      }
+
+      .confirm-row {
+        grid-template-columns: 1fr;
+        gap: 4px;
+        padding: 11px 0;
+      }
+
+      .confirm-row span {
+        font-size: 12px;
+      }
+
+      .confirm-row strong {
+        font-size: 14px;
+      }
+
+      .confirm-notice {
+        margin-top: 14px;
+        font-size: 14px;
+      }
+
+      .back {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page confirm-page">
+
+    <a class="back" href="leave-apply.html">
+      ← 返回修改資料
+    </a>
+
+    <header class="confirm-header">
+      <h1>確認請假資料</h1>
+      <p>
+        請再次確認內容，送出後將進入主管審核流程。
+      </p>
+    </header>
+
+    <section class="card confirm-card">
+      <h2>申請內容</h2>
+
+      <div class="confirm-row">
+        <span>申請人</span>
+        <strong>陳員工</strong>
+      </div>
+
+      <div class="confirm-row">
+        <span>所屬部門</span>
+        <strong>資訊部</strong>
+      </div>
+
+      <div class="confirm-row">
+        <span>假別</span>
+        <strong>特休假</strong>
+      </div>
+
+      <div class="confirm-row">
+        <span>請假日期</span>
+        <strong>2026/08/03 上午 至 2026/08/04 下午</strong>
+      </div>
+
+      <div class="confirm-row">
+        <span>請假天數</span>
+        <strong>2 天</strong>
+      </div>
+
+      <div class="confirm-row">
+        <span>請假原因</span>
+        <strong>處理個人事務。</strong>
+      </div>
+
+      <div class="confirm-row">
+        <span>附件</span>
+        <strong>未上傳附件</strong>
+      </div>
+
+      <div class="confirm-row">
+        <span>審核主管</span>
+        <strong>王主管</strong>
+      </div>
+
+      <div class="confirm-row">
+        <span>目前狀態</span>
+        <strong class="confirm-status">尚未送出</strong>
+      </div>
+    </section>
+
+    <div class="notice confirm-notice">
+      目前為純 HTML 原型，因此這個確認頁顯示固定示範資料。
+      之後接回 Django 時，會自動帶入上一頁實際填寫的內容。
+    </div>
+
+    <div class="actions confirm-actions">
+      <a
+        class="button primary"
+        href="leave-success.html"
+      >
+        確認並送出
+      </a>
+
+      <a
+        class="button secondary"
+        href="leave-apply.html"
+      >
+        返回修改
+      </a>
+    </div>
+  </main>
+
+  <nav
+    class="mobile-nav"
+    aria-label="員工手機導覽"
+  >
+    <a href="index.html">
+      <span>⌂</span>
+      <small>首頁</small>
+    </a>
+
+    <a
+      class="active"
+      href="leave-apply.html"
+      aria-current="page"
+    >
+      <span>＋</span>
+      <small>請假</small>
+    </a>
+
+    <a href="notifications.html">
+      <span>●</span>
+      <small>通知</small>
+    </a>
+
+    <a href="profile.html">
+      <span>人</span>
+      <small>我的</small>
+    </a>
+  </nav>
+</body>
+</html>

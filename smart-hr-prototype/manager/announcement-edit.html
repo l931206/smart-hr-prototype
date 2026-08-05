@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>公告詳情｜智慧人資管理平台</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, "Noto Sans TC", sans-serif;
+      background: #f4f7fb;
+      color: #18212f;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      width: min(820px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 28px 0 48px;
+    }
+
+    .back {
+      display: inline-flex;
+      margin-bottom: 22px;
+      color: #0f766e;
+      font-weight: 800;
+    }
+
+    .card {
+      padding: 30px;
+      border: 1px solid #e5ebf2;
+      border-radius: 24px;
+      background: white;
+      box-shadow: 0 14px 38px rgba(15, 23, 42, 0.07);
+    }
+
+    .head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 18px;
+      padding-bottom: 22px;
+      border-bottom: 1px solid #edf1f5;
+    }
+
+    .head h1 {
+      margin: 14px 0 0;
+      font-size: 29px;
+    }
+
+    .status {
+      display: inline-flex;
+      flex: 0 0 auto;
+      padding: 7px 12px;
+      border-radius: 999px;
+      color: #047857;
+      background: #d1fae5;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .tag {
+      display: inline-flex;
+      padding: 6px 11px;
+      border-radius: 999px;
+      color: #0f766e;
+      background: #f0fdfa;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-top: 14px;
+      color: #718096;
+      font-size: 14px;
+    }
+
+    .content {
+      margin-top: 24px;
+      color: #475569;
+      line-height: 1.9;
+    }
+
+    .content h2 {
+      margin: 26px 0 10px;
+      color: #18212f;
+      font-size: 20px;
+    }
+
+    .content p {
+      margin: 0 0 16px;
+    }
+
+    .info-box {
+      margin-top: 18px;
+      padding: 18px;
+      border-left: 4px solid #0f766e;
+      border-radius: 12px;
+      background: #f0fdfa;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 130px 1fr;
+      gap: 14px;
+      padding: 10px 0;
+    }
+
+    .row span {
+      color: #718096;
+      font-size: 14px;
+    }
+
+    .attachment {
+      margin-top: 22px;
+      padding: 18px;
+      border-radius: 14px;
+      background: #f8fafc;
+    }
+
+    .attachment h2 {
+      margin: 0 0 12px;
+      font-size: 18px;
+    }
+
+    .file {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      padding: 13px;
+      border: 1px solid #e5ebf2;
+      border-radius: 12px;
+      background: white;
+    }
+
+    .file span {
+      color: #0f766e;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 26px;
+    }
+
+    .button {
+      min-height: 46px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 20px;
+      border-radius: 12px;
+      font-weight: 800;
+    }
+
+    .primary {
+      color: white;
+      background: #0f766e;
+    }
+
+    .secondary {
+      color: #475569;
+      background: white;
+      border: 1px solid #d8e2ec;
+    }
+
+    .danger {
+      color: #b91c1c;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+    }
+
+    @media (max-width: 620px) {
+      .card {
+        padding: 22px 18px;
+      }
+
+      .head,
+      .file,
+      .actions {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .row {
+        grid-template-columns: 1fr;
+        gap: 4px;
+      }
+
+      .button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <a class="back" href="announcements.html">← 返回公告管理</a>
+
+    <article class="card">
+      <header class="head">
+        <div>
+          <span class="tag">部門公告</span>
+          <h1>資訊部八月份工作安排</h1>
+
+          <div class="meta">
+            <span>公告編號：ANN-20260731-001</span>
+            <span>發布人：王主管</span>
+            <span>發布時間：2026/07/31 09:00</span>
+          </div>
+        </div>
+
+        <span class="status">已發布</span>
+      </header>
+
+      <section class="content">
+        <p>
+          八月份資訊部將進行系統功能測試、伺服器環境調整與內部教育訓練，
+          請各組依照下列時程完成指定工作。
+        </p>
+
+        <h2>工作安排</h2>
+
+        <div class="info-box">
+          <div class="row">
+            <span>8 月 3 日至 7 日</span>
+            <strong>完成新版請假系統功能測試。</strong>
+          </div>
+
+          <div class="row">
+            <span>8 月 10 日</span>
+            <strong>進行測試環境伺服器維護。</strong>
+          </div>
+
+          <div class="row">
+            <span>8 月 14 日</span>
+            <strong>舉辦資訊安全教育訓練。</strong>
+          </div>
+
+          <div class="row">
+            <span>8 月 21 日</span>
+            <strong>提交本月工作成果與問題紀錄。</strong>
+          </div>
+        </div>
+
+        <h2>注意事項</h2>
+
+        <p>
+          各項工作負責人應於期限前更新進度。如遇到技術問題或時程衝突，
+          請儘早向主管回報，以便調整部門人力與工作安排。
+        </p>
+      </section>
+
+      <section class="attachment">
+        <h2>附件</h2>
+
+        <div class="file">
+          <strong>資訊部八月份工作時程.pdf</strong>
+          <span>查看附件</span>
+        </div>
+      </section>
+
+      <div class="actions">
+        <a class="button primary" href="announcement-edit.html">編輯公告</a>
+        <a class="button danger" href="announcement-deactivate.html">下架公告</a>
+        <a class="button secondary" href="announcements.html">返回公告管理</a>
+      </div>
+    </article>
+  </main>
+</body>
+</html>

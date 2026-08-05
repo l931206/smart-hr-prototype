@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>編輯帳號權限｜智慧人資管理平台</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, "Noto Sans TC", sans-serif;
+      background: #f4f7fb;
+      color: #18212f;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      width: min(800px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 28px 0 48px;
+    }
+
+    .back {
+      display: inline-flex;
+      margin-bottom: 22px;
+      color: #4338ca;
+      font-weight: 800;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 30px;
+    }
+
+    .header p {
+      margin: 8px 0 0;
+      color: #718096;
+      line-height: 1.7;
+    }
+
+    .form-card {
+      margin-top: 22px;
+      padding: 26px;
+      border: 1px solid #e5ebf2;
+      border-radius: 24px;
+      background: white;
+      box-shadow: 0 14px 38px rgba(15, 23, 42, 0.07);
+    }
+
+    .section-title {
+      margin: 0 0 18px;
+      font-size: 20px;
+    }
+
+    .section-title:not(:first-child) {
+      margin-top: 28px;
+      padding-top: 24px;
+      border-top: 1px solid #edf1f5;
+    }
+
+    .two-column {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    input,
+    select {
+      width: 100%;
+      min-height: 46px;
+      padding: 0 14px;
+      border: 1px solid #d8e2ec;
+      border-radius: 12px;
+      background: white;
+      color: #18212f;
+      font: inherit;
+      outline: none;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: #4338ca;
+      box-shadow: 0 0 0 3px rgba(67, 56, 202, 0.1);
+    }
+
+    input[disabled] {
+      background: #f3f6f9;
+      color: #8290a3;
+    }
+
+    .permission-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .permission {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 15px;
+      border: 1px solid #e5ebf2;
+      border-radius: 14px;
+      background: #f8fafc;
+    }
+
+    .permission input {
+      width: 18px;
+      height: 18px;
+      min-height: auto;
+      margin-top: 2px;
+      flex: 0 0 auto;
+    }
+
+    .permission label {
+      margin: 0;
+    }
+
+    .permission strong {
+      display: block;
+      font-size: 14px;
+    }
+
+    .permission span {
+      display: block;
+      margin-top: 5px;
+      color: #718096;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .notice {
+      margin-top: 22px;
+      padding: 16px 18px;
+      border-left: 4px solid #4338ca;
+      border-radius: 12px;
+      background: #eef2ff;
+      color: #475569;
+      line-height: 1.7;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 26px;
+    }
+
+    .button {
+      min-height: 46px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 20px;
+      border: 0;
+      border-radius: 12px;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .primary {
+      color: white;
+      background: #4338ca;
+    }
+
+    .secondary {
+      color: #475569;
+      background: white;
+      border: 1px solid #d8e2ec;
+    }
+
+    @media (max-width: 620px) {
+      .form-card {
+        padding: 22px 18px;
+      }
+
+      .two-column {
+        grid-template-columns: 1fr;
+      }
+
+      .actions {
+        flex-direction: column;
+      }
+
+      .button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <a class="back" href="account-detail.html">← 返回帳號詳情</a>
+
+    <header class="header">
+      <h1>編輯角色與權限</h1>
+      <p>調整登入帳號的系統角色、啟用狀態與可使用功能。</p>
+    </header>
+
+    <form class="form-card" action="account-edit-success.html">
+      <h2 class="section-title">帳號資料</h2>
+
+      <div class="two-column">
+        <div class="form-group">
+          <label for="username">登入帳號</label>
+          <input id="username" type="text" value="employee03" disabled>
+        </div>
+
+        <div class="form-group">
+          <label for="employee">對應員工</label>
+          <input id="employee" type="text" value="陳員工｜EMP0003" disabled>
+        </div>
+      </div>
+
+      <div class="two-column">
+        <div class="form-group">
+          <label for="role">系統角色</label>
+          <select id="role" required>
+            <option selected>Employee</option>
+            <option>Manager</option>
+            <option>Admin</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="status">帳號狀態</label>
+          <select id="status" required>
+            <option selected>已啟用</option>
+            <option>等待啟用</option>
+            <option>已停用</option>
+          </select>
+        </div>
+      </div>
+
+      <h2 class="section-title">功能權限</h2>
+
+      <div class="permission-list">
+        <div class="permission">
+          <input id="profilePermission" type="checkbox" checked>
+          <label for="profilePermission">
+            <strong>查看個人資料</strong>
+            <span>允許使用者查看自己的員工與職務資訊。</span>
+          </label>
+        </div>
+
+        <div class="permission">
+          <input id="leavePermission" type="checkbox" checked>
+          <label for="leavePermission">
+            <strong>提出請假申請</strong>
+            <span>允許新增請假並查看個人請假紀錄。</span>
+          </label>
+        </div>
+
+        <div class="permission">
+          <input id="latePermission" type="checkbox" checked>
+          <label for="latePermission">
+            <strong>送出晚到通知</strong>
+            <span>允許向直屬主管傳送晚到資訊。</span>
+          </label>
+        </div>
+
+        <div class="permission">
+          <input id="teamPermission" type="checkbox">
+          <label for="teamPermission">
+            <strong>管理直屬員工</strong>
+            <span>允許查看團隊資料與員工出勤狀況。</span>
+          </label>
+        </div>
+
+        <div class="permission">
+          <input id="approvalPermission" type="checkbox">
+          <label for="approvalPermission">
+            <strong>審核請假申請</strong>
+            <span>允許核准或退回直屬員工的請假申請。</span>
+          </label>
+        </div>
+
+        <div class="permission">
+          <input id="adminPermission" type="checkbox">
+          <label for="adminPermission">
+            <strong>系統管理權限</strong>
+            <span>允許管理員工、部門、帳號與系統設定。</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="notice">
+        角色改為 Manager 時，應同時開啟團隊管理與請假審核權限；改為 Admin 時，將取得完整系統管理權限。
+      </div>
+
+      <div class="actions">
+        <button class="button primary" type="submit">儲存權限設定</button>
+        <a class="button secondary" href="account-detail.html">取消</a>
+      </div>
+    </form>
+  </main>
+</body>
+</html>

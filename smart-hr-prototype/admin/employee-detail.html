@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>員工資料詳情｜智慧人資管理平台</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, "Noto Sans TC", sans-serif;
+      background: #f4f7fb;
+      color: #18212f;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      width: min(920px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 28px 0 48px;
+    }
+
+    .back {
+      display: inline-flex;
+      margin-bottom: 22px;
+      color: #4338ca;
+      font-weight: 800;
+    }
+
+    .profile-card {
+      padding: 28px;
+      border-radius: 26px;
+      color: white;
+      background: linear-gradient(135deg, #4338ca, #0f766e);
+      box-shadow: 0 20px 50px rgba(67, 56, 202, 0.18);
+    }
+
+    .profile-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+    }
+
+    .employee {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .avatar {
+      width: 78px;
+      height: 78px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.28);
+      background: rgba(255,255,255,0.18);
+      font-size: 29px;
+      font-weight: 900;
+    }
+
+    .employee h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+
+    .employee p {
+      margin: 7px 0 0;
+      line-height: 1.6;
+      opacity: 0.9;
+    }
+
+    .status {
+      display: inline-flex;
+      padding: 7px 12px;
+      border-radius: 999px;
+      color: #047857;
+      background: #d1fae5;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-top: 20px;
+    }
+
+    .card {
+      padding: 24px;
+      border: 1px solid #e5ebf2;
+      border-radius: 20px;
+      background: white;
+      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.05);
+    }
+
+    .card h2 {
+      margin: 0 0 18px;
+      font-size: 20px;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 115px 1fr;
+      gap: 14px;
+      padding: 13px 0;
+      border-bottom: 1px solid #edf1f5;
+    }
+
+    .row:last-child {
+      border-bottom: 0;
+    }
+
+    .row span {
+      color: #718096;
+      font-size: 14px;
+    }
+
+    .row strong {
+      line-height: 1.6;
+      word-break: break-word;
+    }
+
+    .account-box {
+      margin-top: 18px;
+      padding: 18px;
+      border-radius: 16px;
+      background: #f8fafc;
+    }
+
+    .account-box h3 {
+      margin: 0 0 14px;
+      font-size: 17px;
+    }
+
+    .role-tag {
+      display: inline-flex;
+      padding: 6px 11px;
+      border-radius: 999px;
+      color: #4338ca;
+      background: #eef2ff;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .button {
+      min-height: 46px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 20px;
+      border-radius: 12px;
+      font-weight: 800;
+    }
+
+    .primary {
+      color: white;
+      background: #4338ca;
+    }
+
+    .danger {
+      color: white;
+      background: #b91c1c;
+    }
+
+    .secondary {
+      color: #475569;
+      background: white;
+      border: 1px solid #d8e2ec;
+    }
+
+    @media (max-width: 720px) {
+      .profile-head,
+      .employee,
+      .actions {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .content-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .row {
+        grid-template-columns: 1fr;
+        gap: 5px;
+      }
+
+      .button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <a class="back" href="employees.html">← 返回員工管理</a>
+
+    <section class="profile-card">
+      <div class="profile-head">
+        <div class="employee">
+          <div class="avatar">陳</div>
+
+          <div>
+            <h1>陳員工</h1>
+            <p>員工編號：EMP0003</p>
+            <p>資訊部｜軟體工程師</p>
+          </div>
+        </div>
+
+        <span class="status">在職</span>
+      </div>
+    </section>
+
+    <section class="content-grid">
+      <article class="card">
+        <h2>基本資料</h2>
+
+        <div class="row">
+          <span>姓名</span>
+          <strong>陳員工</strong>
+        </div>
+
+        <div class="row">
+          <span>電子郵件</span>
+          <strong>employee@example.com</strong>
+        </div>
+
+        <div class="row">
+          <span>聯絡電話</span>
+          <strong>0912-345-678</strong>
+        </div>
+
+        <div class="row">
+          <span>到職日期</span>
+          <strong>2026/01/01</strong>
+        </div>
+
+        <div class="row">
+          <span>在職狀態</span>
+          <strong>在職</strong>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>職務與帳號</h2>
+
+        <div class="row">
+          <span>部門</span>
+          <strong>資訊部</strong>
+        </div>
+
+        <div class="row">
+          <span>職稱</span>
+          <strong>軟體工程師</strong>
+        </div>
+
+        <div class="row">
+          <span>直屬主管</span>
+          <strong>王主管</strong>
+        </div>
+
+        <div class="account-box">
+          <h3>登入帳號</h3>
+
+          <div class="row">
+            <span>使用者名稱</span>
+            <strong>employee03</strong>
+          </div>
+
+          <div class="row">
+            <span>帳號狀態</span>
+            <strong>已啟用</strong>
+          </div>
+
+          <div class="row">
+            <span>系統角色</span>
+            <strong><span class="role-tag">Employee</span></strong>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <div class="actions">
+      <a class="button primary" href="employee-edit.html">編輯員工資料</a>
+      <a class="button secondary" href="accounts.html">管理帳號權限</a>
+      <a class="button danger" href="employee-deactivate.html">設定為離職</a>
+    </div>
+  </main>
+</body>
+</html>

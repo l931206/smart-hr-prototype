@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <title>請假申請詳情｜智慧人資管理平台</title>
+
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/mobile.css">
+
+  <style>
+    .request-detail-page {
+      width: min(820px, calc(100% - 28px));
+    }
+
+    .request-detail-card {
+      padding: 28px;
+    }
+
+    .request-detail-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 18px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #edf1f5;
+    }
+
+    .request-employee {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .request-avatar {
+      width: 54px;
+      height: 54px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      color: white;
+      background: var(--color-primary);
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .request-employee h1 {
+      margin: 0;
+      font-size: 25px;
+      line-height: 1.4;
+    }
+
+    .request-employee p {
+      margin: 6px 0 0;
+      color: var(--color-muted);
+      font-size: 14px;
+      overflow-wrap: anywhere;
+    }
+
+    .request-status {
+      display: inline-flex;
+      flex: 0 0 auto;
+      padding: 6px 11px;
+      border-radius: 999px;
+      color: var(--color-warning);
+      background: var(--color-warning-bg);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .request-info-box {
+      margin-top: 22px;
+      padding: 18px;
+      border-radius: 16px;
+      background: #f8fafc;
+    }
+
+    .request-info-row {
+      display: grid;
+      grid-template-columns: 130px minmax(0, 1fr);
+      gap: 16px;
+      padding: 13px 0;
+      border-bottom: 1px solid #e8edf2;
+    }
+
+    .request-info-row:last-child {
+      border-bottom: 0;
+    }
+
+    .request-info-row span {
+      color: var(--color-muted);
+      font-size: 14px;
+    }
+
+    .request-info-row strong {
+      min-width: 0;
+      line-height: 1.7;
+      overflow-wrap: anywhere;
+    }
+
+    .request-warning {
+      margin-top: 22px;
+      border-left-color: #f59e0b;
+      background: #fffbeb;
+      color: #6b5b34;
+    }
+
+    .manager-comment {
+      margin-top: 22px;
+    }
+
+    .request-actions {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .request-actions .button {
+      width: 100%;
+    }
+
+    .approve-button {
+      color: white;
+      background: var(--color-primary);
+    }
+
+    .reject-button {
+      color: white;
+      background: var(--color-danger);
+    }
+
+    @media (max-width: 700px) {
+      .request-detail-page {
+        width: calc(100% - 20px);
+      }
+
+      .request-detail-page .back {
+        display: none;
+      }
+
+      .request-detail-card {
+        padding: 18px;
+      }
+
+      .request-detail-head {
+        flex-direction: column;
+        gap: 10px;
+        padding-bottom: 16px;
+      }
+
+      .request-avatar {
+        width: 46px;
+        height: 46px;
+        font-size: 18px;
+      }
+
+      .request-employee h1 {
+        font-size: 20px;
+      }
+
+      .request-employee p {
+        font-size: 12px;
+      }
+
+      .request-info-box {
+        margin-top: 18px;
+        padding: 15px;
+      }
+
+      .request-info-row {
+        grid-template-columns: 1fr;
+        gap: 4px;
+        padding: 10px 0;
+      }
+
+      .request-info-row span {
+        font-size: 12px;
+      }
+
+      .request-info-row strong {
+        font-size: 14px;
+      }
+
+      .request-warning {
+        margin-top: 16px;
+        font-size: 14px;
+      }
+
+      .manager-comment {
+        margin-top: 16px;
+      }
+
+      .request-actions {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        margin-top: 18px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page request-detail-page">
+
+    <a class="back" href="leave-requests.html">
+      ← 返回請假審核
+    </a>
+
+    <section class="card request-detail-card">
+
+      <header class="request-detail-head">
+        <div class="request-employee">
+          <div class="request-avatar">
+            陳
+          </div>
+
+          <div>
+            <h1>陳員工的特休假申請</h1>
+            <p>申請編號：LEAVE-20260730-001</p>
+          </div>
+        </div>
+
+        <span class="request-status">
+          等待審核
+        </span>
+      </header>
+
+      <section class="request-info-box">
+        <div class="request-info-row">
+          <span>所屬部門</span>
+          <strong>資訊部</strong>
+        </div>
+
+        <div class="request-info-row">
+          <span>職稱</span>
+          <strong>軟體工程師</strong>
+        </div>
+
+        <div class="request-info-row">
+          <span>假別</span>
+          <strong>特休假</strong>
+        </div>
+
+        <div class="request-info-row">
+          <span>請假日期</span>
+          <strong>2026/08/03 上午 至 2026/08/04 下午</strong>
+        </div>
+
+        <div class="request-info-row">
+          <span>請假天數</span>
+          <strong>2 天</strong>
+        </div>
+
+        <div class="request-info-row">
+          <span>剩餘特休</span>
+          <strong>5 天</strong>
+        </div>
+
+        <div class="request-info-row">
+          <span>請假原因</span>
+          <strong>處理個人事務。</strong>
+        </div>
+
+        <div class="request-info-row">
+          <span>附件</span>
+          <strong>未上傳附件</strong>
+        </div>
+
+        <div class="request-info-row">
+          <span>申請時間</span>
+          <strong>2026/07/30 13:45</strong>
+        </div>
+      </section>
+
+      <div class="notice request-warning">
+        核准後，系統會更新員工請假紀錄與剩餘假期；
+        退回時請填寫明確原因，方便員工重新調整申請。
+      </div>
+
+      <div class="form-group manager-comment">
+        <label for="comment">主管備註</label>
+
+        <textarea
+          id="comment"
+          name="comment"
+          placeholder="核准時可填寫說明；退回時請務必填寫原因"
+        ></textarea>
+
+        <p class="help">
+          此為純 HTML 原型，按鈕目前會直接進入對應的結果頁。
+        </p>
+      </div>
+
+      <div class="request-actions">
+        <a
+          class="button approve-button"
+          href="approval-success.html"
+        >
+          核准申請
+        </a>
+
+        <a
+          class="button reject-button"
+          href="rejection-success.html"
+        >
+          退回申請
+        </a>
+
+        <a
+          class="button secondary"
+          href="leave-requests.html"
+        >
+          稍後處理
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <nav
+    class="mobile-nav"
+    aria-label="主管手機導覽"
+  >
+    <a href="index.html">
+      <span>⌂</span>
+      <small>首頁</small>
+    </a>
+
+    <a
+      class="active"
+      href="leave-requests.html"
+      aria-current="page"
+    >
+      <span>✓</span>
+      <small>審核</small>
+    </a>
+
+    <a href="team.html">
+      <span>人</span>
+      <small>團隊</small>
+    </a>
+
+    <a href="notifications.html">
+      <span>•••</span>
+      <small>更多</small>
+    </a>
+  </nav>
+</body>
+</html>

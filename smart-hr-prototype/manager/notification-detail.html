@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+>
+
+<title>主管通知詳情｜智慧人資管理平台</title>
+
+<link rel="stylesheet" href="../assets/css/base.css">
+<link rel="stylesheet" href="../assets/css/components.css">
+<link rel="stylesheet" href="../assets/css/mobile.css">
+
+<style>
+
+.notification-detail-page{
+width:min(780px,calc(100% - 28px));
+}
+
+.notification-detail-card{
+padding:28px;
+}
+
+.notification-detail-head{
+display:flex;
+justify-content:space-between;
+align-items:flex-start;
+gap:18px;
+padding-bottom:20px;
+border-bottom:1px solid #edf1f5;
+}
+
+.notification-detail-head h1{
+margin:0;
+font-size:27px;
+line-height:1.4;
+}
+
+.notification-detail-time{
+flex:0 0 auto;
+color:#8290a3;
+font-size:13px;
+white-space:nowrap;
+}
+
+.notification-detail-tag{
+display:inline-flex;
+margin-top:12px;
+padding:6px 11px;
+border-radius:999px;
+color:var(--color-warning);
+background:var(--color-warning-bg);
+font-size:13px;
+font-weight:800;
+}
+
+.notification-detail-message{
+margin-top:22px;
+color:var(--color-text-soft);
+line-height:1.8;
+}
+
+.notification-detail-info{
+margin-top:22px;
+padding:18px;
+border-radius:16px;
+background:#f8fafc;
+}
+
+.notification-detail-row{
+display:grid;
+grid-template-columns:135px minmax(0,1fr);
+gap:16px;
+padding:13px 0;
+border-bottom:1px solid #e8edf2;
+}
+
+.notification-detail-row:last-child{
+border-bottom:0;
+}
+
+.notification-detail-row span{
+color:var(--color-muted);
+font-size:14px;
+}
+
+.notification-detail-row strong{
+min-width:0;
+line-height:1.7;
+overflow-wrap:anywhere;
+}
+
+.notification-detail-notice{
+margin-top:22px;
+border-left-color:#f59e0b;
+background:#fffbeb;
+color:#6b5b34;
+}
+
+.notification-detail-actions{
+margin-top:24px;
+}
+
+@media(max-width:700px){
+
+.notification-detail-page{
+width:calc(100% - 20px);
+}
+
+.notification-detail-page .back{
+display:none;
+}
+
+.notification-detail-card{
+padding:18px;
+}
+
+.notification-detail-head{
+flex-direction:column;
+gap:10px;
+padding-bottom:16px;
+}
+
+.notification-detail-head h1{
+font-size:22px;
+}
+
+.notification-detail-time{
+font-size:12px;
+white-space:normal;
+}
+
+.notification-detail-message{
+margin-top:18px;
+font-size:14px;
+}
+
+.notification-detail-info{
+margin-top:18px;
+padding:15px;
+}
+
+.notification-detail-row{
+grid-template-columns:1fr;
+gap:4px;
+padding:10px 0;
+}
+
+.notification-detail-row span{
+font-size:12px;
+}
+
+.notification-detail-row strong{
+font-size:14px;
+}
+
+.notification-detail-notice{
+margin-top:16px;
+font-size:14px;
+}
+
+.notification-detail-actions{
+margin-top:18px;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<main class="page notification-detail-page">
+
+<a class="back" href="notifications.html">
+← 返回主管通知
+</a>
+
+<article class="card notification-detail-card">
+
+<header class="notification-detail-head">
+
+<div>
+
+<h1>
+新的特休假申請
+</h1>
+
+<span class="notification-detail-tag">
+等待審核
+</span>
+
+</div>
+
+<time
+class="notification-detail-time"
+datetime="2026-07-30T13:45"
+>
+2026/07/30 13:45
+</time>
+
+</header>
+
+<div class="notification-detail-message">
+
+陳員工提出新的特休假申請，
+請確認請假日期、部門人力與申請內容後完成審核。
+
+</div>
+
+<section class="notification-detail-info">
+
+<div class="notification-detail-row">
+<span>申請人</span>
+<strong>陳員工</strong>
+</div>
+
+<div class="notification-detail-row">
+<span>所屬部門</span>
+<strong>資訊部</strong>
+</div>
+
+<div class="notification-detail-row">
+<span>申請編號</span>
+<strong>LEAVE-20260730-001</strong>
+</div>
+
+<div class="notification-detail-row">
+<span>假別</span>
+<strong>特休假</strong>
+</div>
+
+<div class="notification-detail-row">
+<span>請假日期</span>
+<strong>2026/08/03 上午 至 2026/08/04 下午</strong>
+</div>
+
+<div class="notification-detail-row">
+<span>請假天數</span>
+<strong>2 天</strong>
+</div>
+
+<div class="notification-detail-row">
+<span>請假原因</span>
+<strong>處理個人事務。</strong>
+</div>
+
+</section>
+
+<div class="notice notification-detail-notice">
+
+此申請尚未完成審核，
+請進入請假詳細頁執行核准或退回。
+
+</div>
+
+<div class="actions notification-detail-actions">
+
+<a
+class="button primary"
+href="leave-request-detail.html"
+>
+前往審核申請
+</a>
+
+<a
+class="button secondary"
+href="notifications.html"
+>
+返回通知列表
+</a>
+
+</div>
+
+</article>
+
+</main>
+
+<nav
+class="mobile-nav"
+aria-label="主管手機導覽"
+>
+
+<a href="index.html">
+<span>⌂</span>
+<small>首頁</small>
+</a>
+
+<a href="leave-requests.html">
+<span>✓</span>
+<small>審核</small>
+</a>
+
+<a href="team.html">
+<span>人</span>
+<small>團隊</small>
+</a>
+
+<a
+class="active"
+href="notifications.html"
+aria-current="page"
+>
+<span>•••</span>
+<small>更多</small>
+</a>
+
+</nav>
+
+</body>
+</html>
