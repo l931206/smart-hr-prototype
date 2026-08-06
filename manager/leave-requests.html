@@ -259,17 +259,17 @@
     <section class="summary-grid request-summary">
       <article class="summary-card">
         <span>等待審核</span>
-        <strong>2</strong>
+        <strong id="pendingCount">0</strong>
       </article>
 
       <article class="summary-card">
         <span>今日已處理</span>
-        <strong>1</strong>
+        <strong id="processedTodayCount">0</strong>
       </article>
 
       <article class="summary-card">
         <span>本月申請</span>
-        <strong>8</strong>
+        <strong id="monthlyRequestCount">0</strong>
       </article>
     </section>
 
@@ -425,7 +425,8 @@
     (async () => {
       const list = document.querySelector("#requestList");
       try {
-        const requests = await apiRequest("/leave-requests/");
+        const payload = await apiRequest("/leave-requests/");
+        const requests = Array.isArray(payload) ? payload : (payload.results || []);
         const pending = requests.filter((request) => request.status === "pending");
         const now = new Date();
         const sameDay = (value) => value && new Date(value).toDateString() === now.toDateString();
@@ -434,12 +435,11 @@
           const date = new Date(value);
           return date.getFullYear() === now.getFullYear() && date.getMonth() === now.getMonth();
         };
-        const summary = document.querySelectorAll(".request-summary .summary-card strong");
-        if (summary[0]) summary[0].textContent = String(pending.length);
-        if (summary[1]) summary[1].textContent = String(requests.filter((request) =>
+        document.querySelector("#pendingCount").textContent = String(pending.length);
+        document.querySelector("#processedTodayCount").textContent = String(requests.filter((request) =>
           ["approved", "rejected"].includes(request.status) && sameDay(request.reviewed_at)
         ).length);
-        if (summary[2]) summary[2].textContent = String(requests.filter((request) => sameMonth(request.created_at)).length);
+        document.querySelector("#monthlyRequestCount").textContent = String(requests.filter((request) => sameMonth(request.created_at)).length);
         list.innerHTML = pending.length ? pending.map((request) => `
           <a class="request-card" href="leave-request-detail.html?id=${request.id}">
             <div class="request-head">
