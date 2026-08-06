@@ -1,7 +1,7 @@
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
-from .models import Department, User
+from .models import Department, LeaveRequest, User
 
 
 class CoreApiTests(APITestCase):
@@ -38,3 +38,21 @@ class CoreApiTests(APITestCase):
         self.assertEqual(employees.status_code, 200)
         self.assertEqual(departments.data[0]["code"], "IT")
         self.assertEqual(employees.data[0]["employee_no"], "EMP0001")
+
+    def test_employee_can_create_and_read_own_leave_request(self):
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(
+            "/api/leave-requests/",
+            {
+                "leave_type": "特休",
+                "start_date": "2026-08-10",
+                "end_date": "2026-08-11",
+                "start_time": "全天",
+                "end_time": "全天",
+                "reason": "私人事務",
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.data["days"], 2)
+        self.assertEqual(LeaveRequest.objects.count(), 1)

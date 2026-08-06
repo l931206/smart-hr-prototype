@@ -1,11 +1,12 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from .views import DepartmentViewSet, EmployeeViewSet, LoginView, LogoutView, MeView
+from .views import DepartmentViewSet, EmployeeViewSet, LeaveRequestViewSet, LoginView, LogoutView, MeView
 
 router = DefaultRouter()
 router.register("departments", DepartmentViewSet, basename="department")
 router.register("employees", EmployeeViewSet, basename="employee")
+router.register("leave-requests", LeaveRequestViewSet, basename="leave-request")
 
 urlpatterns = [
     path("auth/login/", LoginView.as_view(), name="login"),

@@ -267,7 +267,7 @@
       </select>
     </section>
 
-    <section class="history-list">
+    <section class="history-list" id="historyList">
 
       <article class="history-card">
         <div class="history-head">
@@ -414,5 +414,37 @@
       <small>我的</small>
     </a>
   </nav>
+  <script src="../assets/js/api.js"></script>
+  <script>
+    (async () => {
+      const list = document.querySelector("#historyList");
+      try {
+        const requests = await apiRequest("/leave-requests/");
+        if (!requests.length) {
+          list.innerHTML = "<div class=\"card\"><p>目前沒有請假紀錄。</p></div>";
+          return;
+        }
+        list.innerHTML = requests.map((request) => `
+          <article class="history-card">
+            <div class="history-head">
+              <div>
+                <h2>${request.leave_type}</h2>
+                <p class="application-no">申請編號：LEAVE-${String(request.id).padStart(6, "0")}</p>
+              </div>
+              <span class="status ${request.status}">${request.status_label}</span>
+            </div>
+            <div class="history-details">
+              <div class="history-detail"><span>請假日期</span><strong>${request.start_date}－${request.end_date}</strong></div>
+              <div class="history-detail"><span>請假天數</span><strong>${request.days} 天</strong></div>
+              <div class="history-detail"><span>審核狀態</span><strong>${request.status_label}</strong></div>
+            </div>
+            <div class="history-reason">請假原因：${request.reason}</div>
+          </article>
+        `).join("");
+      } catch (error) {
+        list.innerHTML = `<div class="card"><p>${error.message || "無法載入請假紀錄。"}</p></div>`;
+      }
+    })();
+  </script>
 </body>
 </html>

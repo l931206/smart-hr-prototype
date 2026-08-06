@@ -224,12 +224,12 @@
           </div>
 
           <div>
-            <h1>陳員工的特休假申請</h1>
-            <p>申請編號：LEAVE-20260730-001</p>
+            <h1 id="requestTitle">陳員工的特休假申請</h1>
+            <p id="requestNumber">申請編號：LEAVE-20260730-001</p>
           </div>
         </div>
 
-        <span class="request-status">
+        <span class="request-status" id="requestStatus">
           等待審核
         </span>
       </header>
@@ -300,6 +300,7 @@
       <div class="request-actions">
         <a
           class="button approve-button"
+          id="approveRequest"
           href="approval-success.html"
         >
           核准申請
@@ -307,6 +308,7 @@
 
         <a
           class="button reject-button"
+          id="rejectRequest"
           href="rejection-success.html"
         >
           退回申請
@@ -350,5 +352,34 @@
       <small>更多</small>
     </a>
   </nav>
+  <script src="../assets/js/api.js"></script>
+  <script>
+    (async () => {
+      const requestId = new URLSearchParams(window.location.search).get("id");
+      if (!requestId) return;
+      try {
+        const request = await apiRequest(`/leave-requests/${requestId}/`);
+        document.querySelector("#requestTitle").textContent = `${request.employee_name}的${request.leave_type}申請`;
+        document.querySelector("#requestNumber").textContent = `申請編號：LEAVE-${String(request.id).padStart(6, "0")}`;
+        document.querySelector("#requestStatus").textContent = request.status_label;
+        const values = document.querySelectorAll(".request-info-row strong");
+        values[0].textContent = request.employee_department || "—";
+        values[2].textContent = request.leave_type;
+        values[3].textContent = `${request.start_date} ${request.start_time} 至 ${request.end_date} ${request.end_time}`;
+        values[4].textContent = `${request.days} 天`;
+        values[6].textContent = request.reason;
+        values[8].textContent = new Date(request.created_at).toLocaleString("zh-TW");
+        const updateStatus = async (event, status, target) => {
+          event.preventDefault();
+          await apiRequest(`/leave-requests/${request.id}/`, { method: "PATCH", body: JSON.stringify({ status, reviewer_comment: document.querySelector("#comment").value }) });
+          window.location.href = target;
+        };
+        document.querySelector("#approveRequest").addEventListener("click", (event) => updateStatus(event, "approved", "approval-success.html"));
+        document.querySelector("#rejectRequest").addEventListener("click", (event) => updateStatus(event, "rejected", "rejection-success.html"));
+      } catch (error) {
+        alert(error.message || "無法載入申請資料。");
+      }
+    })();
+  </script>
 </body>
 </html>

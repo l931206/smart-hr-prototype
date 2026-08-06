@@ -294,7 +294,7 @@
       </select>
     </section>
 
-    <section class="request-list">
+    <section class="request-list" id="requestList">
 
       <a
         class="request-card"
@@ -420,5 +420,28 @@
       <small>更多</small>
     </a>
   </nav>
+  <script src="../assets/js/api.js"></script>
+  <script>
+    (async () => {
+      const list = document.querySelector("#requestList");
+      try {
+        const requests = await apiRequest("/leave-requests/");
+        const pending = requests.filter((request) => request.status === "pending");
+        list.innerHTML = pending.length ? pending.map((request) => `
+          <a class="request-card" href="leave-request-detail.html?id=${request.id}">
+            <div class="request-head">
+              <div class="request-employee"><div class="request-avatar">${(request.employee_name || "員").slice(0, 1)}</div><div><h2>${request.employee_name}－${request.leave_type}</h2><p>申請編號：LEAVE-${String(request.id).padStart(6, "0")}</p></div></div>
+              <span class="request-status">${request.status_label}</span>
+            </div>
+            <div class="request-details"><div class="request-detail"><span>請假日期</span><strong>${request.start_date}－${request.end_date}</strong></div><div class="request-detail"><span>請假天數</span><strong>${request.days} 天</strong></div><div class="request-detail"><span>申請時間</span><strong>${new Date(request.created_at).toLocaleString("zh-TW")}</strong></div></div>
+            <div class="request-reason">請假原因：${request.reason}</div>
+            <span class="request-view-link">查看申請詳情 →</span>
+          </a>
+        `).join("") : "<div class=\"card\"><p>目前沒有待審核申請。</p></div>";
+      } catch (error) {
+        list.innerHTML = `<div class="card"><p>${error.message || "無法載入審核資料。"}</p></div>`;
+      }
+    })();
+  </script>
 </body>
 </html>

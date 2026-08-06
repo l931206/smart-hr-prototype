@@ -36,3 +36,29 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.display_name or self.get_full_name() or self.username
+
+
+class LeaveRequest(models.Model):
+    class Status(models.TextChoices):
+        PENDING = "pending", "待審核"
+        APPROVED = "approved", "已核准"
+        REJECTED = "rejected", "已退回"
+
+    employee = models.ForeignKey(User, on_delete=models.CASCADE, related_name="leave_requests")
+    leave_type = models.CharField(max_length=50)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    start_time = models.CharField(max_length=20, blank=True)
+    end_time = models.CharField(max_length=20, blank=True)
+    reason = models.TextField()
+    status = models.CharField(max_length=20, choices=Status.choices, default=Status.PENDING)
+    reviewer_comment = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    reviewed_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    @property
+    def days(self):
+        return (self.end_date - self.start_date).days + 1

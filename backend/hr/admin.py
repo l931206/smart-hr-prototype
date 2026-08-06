@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from .models import Department, User
+from .models import Department, LeaveRequest, User
 
 
 @admin.register(Department)
@@ -18,3 +18,10 @@ class HrUserAdmin(UserAdmin):
     list_display = ["username", "display_name", "employee_no", "role", "department", "is_active"]
     list_filter = ["role", "department", "is_active"]
     search_fields = ["username", "display_name", "employee_no", "email"]
+
+
+@admin.register(LeaveRequest)
+class LeaveRequestAdmin(admin.ModelAdmin):
+    list_display = ["employee", "leave_type", "start_date", "end_date", "status", "created_at"]
+    list_filter = ["status", "leave_type"]
+    search_fields = ["employee__display_name", "employee__employee_no", "reason"]

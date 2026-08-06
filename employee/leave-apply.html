@@ -160,6 +160,7 @@
 
     <form
       class="form-card leave-form"
+      id="leaveForm"
       action="leave-confirm.html"
     >
       <section class="leave-balance">
@@ -335,5 +336,31 @@
       <small>我的</small>
     </a>
   </nav>
+  <script src="../assets/js/api.js"></script>
+  <script>
+    document.querySelector("#leaveForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const button = form.querySelector("button[type=submit]");
+      button.disabled = true;
+      try {
+        await apiRequest("/leave-requests/", {
+          method: "POST",
+          body: JSON.stringify({
+            leave_type: form.leaveType.value,
+            start_date: form.startDate.value,
+            end_date: form.endDate.value,
+            start_time: form.startTime.value,
+            end_time: form.endTime.value,
+            reason: form.reason.value.trim()
+          })
+        });
+        window.location.href = "leave-success.html";
+      } catch (error) {
+        alert(error.message || "送出申請失敗，請稍後再試。");
+        button.disabled = false;
+      }
+    });
+  </script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 
-from .models import Department, User
+from .models import Department, LeaveRequest, User
 
 
 class DepartmentSerializer(serializers.ModelSerializer):
@@ -36,4 +36,29 @@ class LoginSerializer(serializers.Serializer):
         if not user or not user.is_active:
             raise serializers.ValidationError("帳號或密碼不正確。")
         attrs["user"] = user
+        return attrs
+
+
+class LeaveRequestSerializer(serializers.ModelSerializer):
+    employee_name = serializers.CharField(source="employee.display_name", read_only=True)
+    employee_no = serializers.CharField(source="employee.employee_no", read_only=True)
+    employee_department = serializers.CharField(source="employee.department.name", read_only=True)
+    status_label = serializers.CharField(source="get_status_display", read_only=True)
+    days = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = LeaveRequest
+        fields = [
+            "id", "employee", "employee_name", "employee_no", "employee_department", "leave_type",
+            "start_date", "end_date", "start_time", "end_time", "days", "reason",
+            "status", "status_label", "reviewer_comment", "created_at", "reviewed_at",
+        ]
+        read_only_fields = [
+            "id", "employee", "employee_name", "employee_no", "days", "status_label",
+            "created_at", "reviewed_at",
+        ]
+
+    def validate(self, attrs):
+        if attrs["end_date"] < attrs["start_date"]:
+            raise serializers.ValidationError("結束日期不能早於開始日期。")
         return attrs
