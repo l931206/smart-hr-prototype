@@ -291,7 +291,7 @@
       }
     }
 
-    @media (max-width: 620px) {
+    @media (max-width: 700px) {
       .page {
         width: min(100% - 20px, 1180px);
         padding: 20px 0;
@@ -336,29 +336,16 @@
         <h1>智慧人資管理平台</h1>
 
         <p class="hero-description">
-          此頁為純前端互動原型，用來展示員工、主管與系統管理者
-          在同一套企業平台中的不同操作畫面與工作流程。
+          集中管理員工資料、出勤、請假、公告與部門協作，
+          讓每個角色都能快速完成日常工作。
         </p>
-
-        <div class="hero-meta">
-          <span class="hero-chip">純 HTML 原型</span>
-          <span class="hero-chip">RWD 響應式設計</span>
-          <span class="hero-chip">角色導向介面</span>
-          <span class="hero-chip">免登入體驗</span>
-        </div>
       </div>
     </section>
 
     <section class="section-heading">
       <div>
         <h2>選擇角色開始體驗</h2>
-        <p>
-          每一個角色都會進入不同的操作介面，
-          只顯示與該角色工作相關的功能，減少複雜流程。
-        </p>
       </div>
-
-      <span class="prototype-tag">互動原型首頁</span>
     </section>
 
     <section class="role-grid">
@@ -408,7 +395,7 @@
         </div>
       </a>
 
-      <a href="admin/index.html">
+      <a class="role-card admin-role" href="admin/index.html">
         <div class="role-icon">⚙️</div>
 
         <h3>系統管理後台</h3>
@@ -455,14 +442,10 @@
         <span class="flow-step">報表與自動化</span>
       </div>
 
-      <div class="note">
-        本原型先展示完整的操作概念與畫面流程；
-        後續再依照原型逐步串接 Django、資料庫、Trigger、排程及 MCP。
-      </div>
     </section>
 
     <footer class="page-footer">
-      兆迪聯智科技有限公司｜智慧人資管理平台互動原型
+      兆迪聯智科技有限公司｜智慧人資管理平台
     </footer>
   </main>
 </body>
