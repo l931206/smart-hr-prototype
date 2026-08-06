@@ -231,17 +231,17 @@
     <section class="summary-grid history-summary">
       <article class="summary-card">
         <span>等待審核</span>
-        <strong>1</strong>
+        <strong id="historyPendingCount">0</strong>
       </article>
 
       <article class="summary-card">
         <span>本年度已核准</span>
-        <strong>3</strong>
+        <strong id="historyApprovedCount">0</strong>
       </article>
 
       <article class="summary-card">
         <span>特休剩餘</span>
-        <strong>5 天</strong>
+        <strong id="historyApprovedDays">0 天</strong>
       </article>
     </section>
 
@@ -419,7 +419,11 @@
     (async () => {
       const list = document.querySelector("#historyList");
       try {
-        const requests = await apiRequest("/leave-requests/");
+        const payload = await apiRequest("/leave-requests/");
+        const requests = Array.isArray(payload) ? payload : (payload.results || []);
+        document.querySelector("#historyPendingCount").textContent = String(requests.filter((request) => request.status === "pending").length);
+        document.querySelector("#historyApprovedCount").textContent = String(requests.filter((request) => request.status === "approved").length);
+        document.querySelector("#historyApprovedDays").textContent = `${requests.filter((request) => request.status === "approved").reduce((total, request) => total + Number(request.days || 0), 0)} 天`;
         if (!requests.length) {
           list.innerHTML = "<div class=\"card\"><p>目前沒有請假紀錄。</p></div>";
           return;

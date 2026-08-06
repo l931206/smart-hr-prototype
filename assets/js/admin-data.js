@@ -88,6 +88,14 @@
           </div><span class="view-link">查看部門資料 →</span>
         </a>`).join("") : `<p class="empty-state">目前沒有符合條件的部門資料。</p>`;
     };
+    const activeDepartments = departments.filter((department) => department.is_active);
+    const employeeCount = departments.reduce((total, department) => total + Number(department.employee_count || 0), 0);
+    const totalCount = document.querySelector("#departmentTotalCount");
+    const activeCount = document.querySelector("#departmentActiveCount");
+    const totalEmployees = document.querySelector("#departmentEmployeeCount");
+    if (totalCount) totalCount.textContent = String(departments.length);
+    if (activeCount) activeCount.textContent = String(activeDepartments.length);
+    if (totalEmployees) totalEmployees.textContent = String(employeeCount);
     [search, status].filter(Boolean).forEach((element) => element.addEventListener("input", render));
     render();
   }
