@@ -21,6 +21,13 @@ class LoginView(APIView):
         return Response({"token": token.key, "user": UserSerializer(user).data})
 
 
+class HealthView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        return Response({"status": "ok"})
+
+
 class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
 

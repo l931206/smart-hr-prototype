@@ -26,6 +26,11 @@ class CoreApiTests(APITestCase):
         self.assertIn("token", response.data)
         self.assertEqual(response.data["user"]["employee_no"], "EMP0001")
 
+    def test_health_endpoint_is_public(self):
+        response = self.client.get("/api/health/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["status"], "ok")
+
     def test_me_requires_authentication(self):
         response = self.client.get(reverse("me"))
         self.assertEqual(response.status_code, 401)
