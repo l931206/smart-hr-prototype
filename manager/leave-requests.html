@@ -427,6 +427,19 @@
       try {
         const requests = await apiRequest("/leave-requests/");
         const pending = requests.filter((request) => request.status === "pending");
+        const now = new Date();
+        const sameDay = (value) => value && new Date(value).toDateString() === now.toDateString();
+        const sameMonth = (value) => {
+          if (!value) return false;
+          const date = new Date(value);
+          return date.getFullYear() === now.getFullYear() && date.getMonth() === now.getMonth();
+        };
+        const summary = document.querySelectorAll(".request-summary .summary-card strong");
+        if (summary[0]) summary[0].textContent = String(pending.length);
+        if (summary[1]) summary[1].textContent = String(requests.filter((request) =>
+          ["approved", "rejected"].includes(request.status) && sameDay(request.reviewed_at)
+        ).length);
+        if (summary[2]) summary[2].textContent = String(requests.filter((request) => sameMonth(request.created_at)).length);
         list.innerHTML = pending.length ? pending.map((request) => `
           <a class="request-card" href="leave-request-detail.html?id=${request.id}">
             <div class="request-head">
