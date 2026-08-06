@@ -12,6 +12,13 @@ async function apiRequest(path, options = {}) {
   });
 
   if (!response.ok) {
+    if (response.status === 401 && !path.startsWith("/auth/login/")) {
+      localStorage.removeItem("hr_token");
+      localStorage.removeItem("hr_user");
+      const next = `${window.location.pathname}${window.location.search}`;
+      window.location.href = `../login.html?next=${encodeURIComponent(next.replace(/^\//, ""))}`;
+      throw new Error("登入狀態已失效，請重新登入。");
+    }
     let message = `API request failed: ${response.status}`;
     try {
       const payload = await response.json();
