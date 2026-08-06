@@ -61,3 +61,30 @@ class CoreApiTests(APITestCase):
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.data["days"], 2)
         self.assertEqual(LeaveRequest.objects.count(), 1)
+
+    def test_manager_can_approve_department_leave_request(self):
+        manager = User.objects.create_user(
+            username="manager001",
+            password="manager-password",
+            employee_no="MGR0001",
+            display_name="王主管",
+            role=User.Role.MANAGER,
+            department=self.department,
+        )
+        request = LeaveRequest.objects.create(
+            employee=self.user,
+            leave_type="特休假",
+            start_date="2026-08-10",
+            end_date="2026-08-10",
+            reason="家庭事務",
+        )
+        self.client.force_authenticate(user=manager)
+        response = self.client.patch(
+            f"/api/leave-requests/{request.id}/",
+            {"status": LeaveRequest.Status.APPROVED, "reviewer_comment": "核准"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        request.refresh_from_db()
+        self.assertEqual(request.status, LeaveRequest.Status.APPROVED)
+        self.assertEqual(request.reviewer_comment, "核准")

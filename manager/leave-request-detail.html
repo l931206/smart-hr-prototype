@@ -371,8 +371,25 @@
         values[8].textContent = new Date(request.created_at).toLocaleString("zh-TW");
         const updateStatus = async (event, status, target) => {
           event.preventDefault();
-          await apiRequest(`/leave-requests/${request.id}/`, { method: "PATCH", body: JSON.stringify({ status, reviewer_comment: document.querySelector("#comment").value }) });
-          window.location.href = target;
+          const button = event.currentTarget;
+          const comment = document.querySelector("#comment").value.trim();
+          if (status === "rejected" && !comment) {
+            alert("退回申請時請填寫主管備註。");
+            return;
+          }
+          button.setAttribute("aria-busy", "true");
+          button.style.pointerEvents = "none";
+          try {
+            await apiRequest(`/leave-requests/${request.id}/`, {
+              method: "PATCH",
+              body: JSON.stringify({ status, reviewer_comment: comment })
+            });
+            window.location.href = `${target}?id=${request.id}`;
+          } catch (error) {
+            button.removeAttribute("aria-busy");
+            button.style.pointerEvents = "auto";
+            alert(error.message || "更新申請狀態失敗，請稍後再試。");
+          }
         };
         document.querySelector("#approveRequest").addEventListener("click", (event) => updateStatus(event, "approved", "approval-success.html"));
         document.querySelector("#rejectRequest").addEventListener("click", (event) => updateStatus(event, "rejected", "rejection-success.html"));

@@ -101,6 +101,11 @@
       font-size: 21px;
     }
 
+    .profile-card {
+      align-items: stretch;
+      text-align: left;
+    }
+
     .profile-field {
       display: grid;
       grid-template-columns: 110px minmax(0, 1fr);
@@ -113,15 +118,16 @@
       border-bottom: 0;
     }
 
-    .profile-field span {
+    .profile-field > span {
       color: var(--color-muted);
       font-size: 14px;
     }
 
-    .profile-field strong {
+    .profile-field > strong {
       min-width: 0;
       font-size: 15px;
       line-height: 1.6;
+      text-align: right;
       overflow-wrap: anywhere;
     }
 
@@ -198,12 +204,13 @@
         padding: 11px 0;
       }
 
-      .profile-field span {
+      .profile-field > span {
         font-size: 12px;
       }
 
-      .profile-field strong {
+      .profile-field > strong {
         font-size: 14px;
+        text-align: left;
       }
 
       .profile-notice {
@@ -241,13 +248,13 @@
     <!-- 個人摘要 -->
     <section class="profile-hero">
       <div class="profile-avatar">
-        陳
+        <span id="profileAvatar">陳</span>
       </div>
 
       <div>
-        <h2>陳員工</h2>
-        <p>員工編號：EMP0003</p>
-        <p>資訊部｜軟體工程師</p>
+        <h2 id="profileName">陳員工</h2>
+        <p>員工編號：<span id="profileEmployeeNo">EMP0003</span></p>
+        <p><span id="profileDepartment">資訊部</span>｜軟體工程師</p>
 
         <span class="profile-status">
           ● 在職中
@@ -263,23 +270,23 @@
 
         <div class="profile-field">
           <span>姓名</span>
-          <strong>陳員工</strong>
+          <strong id="profileFullName">陳員工</strong>
         </div>
 
         <div class="profile-field">
           <span>電子郵件</span>
-          <strong>employee@example.com</strong>
+          <strong id="profileEmail">employee@example.com</strong>
         </div>
 
         <div class="profile-field">
           <span>聯絡電話</span>
-          <strong>0912-345-678</strong>
+          <strong id="profilePhone">—</strong>
         </div>
 
         <div class="profile-field">
           <span>在職狀態</span>
           <strong>
-            <span class="status active">
+            <span id="profileEmploymentStatus" class="status active">
               在職
             </span>
           </strong>
@@ -291,7 +298,7 @@
 
         <div class="profile-field">
           <span>所屬部門</span>
-          <strong>資訊部</strong>
+          <strong id="profileDepartmentDetail">資訊部</strong>
         </div>
 
         <div class="profile-field">
@@ -306,7 +313,7 @@
 
         <div class="profile-field">
           <span>到職日期</span>
-          <strong>2026/01/01</strong>
+          <strong id="profileHireDate">2026/01/01</strong>
         </div>
       </article>
     </section>
@@ -364,5 +371,27 @@
       <small>我的</small>
     </a>
   </nav>
+  <script src="../assets/js/api.js"></script>
+  <script>
+    (async () => {
+      try {
+        const user = await getCurrentUser();
+        const name = user.display_name || user.username;
+        const department = user.department_name || "尚未分配部門";
+        const hireDate = user.hire_date || "尚未設定";
+        document.querySelector("#profileAvatar").textContent = name.slice(0, 1);
+        document.querySelector("#profileName").textContent = name;
+        document.querySelector("#profileEmployeeNo").textContent = user.employee_no || "—";
+        document.querySelector("#profileDepartment").textContent = department;
+        document.querySelector("#profileFullName").textContent = name;
+        document.querySelector("#profileEmail").textContent = user.email || "尚未設定";
+        document.querySelector("#profilePhone").textContent = user.phone || "尚未設定";
+        document.querySelector("#profileDepartmentDetail").textContent = department;
+        document.querySelector("#profileHireDate").textContent = hireDate;
+      } catch (error) {
+        window.location.href = "../login.html?next=employee/profile.html";
+      }
+    })();
+  </script>
 </body>
 </html>
