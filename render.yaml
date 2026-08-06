@@ -2,6 +2,7 @@ services:
   - type: web
     name: smart-hr-api
     runtime: python
+    plan: free
     rootDir: backend
     buildCommand: pip install -r requirements.txt && python manage.py migrate && python manage.py bootstrap_demo && python manage.py collectstatic --no-input
     startCommand: gunicorn config.wsgi:application
