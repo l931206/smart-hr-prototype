@@ -137,7 +137,7 @@
       <article class="welcome-card">
         <p class="eyebrow">EMPLOYEE DASHBOARD</p>
 
-        <h1>午安，陳員工</h1>
+        <h1 id="welcomeName">午安，陳員工</h1>
 
         <p>
           今天是 2026 年 7 月 30 日，所有個人人事資訊與常用功能
@@ -145,8 +145,8 @@
         </p>
 
         <div class="employee-meta">
-          <span>資訊部</span>
-          <span>軟體工程師</span>
+          <span id="departmentName">資訊部</span>
+          <span id="jobTitle">員工</span>
           <span>直屬主管：王主管</span>
         </div>
       </article>
@@ -154,10 +154,10 @@
       <article class="profile-card">
         <span class="avatar">陳</span>
 
-        <h2>陳員工</h2>
+        <h2 id="profileName">陳員工</h2>
 
-        <p>EMP0003</p>
-        <p>資訊部／軟體工程師</p>
+        <p id="employeeNo">EMP0003</p>
+        <p id="profileDepartment">資訊部</p>
 
         <a href="profile.html">
           查看我的資料 →
@@ -429,5 +429,25 @@
       <small>我的</small>
     </a>
   </nav>
+  <script src="../assets/js/api.js"></script>
+  <script>
+    (async () => {
+      try {
+        const user = await getCurrentUser();
+        if (user.role !== "employee") {
+          window.location.href = `../${user.role}/index.html`;
+          return;
+        }
+        const name = user.display_name || user.username;
+        document.querySelector("#welcomeName").textContent = `午安，${name}`;
+        document.querySelector("#profileName").textContent = name;
+        document.querySelector("#employeeNo").textContent = user.employee_no || "—";
+        document.querySelector("#departmentName").textContent = user.department_name || "尚未分配部門";
+        document.querySelector("#profileDepartment").textContent = user.department_name || "尚未分配部門";
+      } catch (error) {
+        window.location.href = "../login.html?next=employee/index.html";
+      }
+    })();
+  </script>
 </body>
 </html>
