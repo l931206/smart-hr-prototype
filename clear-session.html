@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>清除登入狀態</title>
+</head>
+<body>
+  <p>正在清除登入狀態，請稍候…</p>
+  <script>
+    localStorage.removeItem("hr_token");
+    localStorage.removeItem("hr_user");
+    sessionStorage.removeItem("hr_token");
+    sessionStorage.removeItem("hr_user");
+    window.location.replace("login.html?cleared=1&v=40a7b7f");
+  </script>
+</body>
+</html>
