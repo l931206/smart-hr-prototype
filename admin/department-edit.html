@@ -198,11 +198,7 @@
       <div class="form-group">
         <label for="manager">部門主管</label>
         <select id="manager" required>
-          <option selected>王主管</option>
-          <option>吳主管</option>
-          <option>林主管</option>
-          <option>蔡主管</option>
-          <option>尚未指定主管</option>
+            <option value="">載入中…</option>
         </select>
       </div>
 
@@ -239,6 +235,11 @@
         document.querySelector("#departmentCode").value = department.code;
         document.querySelector("#departmentName").value = department.name;
         document.querySelector("#status").value = department.is_active ? "active" : "inactive";
+        const employeePayload = await apiRequest("/employees/");
+        const employees = Array.isArray(employeePayload) ? employeePayload : (employeePayload.results || []);
+        const managers = employees.filter((employee) => employee.role === "manager" && employee.is_active && employee.department === department.id);
+        document.querySelector("#manager").innerHTML = `<option value="">尚未指定主管</option>${managers.map((manager) => `<option value="${manager.id}">${manager.display_name || manager.username}</option>`).join("")}`;
+        document.querySelector("#manager").value = managers[0]?.id || "";
         document.querySelector(".back").href = `department-detail.html?id=${id}`;
         document.querySelector(".button.secondary").href = `department-detail.html?id=${id}`;
         document.querySelector("#departmentEditForm").addEventListener("submit", async (event) => {
