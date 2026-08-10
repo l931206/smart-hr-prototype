@@ -52,10 +52,10 @@ class MeView(APIView):
 
     def put(self, request):
         user = request.user
-        for field in ("display_name", "email", "phone"):
+        for field in ("display_name", "email", "phone", "avatar_data"):
             if field in request.data:
                 setattr(user, field, request.data[field])
-        user.save(update_fields=["display_name", "email", "phone"])
+        user.save(update_fields=["display_name", "email", "phone", "avatar_data"])
         return Response(UserSerializer(user).data)
 
 

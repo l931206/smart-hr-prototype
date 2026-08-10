@@ -443,6 +443,13 @@
         const name = user.display_name || user.username;
         document.querySelector("#welcomeName").textContent = `午安，${name}`;
         document.querySelector("#profileName").textContent = name;
+        const avatar = document.querySelector(".profile-card .avatar");
+        if (user.avatar_data) {
+          avatar.textContent = "";
+          avatar.style.backgroundImage = `url(${user.avatar_data})`;
+          avatar.style.backgroundSize = "cover";
+          avatar.style.backgroundPosition = "center";
+        }
         document.querySelector("#employeeNo").textContent = user.employee_no || "—";
         document.querySelector("#departmentName").textContent = user.department_name || "尚未分配部門";
         document.querySelector("#profileDepartment").textContent = user.department_name || "尚未分配部門";

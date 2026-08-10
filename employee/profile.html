@@ -379,7 +379,15 @@
         const name = user.display_name || user.username;
         const department = user.department_name || "尚未分配部門";
         const hireDate = user.hire_date || "尚未設定";
-        document.querySelector("#profileAvatar").textContent = name.slice(0, 1);
+        const avatar = document.querySelector("#profileAvatar");
+        if (user.avatar_data) {
+          avatar.textContent = "";
+          avatar.style.backgroundImage = `url(${user.avatar_data})`;
+          avatar.style.backgroundSize = "cover";
+          avatar.style.backgroundPosition = "center";
+        } else {
+          avatar.textContent = name.slice(0, 1);
+        }
         document.querySelector("#profileName").textContent = name;
         document.querySelector("#profileEmployeeNo").textContent = user.employee_no || "—";
         document.querySelector("#profileDepartment").textContent = department;

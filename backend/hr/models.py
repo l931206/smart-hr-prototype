@@ -33,6 +33,7 @@ class User(AbstractUser):
     )
     phone = models.CharField(max_length=30, blank=True)
     hire_date = models.DateField(null=True, blank=True)
+    avatar_data = models.TextField(blank=True)
 
     def __str__(self):
         return self.display_name or self.get_full_name() or self.username

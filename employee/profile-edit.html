@@ -125,6 +125,11 @@
       action="profile-success.html"
     >
       <div class="form-group">
+        <label for="avatar">頭貼</label>
+        <input id="avatar" type="file" accept="image/png,image/jpeg,image/webp">
+        <p class="help">建議使用 2MB 以內的 JPG、PNG 或 WebP 圖片。</p>
+      </div>
+      <div class="form-group">
         <label>員工編號</label>
 
         <div class="readonly-box">
@@ -250,6 +255,14 @@
         form.querySelector("#name").value = user.display_name || "";
         form.querySelector("#email").value = user.email || "";
         form.querySelector("#phone").value = user.phone || "";
+        if (user.avatar_data) {
+          const preview = document.createElement("img");
+          preview.id = "avatarPreview";
+          preview.src = user.avatar_data;
+          preview.alt = "目前頭貼";
+          preview.style.cssText = "width:72px;height:72px;object-fit:cover;border-radius:50%;margin-top:10px";
+          form.querySelector("#avatar").insertAdjacentElement("afterend", preview);
+        }
       } catch (error) {
         window.location.href = "../login.html?next=employee/profile-edit.html";
         return;
@@ -259,13 +272,22 @@
         const button = form.querySelector("button[type=submit]");
         button.disabled = true;
         try {
+          const file = form.querySelector("#avatar").files[0];
+          const avatarData = file ? await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+          }) : undefined;
+          const payload = {
+            display_name: form.querySelector("#name").value.trim(),
+            email: form.querySelector("#email").value.trim(),
+            phone: form.querySelector("#phone").value.trim()
+          };
+          if (avatarData) payload.avatar_data = avatarData;
           await apiRequest("/auth/me/", {
             method: "PUT",
-            body: JSON.stringify({
-              display_name: form.querySelector("#name").value.trim(),
-              email: form.querySelector("#email").value.trim(),
-              phone: form.querySelector("#phone").value.trim()
-            })
+            body: JSON.stringify(payload)
           });
           window.location.href = "profile.html?updated=1";
         } catch (error) {
