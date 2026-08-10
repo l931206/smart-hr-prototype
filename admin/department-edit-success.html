@@ -172,22 +172,22 @@
     <section class="update-info">
       <div class="info-row">
         <span>部門名稱</span>
-        <strong>資訊部</strong>
+        <strong id="updatedDepartmentName">—</strong>
       </div>
 
       <div class="info-row">
         <span>部門代碼</span>
-        <strong>IT</strong>
+        <strong id="updatedDepartmentCode">—</strong>
       </div>
 
       <div class="info-row">
         <span>部門主管</span>
-        <strong>王主管</strong>
+        <strong id="updatedDepartmentManager">—</strong>
       </div>
 
       <div class="info-row">
         <span>部門狀態</span>
-        <strong class="status">啟用中</strong>
+        <strong class="status" id="updatedDepartmentStatus">—</strong>
       </div>
     </section>
 
@@ -196,9 +196,23 @@
     </div>
 
     <div class="actions">
-      <a class="button primary" href="department-detail.html">查看部門資料</a>
+      <a class="button primary" id="updatedDepartmentLink" href="departments.html">查看部門資料</a>
       <a class="button secondary" href="departments.html">返回部門管理</a>
     </div>
   </main>
 </body>
+  <script src="../assets/js/api.js?v=b399a09"></script>
+  <script>
+    (async () => {
+      const id = new URLSearchParams(window.location.search).get("id");
+      if (!id) return;
+      try {
+        const department = await apiRequest(`/departments/${id}/`);
+        document.querySelector("#updatedDepartmentName").textContent = department.name;
+        document.querySelector("#updatedDepartmentCode").textContent = department.code;
+        document.querySelector("#updatedDepartmentStatus").textContent = department.is_active ? "啟用中" : "已停用";
+        document.querySelector("#updatedDepartmentLink").href = `department-detail.html?id=${id}`;
+      } catch (error) { /* 保留儲存成功畫面 */ }
+    })();
+  </script>
 </html>

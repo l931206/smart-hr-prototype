@@ -181,17 +181,17 @@
       <p>更新部門名稱、主管、說明與啟用狀態。</p>
     </header>
 
-    <form class="form-card" action="department-edit-success.html">
+    <form class="form-card" id="departmentEditForm" action="department-edit-success.html">
       <div class="two-column">
         <div class="form-group">
           <label for="departmentCode">部門代碼</label>
-          <input id="departmentCode" type="text" value="IT" disabled>
+          <input id="departmentCode" type="text" value="—" disabled>
           <p class="help">部門代碼建立後不可修改。</p>
         </div>
 
         <div class="form-group">
           <label for="departmentName">部門名稱</label>
-          <input id="departmentName" type="text" value="資訊部" required>
+          <input id="departmentName" type="text" value="" required>
         </div>
       </div>
 
@@ -214,9 +214,8 @@
       <div class="form-group">
         <label for="status">部門狀態</label>
         <select id="status" required>
-          <option selected>啟用中</option>
-          <option>暫停使用</option>
-          <option>已停用</option>
+            <option value="active">啟用中</option>
+            <option value="inactive">已停用</option>
         </select>
       </div>
 
@@ -230,5 +229,26 @@
       </div>
     </form>
   </main>
+  <script src="../assets/js/api.js?v=b399a09"></script>
+  <script>
+    (async () => {
+      const id = new URLSearchParams(window.location.search).get("id");
+      if (!id) return;
+      try {
+        const department = await apiRequest(`/departments/${id}/`);
+        document.querySelector("#departmentCode").value = department.code;
+        document.querySelector("#departmentName").value = department.name;
+        document.querySelector("#status").value = department.is_active ? "active" : "inactive";
+        document.querySelector(".back").href = `department-detail.html?id=${id}`;
+        document.querySelector(".button.secondary").href = `department-detail.html?id=${id}`;
+        document.querySelector("#departmentEditForm").addEventListener("submit", async (event) => {
+          event.preventDefault();
+          const button = event.currentTarget.querySelector("button[type=submit]"); button.disabled = true;
+          try { await apiRequest(`/departments/${id}/`, { method: "PATCH", body: JSON.stringify({ name: document.querySelector("#departmentName").value.trim(), is_active: document.querySelector("#status").value === "active" }) }); window.location.href = `department-edit-success.html?id=${id}`; }
+          catch (error) { alert(error.message || "儲存部門資料失敗。"); button.disabled = false; }
+        });
+      } catch (error) { alert(error.message || "無法載入部門資料。"); }
+    })();
+  </script>
 </body>
 </html>
