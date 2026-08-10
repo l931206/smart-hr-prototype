@@ -23,7 +23,7 @@
     const lateNotices = asList(latePayload);
     const pending = requests.filter((item) => item.status === "pending");
     const today = new Date().toISOString().slice(0, 10);
-    const todayLate = lateNotices.filter((item) => item.date === today);
+    const todayLate = lateNotices;
     const todayLeave = requests.filter((item) =>
       item.status === "approved" && item.start_date <= today && item.end_date >= today
     );
