@@ -362,5 +362,20 @@
       }
     });
   </script>
+  <script>
+    (async () => {
+      try {
+        const user = await getCurrentUser();
+        const balance = document.querySelector(".leave-balance strong");
+        const rows = document.querySelectorAll(".leave-summary .summary-row strong");
+        if (balance) balance.textContent = "尚無資料";
+        if (rows[0]) rows[0].textContent = user.display_name || user.username || "—";
+        if (rows[1]) rows[1].textContent = user.department_name || "—";
+        if (rows[2]) rows[2].textContent = "尚無資料";
+      } catch (error) {
+        window.location.href = "../login.html?next=employee/leave-apply.html";
+      }
+    })();
+  </script>
 </body>
 </html>
