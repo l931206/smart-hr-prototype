@@ -281,5 +281,22 @@
       </div>
     </article>
   </main>
+  <script src="../assets/js/api.js?v=b399a09"></script>
+  <script>
+    (async () => {
+      const id = new URLSearchParams(window.location.search).get("id");
+      if (!id) return;
+      try {
+        const item = await apiRequest(`/announcements/${id}/`);
+        document.querySelector(".announcement-detail-card h1").textContent = item.title;
+        document.querySelector(".announcement-content > p").textContent = item.content;
+        document.querySelector(".announcement-meta").textContent = `發布人：${item.author_name || "—"}｜${item.published_at ? new Date(item.published_at).toLocaleString("zh-TW") : "草稿"}`;
+        document.querySelectorAll(".announcement-content h2, .announcement-content p ~ h2, .attachment-box").forEach((node) => node.remove());
+        document.title = `${item.title} - 公告詳情`;
+      } catch (error) {
+        document.querySelector(".announcement-content").innerHTML = `<p>無法載入公告：${error.message}</p>`;
+      }
+    })();
+  </script>
 </body>
 </html>

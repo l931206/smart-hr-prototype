@@ -282,5 +282,30 @@
       </div>
     </form>
   </main>
+  <script src="../assets/js/api.js?v=b399a09"></script>
+  <script>
+    document.querySelector(".form-card").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const categoryMap = { "部門公告": "company", "行政通知": "admin", "人事公告": "hr", "緊急通知": "system" };
+      const button = form.querySelector("button[type=submit]");
+      button.disabled = true;
+      try {
+        await apiRequest("/announcements/", {
+          method: "POST",
+          body: JSON.stringify({
+            title: form.querySelector("#title").value.trim(),
+            category: categoryMap[form.querySelector("#type").value] || "company",
+            content: form.querySelector("#content").value.trim(),
+            is_published: true
+          })
+        });
+        window.location.href = "announcements.html?created=1";
+      } catch (error) {
+        button.disabled = false;
+        alert(error.message || "公告發布失敗");
+      }
+    });
+  </script>
 </body>
 </html>
