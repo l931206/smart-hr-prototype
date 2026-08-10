@@ -204,27 +204,27 @@
       <section class="info-box">
         <div class="row">
           <span>部門名稱</span>
-          <strong>資訊部</strong>
+          <strong id="deactivateDepartmentName">—</strong>
         </div>
 
         <div class="row">
           <span>部門代碼</span>
-          <strong>IT</strong>
+          <strong id="deactivateDepartmentCode">—</strong>
         </div>
 
         <div class="row">
           <span>部門主管</span>
-          <strong>王主管</strong>
+          <strong id="deactivateDepartmentManager">—</strong>
         </div>
 
         <div class="row">
           <span>目前人數</span>
-          <strong>6 人</strong>
+          <strong id="deactivateDepartmentCount">—</strong>
         </div>
 
         <div class="row">
           <span>目前狀態</span>
-          <strong>啟用中</strong>
+          <strong id="deactivateDepartmentStatus">—</strong>
         </div>
       </section>
 
@@ -243,15 +243,32 @@
       </div>
 
       <div class="actions">
-        <a class="button danger" href="department-deactivate-success.html">
+        <a class="button danger" id="confirmDepartmentDeactivate" href="#">
           確認停用部門
         </a>
 
-        <a class="button secondary" href="department-detail.html">
+        <a class="button secondary" id="cancelDepartmentDeactivate" href="departments.html">
           取消
         </a>
       </div>
     </section>
   </main>
+  <script src="../assets/js/api.js?v=b399a09"></script>
+  <script>
+    (async () => {
+      const id = new URLSearchParams(window.location.search).get("id");
+      if (!id) return;
+      const set = (selector, value) => { const element = document.querySelector(selector); if (element) element.textContent = value || "—"; };
+      try {
+        const [department, employeePayload] = await Promise.all([apiRequest(`/departments/${id}/`), apiRequest("/employees/")]);
+        const employees = Array.isArray(employeePayload) ? employeePayload : (employeePayload.results || []);
+        const members = employees.filter((user) => user.department === department.id && user.is_active);
+        const manager = members.find((user) => user.role === "manager");
+        set("#deactivateDepartmentName", department.name); set("#deactivateDepartmentCode", department.code); set("#deactivateDepartmentManager", manager?.display_name); set("#deactivateDepartmentCount", `${members.length} 人`); set("#deactivateDepartmentStatus", department.is_active ? "啟用中" : "已停用");
+        document.querySelector("#cancelDepartmentDeactivate").href = `department-detail.html?id=${id}`;
+        document.querySelector("#confirmDepartmentDeactivate").addEventListener("click", async (event) => { event.preventDefault(); try { await apiRequest(`/departments/${id}/`, { method: "PATCH", body: JSON.stringify({ is_active: false }) }); window.location.href = `department-deactivate-success.html?id=${id}`; } catch (error) { alert(error.message || "停用部門失敗。"); } });
+      } catch (error) { set("#deactivateDepartmentName", `無法載入部門：${error.message}`); }
+    })();
+  </script>
 </body>
 </html>

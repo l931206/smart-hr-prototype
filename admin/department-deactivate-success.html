@@ -172,22 +172,22 @@
     <section class="info">
       <div class="row">
         <span>部門名稱</span>
-        <strong>資訊部</strong>
+        <strong id="deactivatedDepartmentName">—</strong>
       </div>
 
       <div class="row">
         <span>部門代碼</span>
-        <strong>IT</strong>
+        <strong id="deactivatedDepartmentCode">—</strong>
       </div>
 
       <div class="row">
         <span>部門主管</span>
-        <strong>王主管</strong>
+        <strong id="deactivatedDepartmentManager">—</strong>
       </div>
 
       <div class="row">
         <span>停用時間</span>
-        <strong>2026/07/31 16:45</strong>
+        <strong id="deactivatedDepartmentTime">—</strong>
       </div>
 
       <div class="row">
@@ -206,10 +206,18 @@
         返回部門管理
       </a>
 
-      <a class="button secondary" href="department-detail.html">
+      <a class="button secondary" id="deactivatedDepartmentLink" href="departments.html">
         查看部門詳情
       </a>
     </div>
   </main>
 </body>
+  <script src="../assets/js/api.js?v=b399a09"></script>
+  <script>
+    (async () => {
+      const id = new URLSearchParams(window.location.search).get("id");
+      if (!id) return;
+      try { const department = await apiRequest(`/departments/${id}/`); document.querySelector("#deactivatedDepartmentName").textContent = department.name; document.querySelector("#deactivatedDepartmentCode").textContent = department.code; document.querySelector("#deactivatedDepartmentTime").textContent = new Date().toLocaleString("zh-TW"); document.querySelector("#deactivatedDepartmentLink").href = `department-detail.html?id=${id}`; } catch (error) { /* 保留成功畫面 */ }
+    })();
+  </script>
 </html>
