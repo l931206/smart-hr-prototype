@@ -344,18 +344,16 @@
       const button = form.querySelector("button[type=submit]");
       button.disabled = true;
       try {
-        await apiRequest("/leave-requests/", {
-          method: "POST",
-          body: JSON.stringify({
-            leave_type: form.leaveType.value,
-            start_date: form.startDate.value,
-            end_date: form.endDate.value,
-            start_time: form.startTime.value,
-            end_time: form.endTime.value,
-            reason: form.reason.value.trim()
-          })
-        });
-        window.location.href = "leave-success.html";
+        const payload = {
+          leave_type: form.leaveType.value,
+          start_date: form.startDate.value,
+          end_date: form.endDate.value,
+          start_time: form.startTime.value,
+          end_time: form.endTime.value,
+          reason: form.reason.value.trim()
+        };
+        sessionStorage.setItem("hr_leave_draft", JSON.stringify(payload));
+        window.location.href = "leave-confirm.html";
       } catch (error) {
         alert(error.message || "送出申請失敗，請稍後再試。");
         button.disabled = false;

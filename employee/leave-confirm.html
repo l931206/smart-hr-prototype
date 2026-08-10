@@ -158,32 +158,32 @@
 
       <div class="confirm-row">
         <span>申請人</span>
-        <strong>陳員工</strong>
+        <strong id="confirmEmployee">—</strong>
       </div>
 
       <div class="confirm-row">
         <span>所屬部門</span>
-        <strong>資訊部</strong>
+        <strong id="confirmDepartment">—</strong>
       </div>
 
       <div class="confirm-row">
         <span>假別</span>
-        <strong>特休假</strong>
+        <strong id="confirmLeaveType">—</strong>
       </div>
 
       <div class="confirm-row">
         <span>請假日期</span>
-        <strong>2026/08/03 上午 至 2026/08/04 下午</strong>
+        <strong id="confirmDates">—</strong>
       </div>
 
       <div class="confirm-row">
         <span>請假天數</span>
-        <strong>2 天</strong>
+        <strong id="confirmDays">—</strong>
       </div>
 
       <div class="confirm-row">
         <span>請假原因</span>
-        <strong>處理個人事務。</strong>
+        <strong id="confirmReason">—</strong>
       </div>
 
       <div class="confirm-row">
@@ -193,7 +193,7 @@
 
       <div class="confirm-row">
         <span>審核主管</span>
-        <strong>王主管</strong>
+        <strong id="confirmManager">—</strong>
       </div>
 
       <div class="confirm-row">
@@ -205,7 +205,8 @@
     <div class="actions confirm-actions">
       <a
         class="button primary"
-        href="leave-success.html"
+        id="submitLeave"
+        href="#"
       >
         確認並送出
       </a>
@@ -247,5 +248,59 @@
       <small>我的</small>
     </a>
   </nav>
+  <script src="../assets/js/api.js?v=b399a09"></script>
+  <script>
+    (() => {
+      const draft = JSON.parse(sessionStorage.getItem("hr_leave_draft") || "null");
+      if (!draft) {
+        window.location.href = "leave-apply.html";
+        return;
+      }
+
+      const set = (id, value) => {
+        const element = document.getElementById(id);
+        if (element) element.textContent = value || "—";
+      };
+      const formatDate = (value) => value ? new Date(`${value}T00:00:00`).toLocaleDateString("zh-TW") : "—";
+      const start = new Date(`${draft.start_date}T00:00:00`);
+      const end = new Date(`${draft.end_date}T00:00:00`);
+      const days = Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())
+        ? "—"
+        : Math.floor((end - start) / 86400000) + 1;
+
+      set("confirmLeaveType", draft.leave_type);
+      set("confirmDates", `${formatDate(draft.start_date)} ${draft.start_time || ""} 至 ${formatDate(draft.end_date)} ${draft.end_time || ""}`);
+      set("confirmDays", `${days} 天`);
+      set("confirmReason", draft.reason);
+
+      (async () => {
+        try {
+          const user = await getCurrentUser();
+          set("confirmEmployee", user.display_name || user.username);
+          set("confirmDepartment", user.department_name);
+          const employees = await apiRequest("/employees/");
+          const list = Array.isArray(employees) ? employees : (employees.results || []);
+          const manager = list.find((item) => item.role === "manager" && item.department === user.department);
+          set("confirmManager", manager?.display_name || "尚未設定");
+        } catch (error) {
+          window.location.href = "../login.html?next=employee/leave-confirm.html";
+        }
+      })();
+
+      document.getElementById("submitLeave").addEventListener("click", async (event) => {
+        event.preventDefault();
+        const button = event.currentTarget;
+        button.setAttribute("aria-disabled", "true");
+        try {
+          await apiRequest("/leave-requests/", { method: "POST", body: JSON.stringify(draft) });
+          sessionStorage.removeItem("hr_leave_draft");
+          window.location.href = "leave-success.html";
+        } catch (error) {
+          button.removeAttribute("aria-disabled");
+          alert(error.message || "送出申請失敗，請稍後再試。");
+        }
+      });
+    })();
+  </script>
 </body>
 </html>
