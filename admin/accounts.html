@@ -321,7 +321,7 @@
       </select>
     </section>
 
-    <section class="account-list">
+    <section class="account-list" id="accountList">
       <a class="account-card" href="account-detail.html">
         <div class="account-head">
           <div class="account-main">
@@ -480,4 +480,21 @@
     </section>
   </main>
 </body>
+  <script src="../assets/js/api.js?v=b399a09"></script>
+  <script>
+    (async () => {
+      try {
+        const payload = await apiRequest("/employees/");
+        const users = Array.isArray(payload) ? payload : (payload.results || []);
+        const counts = document.querySelectorAll(".summary-grid .summary-card strong");
+        const active = users.filter((user) => user.is_active);
+        if (counts[0]) counts[0].textContent = String(users.length);
+        if (counts[1]) counts[1].textContent = String(active.length);
+        if (counts[2]) counts[2].textContent = "0";
+        if (counts[3]) counts[3].textContent = String(users.length - active.length);
+        document.querySelector("#accountList").innerHTML = users.map((user) => `
+          <a class="account-card" href="account-detail.html?id=${user.id}"><div class="account-head"><div class="account-main"><div class="avatar">${(user.display_name || user.username || "員").slice(0, 1)}</div><div><h2>${user.display_name || user.username}</h2><p>登入帳號：${user.username}｜${user.employee_no || "—"}</p></div></div><span class="status ${user.is_active ? "active" : "pending"}">${user.is_active ? "已啟用" : "已停用"}</span></div><div class="account-info"><div class="info-item"><span>系統角色</span><strong><span class="role-tag">${user.role_label}</span></strong></div><div class="info-item"><span>所屬部門</span><strong>${user.department_name || "—"}</strong></div><div class="info-item"><span>電子郵件</span><strong>${user.email || "—"}</strong></div></div><span class="view-link">查看與設定帳號權限 →</span></a>`).join("") || "<p>目前沒有帳號資料。</p>";
+      } catch (error) { document.querySelector("#accountList").innerHTML = `<p>${error.message || "無法載入帳號資料。"}</p>`; }
+    })();
+  </script>
 </html>
