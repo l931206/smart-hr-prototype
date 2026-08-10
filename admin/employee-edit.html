@@ -267,8 +267,20 @@
       const id = new URLSearchParams(window.location.search).get("id");
       if (!id) return;
       try {
-        const [user, departmentPayload] = await Promise.all([apiRequest(`/employees/${id}/`), apiRequest("/departments/")]);
-        const departments = Array.isArray(departmentPayload) ? departmentPayload : (departmentPayload.results || []);
+        const user = await apiRequest(`/employees/${id}/`);
+        let departments = [];
+        try {
+          const departmentPayload = await apiRequest("/departments/");
+          departments = Array.isArray(departmentPayload) ? departmentPayload : (departmentPayload.results || []);
+        } catch (departmentError) {
+          const employeePayload = await apiRequest("/employees/");
+          const employees = Array.isArray(employeePayload) ? employeePayload : (employeePayload.results || []);
+          const known = new Map();
+          employees.forEach((employee) => { if (employee.department && employee.department_name) known.set(employee.department, { id: employee.department, name: employee.department_name }); });
+          if (user.department && user.department_name) known.set(user.department, { id: user.department, name: user.department_name });
+          departments = [...known.values()];
+        }
+        if (!departments.length && user.department_name) departments = [{ id: user.department, name: user.department_name }];
         document.querySelector("#employeeNo").value = user.employee_no || "—";
         document.querySelector("#name").value = user.display_name || user.username;
         document.querySelector("#email").value = user.email || "";
