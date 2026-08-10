@@ -298,9 +298,9 @@
     </section>
 
     <div class="actions">
-      <a class="button primary" href="employee-edit.html">編輯員工資料</a>
+      <a class="button primary" id="employeeEditLink" href="employee-edit.html">編輯員工資料</a>
       <a class="button secondary" href="accounts.html">管理帳號權限</a>
-      <a class="button danger" href="employee-deactivate.html">設定為離職</a>
+      <a class="button danger" id="employeeDeactivateLink" href="employee-deactivate.html">設定為離職</a>
     </div>
   </main>
   <script src="../assets/js/api.js?v=b399a09"></script>
@@ -323,6 +323,8 @@
         if (secondRows[1]) secondRows[1].textContent = "尚無資料";
         if (secondRows[2]) secondRows[2].textContent = "尚無資料";
         document.title = `${name} - 員工資料`;
+        document.querySelector("#employeeEditLink").href = `employee-edit.html?id=${employee.id}`;
+        document.querySelector("#employeeDeactivateLink").href = `employee-deactivate.html?id=${employee.id}`;
       } catch (error) {
         document.querySelector(".profile-head h1").textContent = "無法載入員工資料";
       }
