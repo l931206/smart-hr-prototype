@@ -171,17 +171,17 @@
     <section class="info">
       <div class="row">
         <span>使用者</span>
-        <strong>陳員工</strong>
+        <strong id="disabledName">—</strong>
       </div>
 
       <div class="row">
         <span>登入帳號</span>
-        <strong>employee03</strong>
+        <strong id="disabledUsername">—</strong>
       </div>
 
       <div class="row">
         <span>系統角色</span>
-        <strong>Employee</strong>
+        <strong id="disabledRole">—</strong>
       </div>
 
       <div class="row">
@@ -197,8 +197,22 @@
 
     <div class="actions">
       <a class="button primary" href="accounts.html">返回帳號管理</a>
-      <a class="button secondary" href="account-detail.html">查看帳號詳情</a>
+      <a class="button secondary" id="disabledDetailLink" href="accounts.html">查看帳號詳情</a>
     </div>
   </main>
 </body>
+  <script src="../assets/js/api.js?v=b399a09"></script>
+  <script>
+    (async () => {
+      const id = new URLSearchParams(window.location.search).get("id");
+      if (!id) return;
+      try {
+        const user = await apiRequest(`/employees/${id}/`);
+        document.querySelector("#disabledName").textContent = user.display_name || user.username;
+        document.querySelector("#disabledUsername").textContent = user.username;
+        document.querySelector("#disabledRole").textContent = user.role_label;
+        document.querySelector("#disabledDetailLink").href = `account-detail.html?id=${id}`;
+      } catch (error) { /* 保留成功頁狀態 */ }
+    })();
+  </script>
 </html>
