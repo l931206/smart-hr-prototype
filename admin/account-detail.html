@@ -253,16 +253,16 @@
     <section class="profile-card">
       <div class="profile-head">
         <div class="account-main">
-          <div class="avatar">陳</div>
+          <div class="avatar" id="accountAvatar">—</div>
 
           <div>
-            <h1>陳員工</h1>
-            <p>登入帳號：employee03</p>
-            <p>員工編號：EMP0003｜資訊部</p>
+            <h1 id="accountName">帳號資料</h1>
+            <p id="accountLogin">登入帳號：—</p>
+            <p id="accountEmployeeNo">員工編號：—</p>
           </div>
         </div>
 
-        <span class="status">已啟用</span>
+        <span class="status" id="accountStatus">—</span>
       </div>
     </section>
 
@@ -272,32 +272,32 @@
 
         <div class="row">
           <span>使用者名稱</span>
-          <strong>employee03</strong>
+          <strong id="accountUsername">—</strong>
         </div>
 
         <div class="row">
           <span>電子郵件</span>
-          <strong>employee@example.com</strong>
+          <strong id="accountEmail">—</strong>
         </div>
 
         <div class="row">
           <span>系統角色</span>
-          <strong><span class="role-tag">Employee</span></strong>
+            <strong><span class="role-tag" id="accountRole">—</span></strong>
         </div>
 
         <div class="row">
           <span>帳號狀態</span>
-          <strong>已啟用</strong>
+          <strong id="accountState">—</strong>
         </div>
 
         <div class="row">
           <span>最後登入</span>
-          <strong>2026/07/31 08:55</strong>
+          <strong>—</strong>
         </div>
 
         <div class="row">
           <span>建立日期</span>
-          <strong>2026/01/01</strong>
+          <strong id="accountHireDate">—</strong>
         </div>
       </article>
 
@@ -345,10 +345,34 @@
     </div>
 
     <div class="actions">
-      <a class="button primary" href="account-edit.html">編輯角色與權限</a>
+      <a class="button primary" id="accountEditLink" href="account-edit.html">編輯角色與權限</a>
       <a class="button secondary" href="account-reset-password.html">重設密碼</a>
-      <a class="button danger" href="account-disable.html">停用帳號</a>
+      <a class="button danger" id="accountDisableLink" href="account-disable.html">停用帳號</a>
     </div>
   </main>
+  <script src="../assets/js/api.js?v=b399a09"></script>
+  <script>
+    (async () => {
+      const id = new URLSearchParams(window.location.search).get("id");
+      if (!id) return;
+      const set = (selector, value) => { const element = document.querySelector(selector); if (element) element.textContent = value || "—"; };
+      try {
+        const user = await apiRequest(`/employees/${id}/`);
+        const name = user.display_name || user.username;
+        set("#accountAvatar", name.slice(0, 1));
+        set("#accountName", name);
+        set("#accountLogin", `登入帳號：${user.username}`);
+        set("#accountEmployeeNo", `員工編號：${user.employee_no || "—"}｜${user.department_name || "—"}`);
+        set("#accountStatus", user.is_active ? "已啟用" : "已停用");
+        set("#accountUsername", user.username);
+        set("#accountEmail", user.email);
+        set("#accountRole", user.role_label);
+        set("#accountState", user.is_active ? "已啟用" : "已停用");
+        set("#accountHireDate", user.hire_date);
+        document.querySelector("#accountEditLink").href = `account-edit.html?id=${user.id}`;
+        document.querySelector("#accountDisableLink").href = `account-disable.html?id=${user.id}`;
+      } catch (error) { set("#accountName", `無法載入帳號：${error.message}`); }
+    })();
+  </script>
 </body>
 </html>
