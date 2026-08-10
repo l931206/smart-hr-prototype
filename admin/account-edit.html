@@ -214,18 +214,18 @@
       <p>調整登入帳號的系統角色、啟用狀態與可使用功能。</p>
     </header>
 
-    <form class="form-card" action="account-edit-success.html">
+    <form class="form-card" id="accountEditForm" action="account-edit-success.html">
       <h2 class="section-title">帳號資料</h2>
 
       <div class="two-column">
         <div class="form-group">
           <label for="username">登入帳號</label>
-          <input id="username" type="text" value="employee03" disabled>
+          <input id="username" type="text" value="—" disabled>
         </div>
 
         <div class="form-group">
           <label for="employee">對應員工</label>
-          <input id="employee" type="text" value="陳員工｜EMP0003" disabled>
+          <input id="employee" type="text" value="—" disabled>
         </div>
       </div>
 
@@ -233,18 +233,17 @@
         <div class="form-group">
           <label for="role">系統角色</label>
           <select id="role" required>
-            <option selected>Employee</option>
-            <option>Manager</option>
-            <option>Admin</option>
+            <option value="employee">Employee</option>
+            <option value="manager">Manager</option>
+            <option value="admin">Admin</option>
           </select>
         </div>
 
         <div class="form-group">
           <label for="status">帳號狀態</label>
           <select id="status" required>
-            <option selected>已啟用</option>
-            <option>等待啟用</option>
-            <option>已停用</option>
+            <option value="active">已啟用</option>
+            <option value="inactive">已停用</option>
           </select>
         </div>
       </div>
@@ -311,5 +310,30 @@
       </div>
     </form>
   </main>
+  <script src="../assets/js/api.js?v=b399a09"></script>
+  <script>
+    (async () => {
+      const id = new URLSearchParams(window.location.search).get("id");
+      if (!id) return;
+      try {
+        const user = await apiRequest(`/employees/${id}/`);
+        document.querySelector("#username").value = user.username;
+        document.querySelector("#employee").value = `${user.display_name || user.username}｜${user.employee_no || "—"}`;
+        document.querySelector("#role").value = user.role;
+        document.querySelector("#status").value = user.is_active ? "active" : "inactive";
+        document.querySelector(".back").href = `account-detail.html?id=${id}`;
+        document.querySelector(".button.secondary").href = `account-detail.html?id=${id}`;
+        document.querySelector("#accountEditForm").addEventListener("submit", async (event) => {
+          event.preventDefault();
+          const button = event.currentTarget.querySelector("button[type=submit]");
+          button.disabled = true;
+          try {
+            await apiRequest(`/employees/${id}/`, { method: "PATCH", body: JSON.stringify({ role: document.querySelector("#role").value, is_active: document.querySelector("#status").value === "active" }) });
+            window.location.href = `account-edit-success.html?id=${id}`;
+          } catch (error) { alert(error.message || "儲存帳號設定失敗。"); button.disabled = false; }
+        });
+      } catch (error) { alert(error.message || "無法載入帳號資料。"); }
+    })();
+  </script>
 </body>
 </html>

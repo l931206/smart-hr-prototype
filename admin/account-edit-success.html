@@ -201,4 +201,17 @@
     </div>
   </main>
 </body>
+  <script src="../assets/js/api.js?v=b399a09"></script>
+  <script>
+    (async () => {
+      const id = new URLSearchParams(window.location.search).get("id");
+      if (!id) return;
+      try {
+        const user = await apiRequest(`/employees/${id}/`);
+        document.querySelectorAll("strong").forEach((element) => { if (element.textContent.includes("陳員工")) element.textContent = user.display_name || user.username; });
+        const link = document.querySelector("a[href='account-detail.html']");
+        if (link) link.href = `account-detail.html?id=${id}`;
+      } catch (error) { /* 保留儲存成功畫面 */ }
+    })();
+  </script>
 </html>
