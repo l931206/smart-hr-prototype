@@ -186,17 +186,17 @@ margin-top:18px;
 
 <div>
 
-<h1>
+<h1 id="notificationTitle">
 新的特休假申請
 </h1>
 
-<span class="notification-detail-tag">
+<span class="notification-detail-tag" id="notificationTag">
 等待審核
 </span>
 
 </div>
 
-<time
+<time id="notificationTime"
 class="notification-detail-time"
 datetime="2026-07-30T13:45"
 >
@@ -205,14 +205,14 @@ datetime="2026-07-30T13:45"
 
 </header>
 
-<div class="notification-detail-message">
+<div class="notification-detail-message" id="notificationMessage">
 
 陳員工提出新的特休假申請，
 請確認請假日期、部門人力與申請內容後完成審核。
 
 </div>
 
-<section class="notification-detail-info">
+<section class="notification-detail-info" id="notificationInfo">
 
 <div class="notification-detail-row">
 <span>申請人</span>
@@ -262,7 +262,8 @@ datetime="2026-07-30T13:45"
 
 <a
 class="button primary"
-href="leave-request-detail.html"
+id="notificationAction"
+href="leave-requests.html"
 >
 前往審核申請
 </a>
@@ -310,6 +311,24 @@ aria-current="page"
 </a>
 
 </nav>
+
+<script src="../assets/js/api.js?v=b399a09"></script>
+<script>
+  (async () => {
+    const id = new URLSearchParams(window.location.search).get("id");
+    if (!id) return;
+    try {
+      const item = await apiRequest(`/notifications/${id}/`);
+      if (!item.is_read) await apiRequest(`/notifications/${id}/`, { method: "PATCH", body: JSON.stringify({ is_read: true }) });
+      document.querySelector("#notificationTitle").textContent = item.title;
+      document.querySelector("#notificationTag").textContent = item.category === "leave" ? "請假通知" : "系統通知";
+      document.querySelector("#notificationTime").textContent = new Date(item.created_at).toLocaleString("zh-TW");
+      document.querySelector("#notificationMessage").textContent = item.content;
+      document.querySelector("#notificationInfo").innerHTML = `<div class="notification-detail-row"><span>通知類型</span><strong>${item.category === "leave" ? "請假審核" : "系統通知"}</strong></div><div class="notification-detail-row"><span>目前狀態</span><strong>${item.is_read ? "已讀" : "未讀"}</strong></div>`;
+      document.querySelector("#notificationAction").href = item.category === "leave" ? "leave-requests.html" : "notifications.html";
+    } catch (error) { document.querySelector("#notificationMessage").textContent = `無法載入通知：${error.message}`; }
+  })();
+</script>
 
 </body>
 </html>
