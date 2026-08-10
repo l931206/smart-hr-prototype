@@ -181,31 +181,31 @@
       <p>更新員工的個人資料、職務資訊與直屬主管。</p>
     </header>
 
-    <form class="form-card" action="employee-edit-success.html">
+    <form class="form-card" id="employeeEditForm" action="employee-edit-success.html">
       <h2 class="section-title">基本資料</h2>
 
       <div class="two-column">
         <div class="form-group">
           <label for="employeeNo">員工編號</label>
-          <input id="employeeNo" type="text" value="EMP0003" disabled>
+          <input id="employeeNo" type="text" value="—" disabled>
           <p class="help">員工編號建立後不可修改。</p>
         </div>
 
         <div class="form-group">
           <label for="name">姓名</label>
-          <input id="name" type="text" value="陳員工" required>
+          <input id="name" type="text" value="" required>
         </div>
       </div>
 
       <div class="two-column">
         <div class="form-group">
           <label for="email">電子郵件</label>
-          <input id="email" type="email" value="employee@example.com" required>
+          <input id="email" type="email" value="" required>
         </div>
 
         <div class="form-group">
           <label for="phone">聯絡電話</label>
-          <input id="phone" type="tel" value="0912-345-678" required>
+          <input id="phone" type="tel" value="" required>
         </div>
       </div>
 
@@ -215,11 +215,7 @@
         <div class="form-group">
           <label for="department">部門</label>
           <select id="department" required>
-            <option selected>資訊部</option>
-            <option>行政部</option>
-            <option>業務部</option>
-            <option>財務部</option>
-            <option>管理部</option>
+            <option value="">載入中…</option>
           </select>
         </div>
 
@@ -242,7 +238,7 @@
 
         <div class="form-group">
           <label for="hireDate">到職日期</label>
-          <input id="hireDate" type="date" value="2026-01-01" required>
+          <input id="hireDate" type="date" value="" required>
         </div>
       </div>
 
@@ -265,5 +261,31 @@
       </div>
     </form>
   </main>
+  <script src="../assets/js/api.js?v=b399a09"></script>
+  <script>
+    (async () => {
+      const id = new URLSearchParams(window.location.search).get("id");
+      if (!id) return;
+      try {
+        const [user, departmentPayload] = await Promise.all([apiRequest(`/employees/${id}/`), apiRequest("/departments/")]);
+        const departments = Array.isArray(departmentPayload) ? departmentPayload : (departmentPayload.results || []);
+        document.querySelector("#employeeNo").value = user.employee_no || "—";
+        document.querySelector("#name").value = user.display_name || user.username;
+        document.querySelector("#email").value = user.email || "";
+        document.querySelector("#phone").value = user.phone || "";
+        document.querySelector("#hireDate").value = user.hire_date || "";
+        document.querySelector("#department").innerHTML = departments.map((department) => `<option value="${department.id}">${department.name}</option>`).join("");
+        document.querySelector("#department").value = user.department || "";
+        document.querySelector("#status").value = user.is_active ? "在職" : "已離職";
+        document.querySelector(".back").href = `employee-detail.html?id=${id}`;
+        document.querySelector(".button.secondary").href = `employee-detail.html?id=${id}`;
+        document.querySelector("#employeeEditForm").addEventListener("submit", async (event) => {
+          event.preventDefault(); const button = event.currentTarget.querySelector("button[type=submit]"); button.disabled = true;
+          try { await apiRequest(`/employees/${id}/`, { method: "PATCH", body: JSON.stringify({ display_name: document.querySelector("#name").value.trim(), email: document.querySelector("#email").value.trim(), phone: document.querySelector("#phone").value.trim(), department: Number(document.querySelector("#department").value) || null, hire_date: document.querySelector("#hireDate").value || null, is_active: document.querySelector("#status").value === "在職" }) }); window.location.href = `employee-edit-success.html?id=${id}`; }
+          catch (error) { alert(error.message || "儲存員工資料失敗。"); button.disabled = false; }
+        });
+      } catch (error) { alert(error.message || "無法載入員工資料。"); }
+    })();
+  </script>
 </body>
 </html>

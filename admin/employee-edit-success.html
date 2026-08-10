@@ -154,19 +154,19 @@
     <h1>員工資料已更新</h1>
 
     <p>
-      系統已儲存陳員工的最新資料，
+      系統已儲存員工的最新資料，
       並同步更新部門、主管與相關權限設定。
     </p>
 
     <section class="update-info">
       <div class="info-row">
         <span>員工姓名</span>
-        <strong>陳員工</strong>
+        <strong id="updatedEmployeeName">—</strong>
       </div>
 
       <div class="info-row">
         <span>員工編號</span>
-        <strong>EMP0003</strong>
+        <strong id="updatedEmployeeNo">—</strong>
       </div>
 
       <div class="info-row">
@@ -181,9 +181,13 @@
     </section>
 
     <div class="actions">
-      <a class="button primary" href="employee-detail.html">查看員工資料</a>
+      <a class="button primary" id="updatedEmployeeLink" href="employees.html">查看員工資料</a>
       <a class="button secondary" href="employees.html">返回員工管理</a>
     </div>
   </main>
 </body>
+  <script src="../assets/js/api.js?v=b399a09"></script>
+  <script>
+    (async () => { const id = new URLSearchParams(window.location.search).get("id"); if (!id) return; try { const user = await apiRequest(`/employees/${id}/`); document.querySelector("#updatedEmployeeName").textContent = user.display_name || user.username; document.querySelector("#updatedEmployeeNo").textContent = user.employee_no || "—"; document.querySelector("#updatedEmployeeLink").href = `employee-detail.html?id=${id}`; } catch (error) {} })();
+  </script>
 </html>
