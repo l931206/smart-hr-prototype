@@ -451,5 +451,31 @@
       <small>更多</small>
     </a>
   </nav>
+  <script src="../assets/js/api.js?v=b399a09"></script>
+  <script>
+    (async () => {
+      const id = new URLSearchParams(window.location.search).get("id");
+      if (!id) return;
+      try {
+        const employee = await apiRequest(`/employees/${id}/`);
+        const name = employee.display_name || employee.username;
+        const first = (selector) => document.querySelector(selector);
+        first(".team-profile-avatar").textContent = name.slice(0, 1);
+        first(".team-profile-employee h1").textContent = name;
+        const profileLines = document.querySelectorAll(".team-profile-employee p");
+        if (profileLines[0]) profileLines[0].textContent = `員工編號：${employee.employee_no || "—"}`;
+        if (profileLines[1]) profileLines[1].textContent = `部門：${employee.department_name || "—"}`;
+        first(".team-profile-status").textContent = employee.is_active ? "在職" : "已停用";
+        const rows = document.querySelectorAll(".team-info-card .team-info-row strong");
+        if (rows[0]) rows[0].textContent = employee.email || "—";
+        if (rows[1]) rows[1].textContent = employee.phone || "—";
+        if (rows[3]) rows[3].textContent = employee.hire_date || "—";
+        document.title = `${name} - 團隊成員資料`;
+      } catch (error) {
+        first(".team-profile-employee h1").textContent = "無法載入員工資料";
+        console.error(error);
+      }
+    })();
+  </script>
 </body>
 </html>
