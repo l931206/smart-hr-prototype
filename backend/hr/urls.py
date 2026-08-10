@@ -1,12 +1,13 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from .views import DepartmentViewSet, EmployeeViewSet, HealthView, LeaveRequestViewSet, LoginView, LogoutView, MeView
+from .views import AnnouncementViewSet, DepartmentViewSet, EmployeeViewSet, HealthView, LeaveRequestViewSet, LoginView, LogoutView, MeView
 
 router = DefaultRouter()
 router.register("departments", DepartmentViewSet, basename="department")
 router.register("employees", EmployeeViewSet, basename="employee")
 router.register("leave-requests", LeaveRequestViewSet, basename="leave-request")
+router.register("announcements", AnnouncementViewSet, basename="announcement")
 
 urlpatterns = [
     path("health/", HealthView.as_view(), name="health"),

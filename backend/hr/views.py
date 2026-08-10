@@ -6,8 +6,8 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Department, LeaveRequest, User
-from .serializers import DepartmentSerializer, LeaveRequestSerializer, LoginSerializer, UserSerializer
+from .models import Announcement, Department, LeaveRequest, User
+from .serializers import AnnouncementSerializer, DepartmentSerializer, LeaveRequestSerializer, LoginSerializer, UserSerializer
 
 
 class LoginView(APIView):
@@ -63,6 +63,33 @@ class EmployeeViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return super().get_queryset().filter(is_staff=False)
+
+
+class AnnouncementViewSet(viewsets.ModelViewSet):
+    queryset = Announcement.objects.select_related("created_by").all()
+    serializer_class = AnnouncementSerializer
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if self.request.user.role == User.Role.EMPLOYEE:
+            return queryset.filter(is_published=True)
+        return queryset
+
+    def perform_create(self, serializer):
+        if self.request.user.role == User.Role.EMPLOYEE:
+            self.permission_denied(self.request, message="只有主管或系統管理者可以建立公告")
+        values = {"created_by": self.request.user}
+        if serializer.validated_data.get("is_published"):
+            values["published_at"] = timezone.now()
+        serializer.save(**values)
+
+    def perform_update(self, serializer):
+        if self.request.user.role == User.Role.EMPLOYEE:
+            self.permission_denied(self.request, message="員工無法修改公告")
+        values = {}
+        if serializer.validated_data.get("is_published") and not serializer.instance.published_at:
+            values["published_at"] = timezone.now()
+        serializer.save(**values)
 
 
 class LeaveRequestViewSet(viewsets.ModelViewSet):

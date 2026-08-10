@@ -1,7 +1,17 @@
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 
-from .models import Department, LeaveRequest, User
+from .models import Announcement, Department, LeaveRequest, User
+
+
+class AnnouncementSerializer(serializers.ModelSerializer):
+    category_label = serializers.CharField(source="get_category_display", read_only=True)
+    author_name = serializers.CharField(source="created_by.display_name", read_only=True)
+
+    class Meta:
+        model = Announcement
+        fields = ["id", "title", "content", "category", "category_label", "is_published", "author_name", "created_at", "published_at"]
+        read_only_fields = ["id", "category_label", "author_name", "created_at", "published_at"]
 
 
 class DepartmentSerializer(serializers.ModelSerializer):

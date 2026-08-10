@@ -62,3 +62,22 @@ class LeaveRequest(models.Model):
     @property
     def days(self):
         return (self.end_date - self.start_date).days + 1
+
+
+class Announcement(models.Model):
+    class Category(models.TextChoices):
+        COMPANY = "company", "公司公告"
+        SYSTEM = "system", "系統公告"
+        HR = "hr", "人事公告"
+        ADMIN = "admin", "行政公告"
+
+    title = models.CharField(max_length=200)
+    content = models.TextField()
+    category = models.CharField(max_length=20, choices=Category.choices, default=Category.COMPANY)
+    is_published = models.BooleanField(default=False)
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="announcements")
+    created_at = models.DateTimeField(auto_now_add=True)
+    published_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ["-published_at", "-created_at"]

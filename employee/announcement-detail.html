@@ -332,5 +332,23 @@
       <small>我的</small>
     </a>
   </nav>
+  <script src="../assets/js/api.js?v=b399a09"></script>
+  <script>
+    (async () => {
+      const id = new URLSearchParams(window.location.search).get("id");
+      if (!id) return;
+      try {
+        const item = await apiRequest(`/announcements/${id}/`);
+        document.querySelector(".announcement-detail-tag").textContent = item.category_label || "公告";
+        document.querySelector(".announcement-detail-head h1").textContent = item.title;
+        document.querySelector(".announcement-meta").textContent = `發布人：${item.author_name || "—"}｜${new Date(item.published_at || item.created_at).toLocaleString("zh-TW")}`;
+        document.querySelector(".announcement-content > p").textContent = item.content;
+        document.querySelectorAll(".activity-info, .attachment-box, .announcement-content h2, .announcement-content p ~ h2").forEach((node) => node.remove());
+        document.title = `${item.title} - 公告`;
+      } catch (error) {
+        document.querySelector(".announcement-content").innerHTML = `<p>無法載入公告：${error.message}</p>`;
+      }
+    })();
+  </script>
 </body>
 </html>
