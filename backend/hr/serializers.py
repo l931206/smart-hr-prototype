@@ -22,12 +22,15 @@ class AnnouncementSerializer(serializers.ModelSerializer):
 
 
 class DepartmentSerializer(serializers.ModelSerializer):
-    employee_count = serializers.IntegerField(source="employees.count", read_only=True)
+    employee_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Department
         fields = ["id", "code", "name", "is_active", "employee_count", "created_at"]
         read_only_fields = ["id", "employee_count", "created_at"]
+
+    def get_employee_count(self, department):
+        return department.employees.filter(role=User.Role.EMPLOYEE, is_active=True).count()
 
 
 class UserSerializer(serializers.ModelSerializer):
