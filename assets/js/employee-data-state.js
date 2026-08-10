@@ -39,6 +39,10 @@
       })();
     }
     if (path.endsWith("/index.html") && path.includes("/employee/")) {
+      const jobTitle = document.querySelector("#jobTitle");
+      const supervisor = document.querySelector(".employee-meta span:last-child");
+      if (jobTitle) jobTitle.textContent = "尚無資料";
+      if (supervisor) supervisor.textContent = "直屬主管：尚無資料";
       const panel = document.querySelector(".lower-grid .panel");
       if (panel) {
         void (async () => {

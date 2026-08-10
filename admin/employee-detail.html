@@ -303,5 +303,30 @@
       <a class="button danger" href="employee-deactivate.html">設定為離職</a>
     </div>
   </main>
+  <script src="../assets/js/api.js?v=b399a09"></script>
+  <script>
+    (async () => {
+      const id = new URLSearchParams(window.location.search).get("id");
+      if (!id) return;
+      try {
+        const employee = await apiRequest(`/employees/${id}/`);
+        const name = employee.display_name || employee.username;
+        document.querySelector(".profile-head h1").textContent = name;
+        const headLines = document.querySelectorAll(".profile-head .employee p");
+        if (headLines[0]) headLines[0].textContent = `員工編號：${employee.employee_no || "—"}`;
+        if (headLines[1]) headLines[1].textContent = `部門：${employee.department_name || "—"}`;
+        document.querySelector(".profile-head .avatar").textContent = name.slice(0, 1);
+        const firstRows = document.querySelectorAll(".content-grid .card:first-child .row strong");
+        [name, employee.email || "—", employee.phone || "—", employee.hire_date || "—", employee.is_active ? "啟用" : "停用"].forEach((value, index) => { if (firstRows[index]) firstRows[index].textContent = value; });
+        const secondRows = document.querySelectorAll(".content-grid .card:nth-child(2) > .row strong");
+        if (secondRows[0]) secondRows[0].textContent = employee.department_name || "—";
+        if (secondRows[1]) secondRows[1].textContent = "尚無資料";
+        if (secondRows[2]) secondRows[2].textContent = "尚無資料";
+        document.title = `${name} - 員工資料`;
+      } catch (error) {
+        document.querySelector(".profile-head h1").textContent = "無法載入員工資料";
+      }
+    })();
+  </script>
 </body>
 </html>
