@@ -388,6 +388,9 @@
         document.querySelector("#profilePhone").textContent = user.phone || "尚未設定";
         document.querySelector("#profileDepartmentDetail").textContent = department;
         document.querySelector("#profileHireDate").textContent = hireDate;
+        const jobFields = document.querySelectorAll(".profile-card")[1]?.querySelectorAll(".profile-field strong");
+        if (jobFields?.[1]) jobFields[1].textContent = "尚無資料";
+        if (jobFields?.[2]) jobFields[2].textContent = "尚無資料";
       } catch (error) {
         window.location.href = "../login.html?next=employee/profile.html";
       }
