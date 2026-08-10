@@ -147,7 +147,7 @@
         <div class="employee-meta">
           <span id="departmentName">資訊部</span>
           <span id="jobTitle">員工</span>
-          <span>直屬主管：王主管</span>
+          <span id="managerName">直屬主管：—</span>
         </div>
       </article>
 
@@ -453,6 +453,7 @@
         document.querySelector("#employeeNo").textContent = user.employee_no || "—";
         document.querySelector("#departmentName").textContent = user.department_name || "尚未分配部門";
         document.querySelector("#profileDepartment").textContent = user.department_name || "尚未分配部門";
+        document.querySelector("#managerName").textContent = `直屬主管：${user.manager_name || "尚未設定"}`;
       } catch (error) {
         window.location.href = "../login.html?next=employee/index.html";
       }

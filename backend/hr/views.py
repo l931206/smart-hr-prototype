@@ -136,7 +136,7 @@ class LeaveRequestViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         leave_request = serializer.save(employee=self.request.user)
         department = self.request.user.department
-        manager = department.employees.filter(role=User.Role.MANAGER).first() if department else None
+        manager = self.request.user.manager or (department.employees.filter(role=User.Role.MANAGER).first() if department else None)
         if manager:
             Notification.objects.create(
                 recipient=manager,
@@ -177,7 +177,7 @@ class LateNoticeViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         notice = serializer.save(employee=self.request.user)
         department = self.request.user.department
-        manager = department.employees.filter(role=User.Role.MANAGER).first() if department else None
+        manager = self.request.user.manager or (department.employees.filter(role=User.Role.MANAGER).first() if department else None)
         if manager:
             Notification.objects.create(
                 recipient=manager,

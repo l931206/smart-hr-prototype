@@ -187,7 +187,7 @@
 
         <div class="summary-row">
           <span>直屬主管</span>
-          <strong>王主管</strong>
+          <strong id="leaveManager">—</strong>
         </div>
       </section>
 
@@ -370,6 +370,9 @@
         if (rows[0]) rows[0].textContent = user.display_name || user.username || "—";
         if (rows[1]) rows[1].textContent = user.department_name || "—";
         if (rows[2]) rows[2].textContent = "尚無資料";
+        const manager = user.manager_name || "尚未設定";
+        const managerField = document.querySelector("#leaveManager");
+        if (managerField) managerField.textContent = manager;
       } catch (error) {
         window.location.href = "../login.html?next=employee/leave-apply.html";
       }

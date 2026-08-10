@@ -280,8 +280,8 @@
           set("confirmDepartment", user.department_name);
           const employees = await apiRequest("/employees/");
           const list = Array.isArray(employees) ? employees : (employees.results || []);
-          const manager = list.find((item) => item.role === "manager" && item.department === user.department);
-          set("confirmManager", manager?.display_name || "尚未設定");
+          const manager = list.find((item) => item.id === user.manager) || list.find((item) => item.role === "manager" && item.department === user.department);
+          set("confirmManager", user.manager_name || manager?.display_name || "尚未設定");
         } catch (error) {
           window.location.href = "../login.html?next=employee/leave-confirm.html";
         }

@@ -308,7 +308,7 @@
 
         <div class="profile-field">
           <span>直屬主管</span>
-          <strong>王主管</strong>
+          <strong id="profileManager">—</strong>
         </div>
 
         <div class="profile-field">
@@ -398,7 +398,7 @@
         document.querySelector("#profileHireDate").textContent = hireDate;
         const jobFields = document.querySelectorAll(".profile-card")[1]?.querySelectorAll(".profile-field strong");
         if (jobFields?.[1]) jobFields[1].textContent = "尚無資料";
-        if (jobFields?.[2]) jobFields[2].textContent = "尚無資料";
+        if (jobFields?.[2]) jobFields[2].textContent = user.manager_name || "尚未設定";
       } catch (error) {
         window.location.href = "../login.html?next=employee/profile.html";
       }

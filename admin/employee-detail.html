@@ -320,8 +320,8 @@
         [name, employee.email || "—", employee.phone || "—", employee.hire_date || "—", employee.is_active ? "啟用" : "停用"].forEach((value, index) => { if (firstRows[index]) firstRows[index].textContent = value; });
         const secondRows = document.querySelectorAll(".content-grid .card:nth-child(2) > .row strong");
         if (secondRows[0]) secondRows[0].textContent = employee.department_name || "—";
-        if (secondRows[1]) secondRows[1].textContent = "尚無資料";
-        if (secondRows[2]) secondRows[2].textContent = "尚無資料";
+        if (secondRows[1]) secondRows[1].textContent = "員工";
+        if (secondRows[2]) secondRows[2].textContent = employee.manager_name || "尚未設定";
         document.title = `${name} - 員工資料`;
         document.querySelector("#employeeEditLink").href = `employee-edit.html?id=${employee.id}`;
         document.querySelector("#employeeDeactivateLink").href = `employee-deactivate.html?id=${employee.id}`;

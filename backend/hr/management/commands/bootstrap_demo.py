@@ -40,6 +40,7 @@ class Command(BaseCommand):
             code="OPS", defaults={"name": "營運部"}
         )
 
+        users = {}
         for username, password, display_name, role, employee_no in credentials:
             user, _ = User.objects.get_or_create(username=username)
             user.set_password(password)
@@ -51,5 +52,10 @@ class Command(BaseCommand):
             user.is_staff = role == User.Role.ADMIN
             user.is_superuser = role == User.Role.ADMIN
             user.save()
+            users[role] = user
+
+        if users.get(User.Role.EMPLOYEE) and users.get(User.Role.MANAGER):
+            users[User.Role.EMPLOYEE].manager = users[User.Role.MANAGER]
+            users[User.Role.EMPLOYEE].save(update_fields=["manager"])
 
         self.stdout.write(self.style.SUCCESS("Demo accounts are ready."))

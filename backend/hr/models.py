@@ -31,6 +31,10 @@ class User(AbstractUser):
         blank=True,
         related_name="employees",
     )
+    manager = models.ForeignKey(
+        "self", on_delete=models.SET_NULL, null=True, blank=True,
+        related_name="direct_reports", limit_choices_to={"role": "manager"},
+    )
     phone = models.CharField(max_length=30, blank=True)
     hire_date = models.DateField(null=True, blank=True)
     avatar_data = models.TextField(blank=True)

@@ -229,10 +229,7 @@
         <div class="form-group">
           <label for="manager">直屬主管</label>
           <select id="manager" required>
-            <option selected>王主管</option>
-            <option>吳主管</option>
-            <option>林主管</option>
-            <option>無直屬主管</option>
+            <option value="">載入中…</option>
           </select>
         </div>
 
@@ -281,6 +278,9 @@
           departments = [...known.values()];
         }
         if (!departments.length && user.department_name) departments = [{ id: user.department, name: user.department_name }];
+        const employeePayload = await apiRequest("/employees/");
+        const employees = Array.isArray(employeePayload) ? employeePayload : (employeePayload.results || []);
+        const managers = employees.filter((employee) => employee.role === "manager" && employee.is_active && (!user.department || employee.department === user.department));
         document.querySelector("#employeeNo").value = user.employee_no || "—";
         document.querySelector("#name").value = user.display_name || user.username;
         document.querySelector("#email").value = user.email || "";
@@ -288,12 +288,14 @@
         document.querySelector("#hireDate").value = user.hire_date || "";
         document.querySelector("#department").innerHTML = departments.map((department) => `<option value="${department.id}">${department.name}</option>`).join("");
         document.querySelector("#department").value = user.department || "";
+        document.querySelector("#manager").innerHTML = `<option value="">無直屬主管</option>${managers.map((manager) => `<option value="${manager.id}">${manager.display_name || manager.username}</option>`).join("")}`;
+        document.querySelector("#manager").value = user.manager || "";
         document.querySelector("#status").value = user.is_active ? "在職" : "已離職";
         document.querySelector(".back").href = `employee-detail.html?id=${id}`;
         document.querySelector(".button.secondary").href = `employee-detail.html?id=${id}`;
         document.querySelector("#employeeEditForm").addEventListener("submit", async (event) => {
           event.preventDefault(); const button = event.currentTarget.querySelector("button[type=submit]"); button.disabled = true;
-          try { await apiRequest(`/employees/${id}/`, { method: "PATCH", body: JSON.stringify({ display_name: document.querySelector("#name").value.trim(), email: document.querySelector("#email").value.trim(), phone: document.querySelector("#phone").value.trim(), department: Number(document.querySelector("#department").value) || null, hire_date: document.querySelector("#hireDate").value || null, is_active: document.querySelector("#status").value === "在職" }) }); window.location.href = `employee-edit-success.html?id=${id}`; }
+          try { await apiRequest(`/employees/${id}/`, { method: "PATCH", body: JSON.stringify({ display_name: document.querySelector("#name").value.trim(), email: document.querySelector("#email").value.trim(), phone: document.querySelector("#phone").value.trim(), department: Number(document.querySelector("#department").value) || null, manager: Number(document.querySelector("#manager").value) || null, hire_date: document.querySelector("#hireDate").value || null, is_active: document.querySelector("#status").value === "在職" }) }); window.location.href = `employee-edit-success.html?id=${id}`; }
           catch (error) { alert(error.message || "儲存員工資料失敗。"); button.disabled = false; }
         });
       } catch (error) { alert(error.message || "無法載入員工資料。"); }

@@ -35,13 +35,14 @@ class DepartmentSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     department_name = serializers.CharField(source="department.name", read_only=True)
+    manager_name = serializers.CharField(source="manager.display_name", read_only=True)
     role_label = serializers.CharField(source="get_role_display", read_only=True)
 
     class Meta:
         model = User
         fields = [
             "id", "username", "employee_no", "display_name", "email", "role",
-            "role_label", "department", "department_name", "phone", "hire_date", "avatar_data",
+            "role_label", "department", "department_name", "manager", "manager_name", "phone", "hire_date", "avatar_data",
             "is_active",
         ]
         read_only_fields = ["id", "role_label", "department_name"]
