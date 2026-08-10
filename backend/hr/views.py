@@ -43,6 +43,14 @@ class MeView(APIView):
     def get(self, request):
         return Response(UserSerializer(request.user).data)
 
+    def put(self, request):
+        user = request.user
+        for field in ("display_name", "email", "phone"):
+            if field in request.data:
+                setattr(user, field, request.data[field])
+        user.save(update_fields=["display_name", "email", "phone"])
+        return Response(UserSerializer(user).data)
+
 
 class DepartmentViewSet(viewsets.ModelViewSet):
     queryset = Department.objects.all()
