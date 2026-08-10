@@ -6,8 +6,15 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Announcement, Department, LeaveRequest, User
-from .serializers import AnnouncementSerializer, DepartmentSerializer, LeaveRequestSerializer, LoginSerializer, UserSerializer
+from .models import Announcement, Department, LeaveRequest, Notification, User
+from .serializers import (
+    AnnouncementSerializer,
+    DepartmentSerializer,
+    LeaveRequestSerializer,
+    LoginSerializer,
+    NotificationSerializer,
+    UserSerializer,
+)
 
 
 class LoginView(APIView):
@@ -92,6 +99,17 @@ class AnnouncementViewSet(viewsets.ModelViewSet):
         serializer.save(**values)
 
 
+class NotificationViewSet(viewsets.ModelViewSet):
+    queryset = Notification.objects.all()
+    serializer_class = NotificationSerializer
+
+    def get_queryset(self):
+        return super().get_queryset().filter(recipient=self.request.user)
+
+    def perform_update(self, serializer):
+        serializer.save(recipient=self.request.user)
+
+
 class LeaveRequestViewSet(viewsets.ModelViewSet):
     queryset = LeaveRequest.objects.select_related("employee", "employee__department").all()
     serializer_class = LeaveRequestSerializer
@@ -105,7 +123,16 @@ class LeaveRequestViewSet(viewsets.ModelViewSet):
         return queryset.filter(employee=self.request.user)
 
     def perform_create(self, serializer):
-        serializer.save(employee=self.request.user)
+        leave_request = serializer.save(employee=self.request.user)
+        department = self.request.user.department
+        manager = department.employees.filter(role=User.Role.MANAGER).first() if department else None
+        if manager:
+            Notification.objects.create(
+                recipient=manager,
+                title="收到新的請假申請",
+                content=f"{self.request.user.display_name or self.request.user.username} 提交了{leave_request.leave_type}申請。",
+                category="leave",
+            )
 
     def perform_update(self, serializer):
         if self.request.user.role == User.Role.EMPLOYEE:
@@ -113,6 +140,12 @@ class LeaveRequestViewSet(viewsets.ModelViewSet):
             return
         status_value = serializer.validated_data.get("status")
         if status_value in {LeaveRequest.Status.APPROVED, LeaveRequest.Status.REJECTED}:
-            serializer.save(reviewed_at=timezone.now())
+            leave_request = serializer.save(reviewed_at=timezone.now())
+            Notification.objects.create(
+                recipient=leave_request.employee,
+                title="請假申請狀態更新",
+                content=f"你的{leave_request.leave_type}申請已{leave_request.get_status_display()}。",
+                category="leave",
+            )
         else:
             serializer.save()

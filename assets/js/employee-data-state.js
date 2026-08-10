@@ -21,9 +21,22 @@
       })();
     }
     if (path.endsWith("/notifications.html")) {
-      document.querySelectorAll(".notification-summary .summary-card strong").forEach((node) => { node.textContent = "0"; });
-      const list = document.querySelector(".notification-list");
-      if (list) list.innerHTML = empty("目前尚無通知資料。");
+      void (async () => {
+        try {
+          const payload = await apiRequest("/notifications/");
+          const notifications = Array.isArray(payload) ? payload : (payload.results || []);
+          const unread = notifications.filter((item) => !item.is_read).length;
+          const summary = document.querySelectorAll(".notification-summary .summary-card strong");
+          if (summary[0]) summary[0].textContent = String(unread);
+          if (summary[1]) summary[1].textContent = String(notifications.length);
+          const list = document.querySelector(".notification-list");
+          if (!list) return;
+          list.innerHTML = notifications.length ? notifications.map((item) => `<a class="notification-card ${item.is_read ? "read" : "unread"}" href="notification-detail.html?id=${item.id}"><div class="notification-icon">🔔</div><div class="notification-content"><div class="notification-head"><h2>${item.title}</h2><time>${new Date(item.created_at).toLocaleString("zh-TW")}</time></div><p>${item.content}</p><span class="notification-status">${item.is_read ? "已讀" : "未讀"}</span></div></a>`).join("") : empty("目前尚無通知資料。");
+        } catch (error) {
+          const list = document.querySelector(".notification-list");
+          if (list) list.innerHTML = empty(`無法載入通知：${error.message}`);
+        }
+      })();
     }
     if (path.endsWith("/index.html") && path.includes("/employee/")) {
       const panel = document.querySelector(".lower-grid .panel");

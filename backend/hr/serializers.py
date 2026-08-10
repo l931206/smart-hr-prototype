@@ -1,7 +1,14 @@
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 
-from .models import Announcement, Department, LeaveRequest, User
+from .models import Announcement, Department, LeaveRequest, Notification, User
+
+
+class NotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notification
+        fields = ["id", "title", "content", "category", "is_read", "created_at"]
+        read_only_fields = ["id", "title", "content", "category", "created_at"]
 
 
 class AnnouncementSerializer(serializers.ModelSerializer):

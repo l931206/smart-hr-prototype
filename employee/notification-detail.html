@@ -264,5 +264,24 @@
       <small>我的</small>
     </a>
   </nav>
+  <script src="../assets/js/api.js?v=b399a09"></script>
+  <script>
+    (async () => {
+      const id = new URLSearchParams(window.location.search).get("id");
+      if (!id) return;
+      try {
+        const item = await apiRequest(`/notifications/${id}/`);
+        if (!item.is_read) await apiRequest(`/notifications/${id}/`, { method: "PATCH", body: JSON.stringify({ is_read: true }) });
+        document.querySelector(".notification-detail-head h1").textContent = item.title;
+        document.querySelector(".notification-detail-tag").textContent = item.category || "通知";
+        document.querySelector(".notification-detail-time").textContent = new Date(item.created_at).toLocaleString("zh-TW");
+        document.querySelector(".notification-detail-message").textContent = item.content;
+        document.querySelector(".notification-info-box").innerHTML = "";
+        document.title = `${item.title} - 通知詳情`;
+      } catch (error) {
+        document.querySelector(".notification-detail-message").textContent = `無法載入通知：${error.message}`;
+      }
+    })();
+  </script>
 </body>
 </html>
