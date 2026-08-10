@@ -298,7 +298,7 @@
       </select>
     </section>
 
-    <section class="approval-history-list">
+    <section class="approval-history-list" id="approvalHistoryList">
 
       <article class="approval-history-card">
         <div class="approval-history-head">
@@ -486,5 +486,21 @@
       <small>更多</small>
     </a>
   </nav>
+  <script src="../assets/js/api.js?v=b399a09"></script>
+  <script>
+    (async () => {
+      const list = document.querySelector("#approvalHistoryList");
+      try {
+        const payload = await apiRequest("/leave-requests/");
+        const requests = (Array.isArray(payload) ? payload : (payload.results || [])).filter((item) => ["approved", "rejected"].includes(item.status));
+        const counts = document.querySelectorAll(".summary-grid .summary-card strong");
+        if (counts[0]) counts[0].textContent = String(requests.length);
+        if (counts[1]) counts[1].textContent = String(requests.filter((item) => item.status === "approved").length);
+        if (counts[2]) counts[2].textContent = String(requests.filter((item) => item.status === "rejected").length);
+        const formatDate = (value) => value ? new Date(value).toLocaleString("zh-TW") : "—";
+        list.innerHTML = requests.map((item) => `<article class="approval-history-card"><div class="approval-history-head"><div class="approval-history-employee"><div class="approval-history-avatar">${(item.employee_name || "員").slice(0, 1)}</div><div><h2>${item.employee_name || "未提供姓名"}－${item.leave_type}</h2><p>申請編號：LEAVE-${String(item.id).padStart(6, "0")}</p></div></div><span class="approval-history-status ${item.status === "approved" ? "approved" : "rejected"}">${item.status_label}</span></div><div class="approval-history-details"><div class="approval-history-detail"><span>請假日期</span><strong>${item.start_date}－${item.end_date}</strong></div><div class="approval-history-detail"><span>請假天數</span><strong>${item.days} 天</strong></div><div class="approval-history-detail"><span>處理時間</span><strong>${formatDate(item.reviewed_at)}</strong></div><div class="approval-history-detail"><span>處理人</span><strong>目前登入主管</strong></div></div><div class="approval-history-comment">${item.reviewer_comment || "未填寫主管備註。"}</div><a class="approval-history-link" href="approval-record-detail.html?id=${item.id}">查看完整審核紀錄 →</a></article>`).join("") || "<p>目前沒有已完成的審核紀錄。</p>";
+      } catch (error) { list.innerHTML = `<p>${error.message || "無法載入審核紀錄。"}</p>`; }
+    })();
+  </script>
 </body>
 </html>
