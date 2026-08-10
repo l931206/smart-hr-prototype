@@ -6,11 +6,12 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Announcement, Department, LeaveRequest, Notification, User
+from .models import Announcement, Department, LateNotice, LeaveRequest, Notification, User
 from .serializers import (
     AnnouncementSerializer,
     DepartmentSerializer,
     LeaveRequestSerializer,
+    LateNoticeSerializer,
     LoginSerializer,
     NotificationSerializer,
     UserSerializer,
@@ -159,3 +160,28 @@ class LeaveRequestViewSet(viewsets.ModelViewSet):
             )
         else:
             serializer.save()
+
+
+class LateNoticeViewSet(viewsets.ModelViewSet):
+    queryset = LateNotice.objects.select_related("employee", "employee__department").all()
+    serializer_class = LateNoticeSerializer
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if self.request.user.role == User.Role.ADMIN or self.request.user.is_staff:
+            return queryset
+        if self.request.user.role == User.Role.MANAGER:
+            return queryset.filter(employee__department=self.request.user.department)
+        return queryset.filter(employee=self.request.user)
+
+    def perform_create(self, serializer):
+        notice = serializer.save(employee=self.request.user)
+        department = self.request.user.department
+        manager = department.employees.filter(role=User.Role.MANAGER).first() if department else None
+        if manager:
+            Notification.objects.create(
+                recipient=manager,
+                title="收到新的晚到通知",
+                content=f"{self.request.user.display_name or self.request.user.username} 預計於 {notice.expected_arrival.strftime('%H:%M')} 到班。",
+                category="late",
+            )

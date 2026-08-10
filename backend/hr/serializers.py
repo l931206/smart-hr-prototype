@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 
-from .models import Announcement, Department, LeaveRequest, Notification, User
+from .models import Announcement, Department, LateNotice, LeaveRequest, Notification, User
 
 
 class NotificationSerializer(serializers.ModelSerializer):
@@ -81,3 +81,14 @@ class LeaveRequestSerializer(serializers.ModelSerializer):
         if start_date and end_date and end_date < start_date:
             raise serializers.ValidationError("結束日期不能早於開始日期。")
         return attrs
+
+
+class LateNoticeSerializer(serializers.ModelSerializer):
+    employee_name = serializers.CharField(source="employee.display_name", read_only=True)
+    employee_department = serializers.CharField(source="employee.department.name", read_only=True)
+    status_label = serializers.CharField(source="get_status_display", read_only=True)
+
+    class Meta:
+        model = LateNotice
+        fields = ["id", "employee", "employee_name", "employee_department", "date", "expected_arrival", "reason_type", "reason", "status", "status_label", "created_at"]
+        read_only_fields = ["id", "employee", "employee_name", "employee_department", "status_label", "created_at"]

@@ -150,11 +150,11 @@
 
       <article class="late-info-item">
         <span>通知對象</span>
-        <strong>王主管</strong>
+        <strong id="lateManager">—</strong>
       </article>
     </section>
 
-    <form
+    <form id="lateNoticeForm"
       class="form-card late-form"
       action="late-success.html"
     >
@@ -264,5 +264,28 @@
   </nav>
   <script src="../assets/js/api.js?v=b399a09"></script>
   <script src="../assets/js/employee-data-state.js?v=1"></script>
+  <script>
+    (async () => {
+      try {
+        const user = await getCurrentUser();
+        const payload = await apiRequest("/employees/");
+        const employees = Array.isArray(payload) ? payload : (payload.results || []);
+        const manager = employees.find((item) => item.role === "manager" && item.department === user.department);
+        const managerField = document.querySelector("#lateManager");
+        if (managerField) managerField.textContent = manager?.display_name || "尚未設定";
+      } catch (error) { window.location.href = "../login.html?next=employee/late-notice.html"; }
+    })();
+    document.querySelector("#lateNoticeForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const button = form.querySelector("button[type=submit]");
+      button.disabled = true;
+      try {
+        const notice = await apiRequest("/late-notices/", { method: "POST", body: JSON.stringify({ date: form.date.value, expected_arrival: form.arrivalTime.value, reason_type: form.reasonType.value, reason: form.reason.value.trim() }) });
+        sessionStorage.setItem("hr_last_late_notice", JSON.stringify(notice));
+        window.location.href = "late-success.html";
+      } catch (error) { alert(error.message || "晚到通知送出失敗，請稍後再試。"); button.disabled = false; }
+    });
+  </script>
 </body>
 </html>

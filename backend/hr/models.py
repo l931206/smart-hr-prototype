@@ -94,3 +94,20 @@ class Notification(models.Model):
 
     class Meta:
         ordering = ["-created_at"]
+
+
+class LateNotice(models.Model):
+    class Status(models.TextChoices):
+        NOTIFIED = "notified", "已通知主管"
+        ARRIVED = "arrived", "已到班"
+
+    employee = models.ForeignKey(User, on_delete=models.CASCADE, related_name="late_notices")
+    date = models.DateField()
+    expected_arrival = models.TimeField()
+    reason_type = models.CharField(max_length=50)
+    reason = models.TextField()
+    status = models.CharField(max_length=20, choices=Status.choices, default=Status.NOTIFIED)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
