@@ -28,10 +28,33 @@
     if (path.endsWith("/index.html") && path.includes("/employee/")) {
       const panel = document.querySelector(".lower-grid .panel");
       if (panel) {
-        panel.querySelectorAll(".announcement-link").forEach((node) => node.remove());
-        const message = document.createElement("p");
-        message.textContent = "目前尚無公告資料。";
-        panel.appendChild(message);
+        void (async () => {
+          try {
+            const payload = await apiRequest("/announcements/");
+            const announcements = Array.isArray(payload) ? payload : (payload.results || []);
+            panel.querySelectorAll(".announcement-link").forEach((node) => node.remove());
+            if (!announcements.length) {
+              const message = document.createElement("p");
+              message.textContent = "目前尚無公告資料。";
+              panel.appendChild(message);
+              return;
+            }
+            announcements.slice(0, 3).reverse().forEach((item) => {
+              const link = document.createElement("a");
+              link.className = "announcement announcement-link";
+              link.href = `announcement-detail.html?id=${item.id}`;
+              link.innerHTML = `<div><strong></strong><p></p></div><time></time>`;
+              link.querySelector("strong").textContent = item.title;
+              link.querySelector("p").textContent = item.content;
+              link.querySelector("time").textContent = new Date(item.published_at || item.created_at).toLocaleDateString("zh-TW");
+              panel.appendChild(link);
+            });
+          } catch (error) {
+            const message = document.createElement("p");
+            message.textContent = `無法載入公告：${error.message}`;
+            panel.appendChild(message);
+          }
+        })();
       }
     }
     if (path.endsWith("/late-notice.html")) {
