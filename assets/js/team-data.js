@@ -12,7 +12,9 @@
       ]);
       const employees = Array.isArray(employeesPayload) ? employeesPayload : (employeesPayload.results || []);
       const requests = Array.isArray(requestsPayload) ? requestsPayload : (requestsPayload.results || []);
-      const team = employees.filter((employee) => user.department && employee.department === user.department);
+      const team = employees.filter((employee) =>
+        user.department && employee.department === user.department && employee.role === "employee"
+      );
       const pendingByEmployee = new Set(requests.filter((request) => request.status === "pending").map((request) => request.employee));
       const summary = document.querySelectorAll(".team-summary .summary-card strong");
       if (summary[0]) summary[0].textContent = String(team.length);
