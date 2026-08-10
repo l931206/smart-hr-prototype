@@ -203,17 +203,17 @@
 
       <header class="late-detail-head">
         <div class="late-detail-employee">
-          <div class="late-detail-avatar">
+          <div class="late-detail-avatar" id="lateDetailAvatar">
             林
           </div>
 
           <div>
-            <h1>林員工的晚到通知</h1>
-            <p>通知編號：LATE-20260730-001</p>
+            <h1 id="lateDetailTitle">晚到通知</h1>
+            <p id="lateDetailId">通知編號：—</p>
           </div>
         </div>
 
-        <span class="late-detail-status">
+        <span class="late-detail-status" id="lateDetailStatus">
           已通知主管
         </span>
       </header>
@@ -221,17 +221,17 @@
       <section class="late-detail-info">
         <div class="late-detail-row">
           <span>所屬部門</span>
-          <strong>資訊部</strong>
+          <strong id="lateDetailDepartment">—</strong>
         </div>
 
         <div class="late-detail-row">
           <span>職稱</span>
-          <strong>軟體工程師</strong>
+          <strong id="lateDetailRole">員工</strong>
         </div>
 
         <div class="late-detail-row">
           <span>晚到日期</span>
-          <strong>2026/07/30</strong>
+          <strong id="lateDetailDate">—</strong>
         </div>
 
         <div class="late-detail-row">
@@ -241,30 +241,29 @@
 
         <div class="late-detail-row">
           <span>預計到班時間</span>
-          <strong>10:00</strong>
+          <strong id="lateDetailArrival">—</strong>
         </div>
 
         <div class="late-detail-row">
           <span>原因類型</span>
-          <strong>交通延誤</strong>
+          <strong id="lateDetailReasonType">—</strong>
         </div>
 
         <div class="late-detail-row">
           <span>通知時間</span>
-          <strong>2026/07/30 08:40</strong>
+          <strong id="lateDetailCreated">—</strong>
         </div>
 
         <div class="late-detail-row">
           <span>聯絡電話</span>
-          <strong>0912-345-679</strong>
+          <strong id="lateDetailPhone">—</strong>
         </div>
       </section>
 
       <div class="late-reason-box">
         <strong>詳細原因</strong>
         <br><br>
-        上班途中發生交通事故造成道路壅塞，
-        目前已改道前往公司，預計上午 10:00 前抵達。
+        <span id="lateDetailReason">—</span>
       </div>
 
       <div class="notice late-detail-notice">
@@ -317,5 +316,31 @@
       <small>更多</small>
     </a>
   </nav>
+  <script src="../assets/js/api.js?v=b399a09"></script>
+  <script>
+    (async () => {
+      const id = new URLSearchParams(window.location.search).get("id");
+      if (!id) return;
+      const set = (selector, value) => { const element = document.querySelector(selector); if (element) element.textContent = value || "—"; };
+      try {
+        const notice = await apiRequest(`/late-notices/${id}/`);
+        const employee = await apiRequest(`/employees/${notice.employee}/`);
+        const name = notice.employee_name || employee.display_name || employee.username;
+        set("#lateDetailAvatar", name.slice(0, 1));
+        set("#lateDetailTitle", `${name}的晚到通知`);
+        set("#lateDetailId", `通知編號：LATE-${String(notice.id).padStart(6, "0")}`);
+        set("#lateDetailStatus", notice.status_label);
+        set("#lateDetailDepartment", notice.employee_department || employee.department_name);
+        set("#lateDetailDate", notice.date);
+        set("#lateDetailArrival", notice.expected_arrival);
+        set("#lateDetailReasonType", notice.reason_type);
+        set("#lateDetailCreated", new Date(notice.created_at).toLocaleString("zh-TW"));
+        set("#lateDetailPhone", employee.phone);
+        set("#lateDetailReason", notice.reason);
+        const employeeLink = document.querySelector("a[href='team-member-detail.html']");
+        if (employeeLink) employeeLink.href = `team-member-detail.html?id=${employee.id}`;
+      } catch (error) { set("#lateDetailReason", `無法載入晚到通知：${error.message}`); }
+    })();
+  </script>
 </body>
 </html>
