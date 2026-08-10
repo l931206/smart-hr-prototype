@@ -66,7 +66,9 @@
       try {
         const user = await login(form.username.value.trim(), form.password.value);
         const next = params.get("next");
-        window.location.href = next || rolePaths[user.role] || "index.html";
+        const rolePath = rolePaths[user.role] || "index.html";
+        const safeNext = next && next.startsWith(rolePath) ? next : rolePath;
+        window.location.href = safeNext;
       } catch (error) {
         errorBox.textContent = error.message || "登入失敗，請稍後再試。";
         errorBox.style.display = "block";

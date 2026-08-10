@@ -390,7 +390,8 @@
 
         <a
           class="manager-logout"
-          href="../index.html"
+          href="../login.html?switch=1"
+          onclick="localStorage.removeItem('hr_token'); localStorage.removeItem('hr_user');"
         >
           切換角色
         </a>
