@@ -13,20 +13,22 @@
   }
 
   async function loadManagerDashboard() {
-    const [user, employeesPayload, requestsPayload] = await Promise.all([
-      getCurrentUser(), apiRequest("/employees/"), apiRequest("/leave-requests/")
+    const [user, employeesPayload, requestsPayload, latePayload] = await Promise.all([
+      getCurrentUser(), apiRequest("/employees/"), apiRequest("/leave-requests/"), apiRequest("/late-notices/")
     ]);
     const employees = asList(employeesPayload).filter((employee) =>
       employee.role === "employee" && user.department && employee.department === user.department
     );
     const requests = asList(requestsPayload);
+    const lateNotices = asList(latePayload);
     const pending = requests.filter((item) => item.status === "pending");
     const today = new Date().toISOString().slice(0, 10);
+    const todayLate = lateNotices.filter((item) => item.date === today);
     const todayLeave = requests.filter((item) =>
       item.status === "approved" && item.start_date <= today && item.end_date >= today
     );
     setValue(".manager-summary .summary-card strong", 0, String(pending.length));
-    setValue(".manager-summary .summary-card strong", 1, "尚無資料");
+    setValue(".manager-summary .summary-card strong", 1, String(todayLate.length));
     setValue(".manager-summary .summary-card strong", 2, String(employees.length));
     setValue(".manager-summary .summary-card strong", 3, String(todayLeave.length));
 
@@ -39,7 +41,7 @@
     if (heroAvatar) heroAvatar.textContent = name.slice(0, 1);
     const badges = document.querySelectorAll(".manager-action-badge");
     if (badges[0]) badges[0].textContent = `${pending.length} 件待處理`;
-    if (badges[1]) badges[1].textContent = "尚無資料";
+    if (badges[1]) badges[1].textContent = `${todayLate.length} 則通知`;
 
     const taskList = document.querySelector("#pendingTasksPanel");
     if (taskList) {
