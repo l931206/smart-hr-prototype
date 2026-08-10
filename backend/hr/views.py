@@ -88,7 +88,12 @@ class AnnouncementViewSet(viewsets.ModelViewSet):
         values = {"created_by": self.request.user}
         if serializer.validated_data.get("is_published"):
             values["published_at"] = timezone.now()
-        serializer.save(**values)
+        announcement = serializer.save(**values)
+        if announcement.is_published:
+            Notification.objects.bulk_create([
+                Notification(recipient=employee, title="發布新公告", content=announcement.title, category="announcement")
+                for employee in User.objects.filter(role=User.Role.EMPLOYEE, is_active=True)
+            ])
 
     def perform_update(self, serializer):
         if self.request.user.role == User.Role.EMPLOYEE:
@@ -96,7 +101,12 @@ class AnnouncementViewSet(viewsets.ModelViewSet):
         values = {}
         if serializer.validated_data.get("is_published") and not serializer.instance.published_at:
             values["published_at"] = timezone.now()
-        serializer.save(**values)
+        announcement = serializer.save(**values)
+        if announcement.is_published:
+            Notification.objects.bulk_create([
+                Notification(recipient=employee, title="公告已更新", content=announcement.title, category="announcement")
+                for employee in User.objects.filter(role=User.Role.EMPLOYEE, is_active=True)
+            ])
 
 
 class NotificationViewSet(viewsets.ModelViewSet):
