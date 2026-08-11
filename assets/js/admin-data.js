@@ -85,9 +85,12 @@
     const search = document.querySelector(".toolbar input[type=search]");
     const status = document.querySelector(".toolbar select");
     let departments = [];
+    let employees = [];
     let departmentFilter = "all";
     try {
-      departments = await apiRequest("/departments/");
+      const [departmentPayload, employeePayload] = await Promise.all([apiRequest("/departments/"), apiRequest("/employees/")]);
+      departments = Array.isArray(departmentPayload) ? departmentPayload : (departmentPayload.results || []);
+      employees = Array.isArray(employeePayload) ? employeePayload : (employeePayload.results || []);
     } catch (error) {
       list.innerHTML = `<p class="empty-state">無法載入部門資料：${escapeHtml(error.message)}</p>`;
       return;
@@ -102,6 +105,16 @@
           (statusValue.includes("啟") && department.is_active) ||
           (statusValue.includes("停") && !department.is_active))
       );
+      if (departmentFilter === "managed") {
+        const managers = employees.filter((employee) => employee.role === "manager" && employee.is_active && (!keyword || `${employee.display_name} ${employee.department_name}`.toLowerCase().includes(keyword)));
+        list.innerHTML = managers.length ? managers.map((manager) => `<a class="department-card" href="department-detail.html?id=${manager.department}"><div class="department-head"><div class="department-main"><div class="icon">主</div><div><h2>${escapeHtml(manager.display_name || manager.username)}</h2><p>負責部門：${escapeHtml(manager.department_name || "尚未分配")}</p></div></div><span class="status">主管</span></div><div class="department-info"><div class="info-item"><span>登入帳號</span><strong>${escapeHtml(manager.username)}</strong></div><div class="info-item"><span>員工編號</span><strong>${escapeHtml(manager.employee_no || "—")}</strong></div><div class="info-item"><span>部門</span><strong>${escapeHtml(manager.department_name || "—")}</strong></div></div><span class="view-link">查看負責部門 →</span></a>`).join("") : `<p class="empty-state">目前沒有主管資料。</p>`;
+        return;
+      }
+      if (departmentFilter === "employees") {
+        const staff = employees.filter((employee) => employee.role === "employee" && employee.is_active && (!keyword || `${employee.display_name} ${employee.department_name} ${employee.employee_no}`.toLowerCase().includes(keyword)));
+        list.innerHTML = staff.length ? staff.map((employee) => `<a class="department-card" href="employee-detail.html?id=${employee.id}"><div class="department-head"><div class="department-main"><div class="icon">員</div><div><h2>${escapeHtml(employee.display_name || employee.username)}</h2><p>員工編號：${escapeHtml(employee.employee_no || "—")}</p></div></div><span class="status">在職</span></div><div class="department-info"><div class="info-item"><span>所屬部門</span><strong>${escapeHtml(employee.department_name || "尚未分配")}</strong></div><div class="info-item"><span>直屬主管</span><strong>${escapeHtml(employee.manager_name || "尚未設定")}</strong></div><div class="info-item"><span>電子郵件</span><strong>${escapeHtml(employee.email || "—")}</strong></div></div><span class="view-link">查看員工資料 →</span></a>`).join("") : `<p class="empty-state">目前沒有在職員工資料。</p>`;
+        return;
+      }
       list.innerHTML = filtered.length ? filtered.map((department) => `
         <a class="department-card" href="department-detail.html?id=${department.id}">
           <div class="department-head"><div class="department-main"><div class="icon">▦</div>
