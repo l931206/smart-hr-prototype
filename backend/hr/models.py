@@ -23,6 +23,7 @@ class User(AbstractUser):
 
     employee_no = models.CharField(max_length=30, unique=True, null=True, blank=True)
     display_name = models.CharField(max_length=100, blank=True)
+    job_title = models.CharField(max_length=100, blank=True)
     role = models.CharField(max_length=20, choices=Role.choices, default=Role.EMPLOYEE)
     department = models.ForeignKey(
         Department,
@@ -37,7 +38,11 @@ class User(AbstractUser):
     )
     phone = models.CharField(max_length=30, blank=True)
     hire_date = models.DateField(null=True, blank=True)
+    termination_date = models.DateField(null=True, blank=True)
+    termination_reason = models.TextField(blank=True)
     avatar_data = models.TextField(blank=True)
+    work_start_time = models.TimeField(default="09:00")
+    work_end_time = models.TimeField(default="18:00")
 
     def __str__(self):
         return self.display_name or self.get_full_name() or self.username
@@ -58,6 +63,8 @@ class LeaveRequest(models.Model):
     reason = models.TextField()
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.PENDING)
     reviewer_comment = models.TextField(blank=True)
+    attachment_name = models.CharField(max_length=255, blank=True)
+    attachment_data = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     reviewed_at = models.DateTimeField(null=True, blank=True)
 
@@ -83,6 +90,8 @@ class Announcement(models.Model):
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="announcements")
     created_at = models.DateTimeField(auto_now_add=True)
     published_at = models.DateTimeField(null=True, blank=True)
+    attachment_name = models.CharField(max_length=255, blank=True)
+    attachment_data = models.TextField(blank=True)
 
     class Meta:
         ordering = ["-published_at", "-created_at"]
@@ -139,6 +148,47 @@ class LeaveType(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class LeaveBalance(models.Model):
+    employee = models.ForeignKey(User, on_delete=models.CASCADE, related_name="leave_balances")
+    leave_type = models.ForeignKey(LeaveType, on_delete=models.CASCADE, related_name="balances")
+    year = models.PositiveIntegerField()
+    allocated_days = models.DecimalField(max_digits=6, decimal_places=1, default=0)
+    carried_days = models.DecimalField(max_digits=6, decimal_places=1, default=0)
+
+    class Meta:
+        ordering = ["-year", "leave_type__name"]
+        constraints = [
+            models.UniqueConstraint(fields=["employee", "leave_type", "year"], name="unique_employee_leave_balance")
+        ]
+
+    @property
+    def used_days(self):
+        requests = self.employee.leave_requests.filter(
+            leave_type=self.leave_type.name,
+            status=LeaveRequest.Status.APPROVED,
+            start_date__year=self.year,
+        )
+        return sum((request.days for request in requests), 0)
+
+    @property
+    def remaining_days(self):
+        return self.allocated_days + self.carried_days - self.used_days
+
+
+class AuditLog(models.Model):
+    actor = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="audit_logs")
+    action = models.CharField(max_length=50)
+    target_type = models.CharField(max_length=50)
+    target_id = models.CharField(max_length=50, blank=True)
+    target_label = models.CharField(max_length=200, blank=True)
+    details = models.JSONField(default=dict, blank=True)
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
 
 
 class ProfileChangeRequest(models.Model):

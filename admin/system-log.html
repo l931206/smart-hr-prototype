@@ -218,7 +218,7 @@ width:100%;
 </div>
 
 <div class="card">
-<span>管理者</span>
+<span>操作人數</span>
 <strong>0</strong>
 </div>
 
@@ -255,11 +255,45 @@ width:100%;
 
 </main>
 
+  <script src="../assets/js/api.js?v=20260811-live44"></script>
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      document.querySelectorAll(".summary strong, .summary-grid .summary-card strong").forEach((item) => { item.textContent = "0"; });
-      const list = document.querySelector(".log-list, .table-card tbody, tbody");
-      if (list) list.innerHTML = list.tagName === "TBODY" ? '<tr><td colspan="8">目前尚無系統操作紀錄。</td></tr>' : '<p>目前尚無系統操作紀錄。</p>';
+    document.addEventListener("DOMContentLoaded", async () => {
+      const escapeHtml = (value) => String(value ?? "").replace(/[&<>"']/g, (char) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[char]));
+      const list = document.querySelector(".log-list");
+      try {
+        const payload = await apiRequest("/audit-logs/");
+        const logs = Array.isArray(payload) ? payload : (payload.results || []);
+        const search = document.querySelector("input[type=search]");
+        const filters = document.querySelectorAll("select");
+        const now = new Date();
+        const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const startMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        const summaries = document.querySelectorAll(".summary strong");
+        if (summaries[0]) summaries[0].textContent = String(logs.filter((item) => new Date(item.created_at) >= startToday).length);
+        if (summaries[1]) summaries[1].textContent = String(logs.filter((item) => new Date(item.created_at) >= startMonth).length);
+        if (summaries[2]) summaries[2].textContent = String(new Set(logs.map((item) => item.actor).filter(Boolean)).size);
+        if (summaries[3]) summaries[3].textContent = "0";
+        const render = () => {
+          const keyword = search.value.trim().toLowerCase();
+          const action = filters[0].value;
+          const range = filters[1].value;
+          const threshold = new Date();
+          if (range === "今天") threshold.setHours(0,0,0,0);
+          if (range === "最近7天") threshold.setDate(threshold.getDate() - 7);
+          if (range === "本月") { threshold.setDate(1); threshold.setHours(0,0,0,0); }
+          const items = logs.filter((item) => {
+            const text = `${item.actor_name} ${item.action} ${item.target_type} ${item.target_label}`.toLowerCase();
+            const actionMatch = action === "全部操作" || item.action.includes(action === "修改" ? "更新" : action);
+            return text.includes(keyword) && actionMatch && new Date(item.created_at) >= threshold;
+          });
+          list.innerHTML = items.length ? items.map((item) => `<article class="log"><div class="log-head"><h2>${escapeHtml(item.action)} ${escapeHtml(item.target_type)}</h2><time class="time">${new Date(item.created_at).toLocaleString("zh-TW")}</time></div><div class="detail"><div class="item"><span>操作人</span><strong>${escapeHtml(item.actor_name)}</strong></div><div class="item"><span>目標資料</span><strong>${escapeHtml(item.target_label || "—")}</strong></div><div class="item"><span>資料編號</span><strong>${escapeHtml(item.target_id || "—")}</strong></div><div class="item"><span>IP 位址</span><strong>${escapeHtml(item.ip_address || "—")}</strong></div></div><span class="tag">${escapeHtml(item.action)}</span></article>`).join("") : "<p>目前沒有符合條件的系統操作紀錄。</p>";
+        };
+        search.addEventListener("input", render);
+        filters.forEach((filter) => filter.addEventListener("change", render));
+        render();
+      } catch (error) {
+        list.innerHTML = `<p>無法載入操作紀錄：${escapeHtml(error.message)}</p>`;
+      }
     });
   </script>
 </body>

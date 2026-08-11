@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
@@ -221,7 +221,7 @@
 
         <div class="form-group">
           <label for="position">職稱</label>
-          <input id="position" type="text" value="軟體工程師" required>
+          <input id="position" type="text" value="" placeholder="請輸入職稱" required>
         </div>
       </div>
 
@@ -236,6 +236,16 @@
         <div class="form-group">
           <label for="hireDate">到職日期</label>
           <input id="hireDate" type="date" value="" required>
+        </div>
+
+        <div class="form-group">
+          <label for="workStartTime">標準上班時間</label>
+          <input id="workStartTime" type="time" value="09:00" required>
+        </div>
+
+        <div class="form-group">
+          <label for="workEndTime">標準下班時間</label>
+          <input id="workEndTime" type="time" value="18:00" required>
         </div>
       </div>
 
@@ -258,7 +268,7 @@
       </div>
     </form>
   </main>
-  <script src="../assets/js/api.js?v=20260811-live43"></script>
+  <script src="../assets/js/api.js?v=20260811-live44"></script>
   <script>
     (async () => {
       const id = new URLSearchParams(window.location.search).get("id");
@@ -283,9 +293,12 @@
         const managers = employees.filter((employee) => employee.role === "manager" && employee.is_active && (!user.department || employee.department === user.department));
         document.querySelector("#employeeNo").value = user.employee_no || "—";
         document.querySelector("#name").value = user.display_name || user.username;
+        document.querySelector("#position").value = user.job_title || "";
         document.querySelector("#email").value = user.email || "";
         document.querySelector("#phone").value = user.phone || "";
         document.querySelector("#hireDate").value = user.hire_date || "";
+        document.querySelector("#workStartTime").value = (user.work_start_time || "09:00").slice(0, 5);
+        document.querySelector("#workEndTime").value = (user.work_end_time || "18:00").slice(0, 5);
         document.querySelector("#department").innerHTML = departments.map((department) => `<option value="${department.id}">${department.name}</option>`).join("");
         document.querySelector("#department").value = user.department || "";
         document.querySelector("#manager").innerHTML = `<option value="">無直屬主管</option>${managers.map((manager) => `<option value="${manager.id}">${manager.display_name || manager.username}</option>`).join("")}`;
@@ -295,7 +308,7 @@
         document.querySelector(".button.secondary").href = `employee-detail.html?id=${id}`;
         document.querySelector("#employeeEditForm").addEventListener("submit", async (event) => {
           event.preventDefault(); const button = event.currentTarget.querySelector("button[type=submit]"); button.disabled = true;
-          try { await apiRequest(`/employees/${id}/`, { method: "PATCH", body: JSON.stringify({ display_name: document.querySelector("#name").value.trim(), email: document.querySelector("#email").value.trim(), phone: document.querySelector("#phone").value.trim(), department: Number(document.querySelector("#department").value) || null, manager: Number(document.querySelector("#manager").value) || null, hire_date: document.querySelector("#hireDate").value || null, is_active: document.querySelector("#status").value === "在職" }) }); window.location.href = `employee-edit-success.html?id=${id}`; }
+          try { await apiRequest(`/employees/${id}/`, { method: "PATCH", body: JSON.stringify({ display_name: document.querySelector("#name").value.trim(), job_title: document.querySelector("#position").value.trim(), email: document.querySelector("#email").value.trim(), phone: document.querySelector("#phone").value.trim(), department: Number(document.querySelector("#department").value) || null, manager: Number(document.querySelector("#manager").value) || null, hire_date: document.querySelector("#hireDate").value || null, work_start_time: document.querySelector("#workStartTime").value, work_end_time: document.querySelector("#workEndTime").value, is_active: document.querySelector("#status").value === "在職" }) }); window.location.href = `employee-edit-success.html?id=${id}`; }
           catch (error) { alert(error.message || "儲存員工資料失敗。"); button.disabled = false; }
         });
       } catch (error) { alert(error.message || "無法載入員工資料。"); }

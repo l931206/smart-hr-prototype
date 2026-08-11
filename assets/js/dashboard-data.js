@@ -6,14 +6,16 @@
   const asList = (payload) => Array.isArray(payload) ? payload : (payload?.results || []);
 
   async function loadEmployeeDashboard() {
-    const [requestPayload, notificationPayload] = await Promise.all([apiRequest("/leave-requests/"), apiRequest("/notifications/")]);
+    const [requestPayload, notificationPayload, balancePayload] = await Promise.all([apiRequest("/leave-requests/"), apiRequest("/notifications/"), apiRequest("/leave-balances/")]);
     const requests = asList(requestPayload);
     const notifications = asList(notificationPayload);
-    setValue(".stat-grid .stat-card strong", 0, "尚無資料");
+    const balances = asList(balancePayload);
+    const annual = balances.find((item) => item.leave_type_name.includes("特休")) || balances[0];
+    setValue(".stat-grid .stat-card strong", 0, annual ? String(Number(annual.remaining_days)) : "0");
     setValue(".stat-grid .stat-card strong", 1, String(requests.filter((item) => item.status === "pending").length));
     setValue(".stat-grid .stat-card strong", 2, String(notifications.filter((item) => !item.is_read).length));
     const units = document.querySelectorAll(".stat-grid .stat-card .stat-value span");
-    if (units[0]) units[0].textContent = "";
+    if (units[0]) units[0].textContent = "天";
     const dateText = new Intl.DateTimeFormat("zh-TW", { year: "numeric", month: "long", day: "numeric" }).format(new Date());
     const welcomeDescription = document.querySelector(".welcome-card > p:not(.eyebrow)");
     if (welcomeDescription) welcomeDescription.textContent = `今天是 ${dateText}，所有個人人事資訊與常用功能都集中在這個工作台中。`;
@@ -77,12 +79,13 @@
   }
 
   async function loadAdminDashboard() {
-    const [employeesPayload, departmentsPayload, requestsPayload] = await Promise.all([
-      apiRequest("/employees/"), apiRequest("/departments/"), apiRequest("/profile-change-requests/")
+    const [employeesPayload, departmentsPayload, requestsPayload, auditPayload] = await Promise.all([
+      apiRequest("/employees/"), apiRequest("/departments/"), apiRequest("/profile-change-requests/"), apiRequest("/audit-logs/")
     ]);
     const employees = asList(employeesPayload);
     const departments = asList(departmentsPayload);
     const requests = asList(requestsPayload);
+    const audits = asList(auditPayload);
     setValue(".summary-grid .summary-card strong", 0, String(employees.filter((item) => item.is_active).length));
     setValue(".summary-grid .summary-card strong", 1, String(departments.filter((item) => item.is_active).length));
     setValue(".summary-grid .summary-card strong", 2, String(requests.filter((item) => item.status === "pending").length));
@@ -101,7 +104,7 @@
           <p>申請編號：PROFILE-${request.id}</p></div><span class="task-status">等待審核</span>
         </a>`).join("") : "<p>目前沒有待處理的資料修改申請。</p>"}`;
     }
-    if (panels[1]) panels[1].innerHTML = "<h2>近期系統活動</h2><p>目前尚無可顯示的操作紀錄。</p>";
+    if (panels[1]) panels[1].innerHTML = `<h2>近期系統活動</h2>${audits.length ? audits.slice(0, 5).map((item) => `<div class="activity"><h3>${item.action} ${item.target_type}</h3><p>${item.actor_name}｜${item.target_label || "—"}｜${new Date(item.created_at).toLocaleString("zh-TW")}</p></div>`).join("") : "<p>目前尚無可顯示的操作紀錄。</p>"}`;
   }
 
   document.addEventListener("DOMContentLoaded", async () => {

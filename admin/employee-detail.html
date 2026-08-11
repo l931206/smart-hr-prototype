@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
@@ -215,12 +215,12 @@
     <section class="profile-card">
       <div class="profile-head">
         <div class="employee">
-          <div class="avatar">陳</div>
+          <div class="avatar">—</div>
 
           <div>
             <h1>—</h1>
             <p>員工編號：—</p>
-            <p>所屬部門｜軟體工程師</p>
+            <p>部門與職稱載入中</p>
           </div>
         </div>
 
@@ -268,7 +268,7 @@
 
         <div class="row">
           <span>職稱</span>
-          <strong>軟體工程師</strong>
+          <strong>載入中</strong>
         </div>
 
         <div class="row">
@@ -303,7 +303,7 @@
       <a class="button danger" id="employeeDeactivateLink" href="employee-deactivate.html">設定為離職</a>
     </div>
   </main>
-  <script src="../assets/js/api.js?v=20260811-live43"></script>
+  <script src="../assets/js/api.js?v=20260811-live44"></script>
   <script>
     (async () => {
       const id = new URLSearchParams(window.location.search).get("id");
@@ -314,13 +314,13 @@
         document.querySelector(".profile-head h1").textContent = name;
         const headLines = document.querySelectorAll(".profile-head .employee p");
         if (headLines[0]) headLines[0].textContent = `員工編號：${employee.employee_no || "—"}`;
-        if (headLines[1]) headLines[1].textContent = `部門：${employee.department_name || "—"}`;
+        if (headLines[1]) headLines[1].textContent = `${employee.department_name || "未設定部門"}｜${employee.job_title || employee.role_label || "未設定職稱"}`;
         document.querySelector(".profile-head .avatar").textContent = name.slice(0, 1);
         const firstRows = document.querySelectorAll(".content-grid .card:first-child .row strong");
         [name, employee.email || "—", employee.phone || "—", employee.hire_date || "—", employee.is_active ? "啟用" : "停用"].forEach((value, index) => { if (firstRows[index]) firstRows[index].textContent = value; });
         const secondRows = document.querySelectorAll(".content-grid .card:nth-child(2) > .row strong");
         if (secondRows[0]) secondRows[0].textContent = employee.department_name || "—";
-        if (secondRows[1]) secondRows[1].textContent = employee.role_label || employee.role || "—";
+        if (secondRows[1]) secondRows[1].textContent = employee.job_title || employee.role_label || employee.role || "—";
         if (secondRows[2]) secondRows[2].textContent = employee.manager_name || "尚未設定";
         const accountRows = document.querySelectorAll(".account-box .row strong");
         if (accountRows[0]) accountRows[0].textContent = employee.username || "—";

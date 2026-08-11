@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
@@ -204,11 +204,11 @@ textarea{
 
 <label>離職日期</label>
 
-<input type="date">
+<input id="terminationDate" type="date" required>
 
 <label>離職原因（選填）</label>
 
-<textarea placeholder="例如：自願離職、退休、試用期未通過..."></textarea>
+<textarea id="terminationReason" placeholder="例如：自願離職、退休、試用期未通過..."></textarea>
 
 <div class="notice">
 
@@ -242,7 +242,7 @@ href="employees.html">
 
 </main>
 
-<script src="../assets/js/api.js?v=20260811-live43"></script>
+<script src="../assets/js/api.js?v=20260811-live44"></script>
 <script>
   (async () => {
     const id = new URLSearchParams(window.location.search).get("id");
@@ -253,7 +253,16 @@ href="employees.html">
       const name = employee.display_name || employee.username;
       set("#deactivateEmployeeName", name); set("#deactivateEmployeeNo", employee.employee_no); set("#deactivateEmployeeDepartment", employee.department_name); set("#deactivateEmployeeRole", employee.role_label); set("#deactivateEmployeeStatus", employee.is_active ? "在職" : "已離職");
       document.querySelector("#cancelEmployeeDeactivate").href = `employee-detail.html?id=${id}`;
-      document.querySelector("#confirmEmployeeDeactivate").addEventListener("click", async (event) => { event.preventDefault(); try { await apiRequest(`/employees/${id}/`, { method: "PATCH", body: JSON.stringify({ is_active: false }) }); window.location.href = `employee-deactivate-success.html?id=${id}`; } catch (error) { alert(error.message || "設定離職失敗。"); } });
+      const terminationDate = document.querySelector("#terminationDate");
+      terminationDate.value = new Date().toISOString().slice(0, 10);
+      document.querySelector("#confirmEmployeeDeactivate").addEventListener("click", async (event) => {
+        event.preventDefault();
+        if (!terminationDate.value) { alert("請選擇離職日期。"); terminationDate.focus(); return; }
+        try {
+          await apiRequest(`/employees/${id}/`, { method: "PATCH", body: JSON.stringify({ is_active: false, termination_date: terminationDate.value, termination_reason: document.querySelector("#terminationReason").value.trim() }) });
+          window.location.href = `employee-deactivate-success.html?id=${id}`;
+        } catch (error) { alert(error.message || "設定離職失敗。"); }
+      });
     } catch (error) { set("#deactivateEmployeeName", `無法載入員工：${error.message}`); }
   })();
 </script>

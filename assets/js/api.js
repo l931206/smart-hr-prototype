@@ -54,6 +54,28 @@ async function getCurrentUser() {
   return apiRequest("/auth/me/");
 }
 
+async function encodeAttachment(file, maxBytes = 2 * 1024 * 1024) {
+  if (!file) return { attachment_name: "", attachment_data: "" };
+  if (file.size > maxBytes) throw new Error("附件大小不可超過 2 MB。");
+  const attachment_data = await new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(new Error("附件讀取失敗。"));
+    reader.readAsDataURL(file);
+  });
+  return { attachment_name: file.name, attachment_data };
+}
+
+function downloadAttachment(name, data) {
+  if (!data) return;
+  const link = document.createElement("a");
+  link.href = data;
+  link.download = name || "attachment";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+}
+
 function logout() {
   localStorage.removeItem("hr_token");
   localStorage.removeItem("hr_user");

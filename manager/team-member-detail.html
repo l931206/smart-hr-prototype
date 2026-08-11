@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
@@ -297,7 +297,7 @@
 
           <div>
             <h1>—</h1>
-            <p>軟體工程師｜員工編號 —</p>
+            <p>職稱與員工編號載入中</p>
             <p>所屬部門｜直屬主管：—</p>
           </div>
         </div>
@@ -311,22 +311,22 @@
     <section class="summary-grid team-detail-summary">
       <article class="summary-card">
         <span>剩餘特休</span>
-        <strong>5 天</strong>
+        <strong>0 天</strong>
       </article>
 
       <article class="summary-card">
         <span>本年度請假</span>
-        <strong>4 天</strong>
+        <strong>0 天</strong>
       </article>
 
       <article class="summary-card">
         <span>本月晚到</span>
-        <strong>1 次</strong>
+        <strong>0 次</strong>
       </article>
 
       <article class="summary-card">
         <span>待審核申請</span>
-        <strong>1 件</strong>
+        <strong>0 件</strong>
       </article>
     </section>
 
@@ -347,7 +347,7 @@
 
         <div class="team-info-row">
           <span>職稱</span>
-          <strong>軟體工程師</strong>
+          <strong>載入中</strong>
         </div>
 
         <div class="team-info-row">
@@ -367,42 +367,7 @@
 
       <article class="card team-record-card">
         <h2>最近紀錄</h2>
-
-        <div class="team-record">
-          <div class="team-record-head">
-            <h3>特休假申請</h3>
-
-            <span class="team-record-tag pending">
-              等待審核
-            </span>
-          </div>
-
-          <p>— 至 —，共 2 天。</p>
-        </div>
-
-        <div class="team-record">
-          <div class="team-record-head">
-            <h3>晚到通知</h3>
-
-            <span class="team-record-tag late">
-              已通知
-            </span>
-          </div>
-
-          <p>—8，預計 09:40 到班。</p>
-        </div>
-
-        <div class="team-record">
-          <div class="team-record-head">
-            <h3>病假</h3>
-
-            <span class="team-record-tag approved">
-              已核准
-            </span>
-          </div>
-
-          <p>—2，共 1 天。</p>
-        </div>
+        <p>資料載入中…</p>
       </article>
     </section>
 
@@ -451,28 +416,48 @@
       <small>更多</small>
     </a>
   </nav>
-  <script src="../assets/js/api.js?v=20260811-live43"></script>
+  <script src="../assets/js/api.js?v=20260811-live44"></script>
   <script>
     (async () => {
       const id = new URLSearchParams(window.location.search).get("id");
       if (!id) return;
+      const first = (selector) => document.querySelector(selector);
       try {
-        const employee = await apiRequest(`/employees/${id}/`);
+        const [employee, leavePayload, latePayload, balancePayload] = await Promise.all([apiRequest(`/employees/${id}/`), apiRequest("/leave-requests/"), apiRequest("/late-notices/"), apiRequest("/leave-balances/")]);
+        const leaves = (Array.isArray(leavePayload) ? leavePayload : (leavePayload.results || [])).filter((item) => String(item.employee) === String(id));
+        const lateNotices = (Array.isArray(latePayload) ? latePayload : (latePayload.results || [])).filter((item) => String(item.employee) === String(id));
+        const balances = (Array.isArray(balancePayload) ? balancePayload : (balancePayload.results || [])).filter((item) => String(item.employee) === String(id));
         const name = employee.display_name || employee.username;
-        const first = (selector) => document.querySelector(selector);
         first(".team-profile-avatar").textContent = name.slice(0, 1);
         first(".team-profile-employee h1").textContent = name;
         const profileLines = document.querySelectorAll(".team-profile-employee p");
-        if (profileLines[0]) profileLines[0].textContent = `員工編號：${employee.employee_no || "—"}`;
+        if (profileLines[0]) profileLines[0].textContent = `${employee.job_title || employee.role_label || "員工"}｜員工編號：${employee.employee_no || "—"}`;
         if (profileLines[1]) profileLines[1].textContent = `部門：${employee.department_name || "—"}`;
         first(".team-profile-status").textContent = employee.is_active ? "在職" : "已停用";
         const rows = document.querySelectorAll(".team-info-card .team-info-row strong");
         if (rows[0]) rows[0].textContent = employee.email || "—";
         if (rows[1]) rows[1].textContent = employee.phone || "—";
+        if (rows[2]) rows[2].textContent = employee.job_title || employee.role_label || "員工";
         if (rows[3]) rows[3].textContent = employee.hire_date || "—";
+        if (rows[4]) rows[4].textContent = employee.is_active ? "在職" : "已停用";
+        const summary = document.querySelectorAll(".team-detail-summary .summary-card strong");
+        const annual = balances.find((item) => item.leave_type_name.includes("特休")) || balances[0];
+        const year = new Date().getFullYear();
+        const month = String(new Date().getMonth() + 1).padStart(2, "0");
+        if (summary[0]) summary[0].textContent = annual ? `${Number(annual.remaining_days)} 天` : "0 天";
+        if (summary[1]) summary[1].textContent = `${leaves.filter((item) => item.status === "approved" && String(item.start_date).startsWith(String(year))).reduce((sum, item) => sum + Number(item.days), 0)} 天`;
+        if (summary[2]) summary[2].textContent = `${lateNotices.filter((item) => String(item.date).startsWith(`${year}-${month}`)).length} 次`;
+        if (summary[3]) summary[3].textContent = `${leaves.filter((item) => item.status === "pending").length} 件`;
+        const records = [
+          ...leaves.map((item) => ({date:item.created_at,title:`${item.leave_type}申請`,tag:item.status_label,className:item.status,text:`${item.start_date} 至 ${item.end_date}，共 ${item.days} 天。`})),
+          ...lateNotices.map((item) => ({date:item.created_at,title:"晚到通知",tag:item.status_label,className:"late",text:`${item.date}，預計 ${item.expected_arrival} 到班。`}))
+        ].sort((a,b) => new Date(b.date)-new Date(a.date)).slice(0,5);
+        const recordCard = document.querySelector(".team-record-card");
+        recordCard.innerHTML = `<h2>最近紀錄</h2>${records.length ? records.map((item) => `<div class="team-record"><div class="team-record-head"><h3>${item.title}</h3><span class="team-record-tag ${item.className}">${item.tag}</span></div><p>${item.text}</p></div>`).join("") : "<p>目前沒有請假或晚到紀錄。</p>"}`;
         document.title = `${name} - 團隊成員資料`;
       } catch (error) {
-        first(".team-profile-employee h1").textContent = "無法載入員工資料";
+        const heading = first(".team-profile-employee h1");
+        if (heading) heading.textContent = "無法載入員工資料";
         console.error(error);
       }
     })();

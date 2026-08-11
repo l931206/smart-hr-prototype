@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
@@ -242,7 +242,7 @@
 
         <div class="request-info-row">
           <span>職稱</span>
-          <strong>軟體工程師</strong>
+          <strong>載入中</strong>
         </div>
 
         <div class="request-info-row">
@@ -262,7 +262,7 @@
 
         <div class="request-info-row">
           <span>剩餘特休</span>
-          <strong>5 天</strong>
+          <strong>載入中</strong>
         </div>
 
         <div class="request-info-row">
@@ -352,25 +352,29 @@
       <small>更多</small>
     </a>
   </nav>
-  <script src="../assets/js/api.js?v=20260811-live43"></script>
+  <script src="../assets/js/api.js?v=20260811-live44"></script>
   <script>
     (async () => {
       const requestId = new URLSearchParams(window.location.search).get("id");
       if (!requestId) return;
       try {
         const request = await apiRequest(`/leave-requests/${requestId}/`);
+        const balancePayload = await apiRequest("/leave-balances/");
+        const balances = Array.isArray(balancePayload) ? balancePayload : (balancePayload.results || []);
+        const balance = balances.find((item) => item.employee === request.employee && item.leave_type_name === request.leave_type);
         document.querySelector("#requestTitle").textContent = `${request.employee_name}的${request.leave_type}申請`;
         document.querySelector("#requestNumber").textContent = `申請編號：LEAVE-${String(request.id).padStart(6, "0")}`;
         document.querySelector("#requestStatus").textContent = request.status_label;
         const values = document.querySelectorAll(".request-info-row strong");
         values[0].textContent = request.employee_department || "—";
-        values[1].textContent = "尚無資料";
+        values[1].textContent = request.employee_job_title || "未設定職稱";
         values[2].textContent = request.leave_type;
         values[3].textContent = `${request.start_date} ${request.start_time} 至 ${request.end_date} ${request.end_time}`;
         values[4].textContent = `${request.days} 天`;
-        values[5].textContent = "尚無資料";
+        values[5].textContent = balance ? `${Number(balance.remaining_days)} 天` : "不適用";
         values[6].textContent = request.reason;
-        values[7].textContent = "尚無附件資料";
+        values[7].textContent = request.attachment_name || "未上傳附件";
+        if (request.attachment_data) { values[7].style.cursor = "pointer"; values[7].title = "點擊下載附件"; values[7].addEventListener("click", () => downloadAttachment(request.attachment_name, request.attachment_data)); }
         values[8].textContent = new Date(request.created_at).toLocaleString("zh-TW");
         const updateStatus = async (event, status, target) => {
           event.preventDefault();

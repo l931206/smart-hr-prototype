@@ -154,7 +154,7 @@
     const infoValues = document.querySelectorAll(".info-box .row strong");
     if (infoValues[0]) infoValues[0].textContent = requestItem.employee_no || "—";
     if (infoValues[1]) infoValues[1].textContent = requestItem.employee_department || "—";
-    if (infoValues[2]) infoValues[2].textContent = employee.role_label || "—";
+    if (infoValues[2]) infoValues[2].textContent = employee.job_title || employee.role_label || "未設定職稱";
     if (infoValues[3]) infoValues[3].textContent = new Date(requestItem.created_at).toLocaleString("zh-TW");
     const oldValues = document.querySelectorAll(".change-card.old .row strong");
     const newValues = document.querySelectorAll(".change-card.new .row strong");

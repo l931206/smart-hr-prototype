@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
@@ -282,7 +282,7 @@
       </div>
     </form>
   </main>
-  <script src="../assets/js/api.js?v=20260811-live43"></script>
+  <script src="../assets/js/api.js?v=20260811-live44"></script>
   <script>
     document.querySelector(".form-card").addEventListener("submit", async (event) => {
       event.preventDefault();
@@ -291,13 +291,15 @@
       const button = form.querySelector("button[type=submit]");
       button.disabled = true;
       try {
+        const attachment = await encodeAttachment(form.querySelector("#attachment").files[0]);
         const item = await apiRequest("/announcements/", {
           method: "POST",
           body: JSON.stringify({
             title: form.querySelector("#title").value.trim(),
             category: categoryMap[form.querySelector("#type").value] || "company",
             content: form.querySelector("#content").value.trim(),
-            is_published: true
+            is_published: true,
+            ...attachment
           })
         });
         window.location.href = `announcement-create-success.html?id=${item.id}`;
@@ -312,7 +314,8 @@
       const categoryMap = { "部門公告": "company", "行政通知": "admin", "人事公告": "hr", "緊急通知": "system" };
       button.disabled = true;
       try {
-        const item = await apiRequest("/announcements/", {method:"POST", body:JSON.stringify({title:form.querySelector("#title").value.trim(), category:categoryMap[form.querySelector("#type").value] || "company", content:form.querySelector("#content").value.trim(), is_published:false})});
+        const attachment = await encodeAttachment(form.querySelector("#attachment").files[0]);
+        const item = await apiRequest("/announcements/", {method:"POST", body:JSON.stringify({title:form.querySelector("#title").value.trim(), category:categoryMap[form.querySelector("#type").value] || "company", content:form.querySelector("#content").value.trim(), is_published:false, ...attachment})});
         window.location.href = `announcement-draft-success.html?id=${item.id}`;
       } catch (error) { button.disabled = false; alert(error.message || "儲存草稿失敗"); }
     });

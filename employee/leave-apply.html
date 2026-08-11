@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
@@ -169,7 +169,7 @@
           <div class="balance-note">目前可使用的特休額度</div>
         </div>
 
-        <strong>5 天</strong>
+        <strong>資料載入中…</strong>
       </section>
 
       <section class="leave-summary">
@@ -336,7 +336,7 @@
       <small>我的</small>
     </a>
   </nav>
-  <script src="../assets/js/api.js?v=20260811-live43"></script>
+  <script src="../assets/js/api.js?v=20260811-live44"></script>
   <script>
     document.querySelector("#leaveForm").addEventListener("submit", async (event) => {
       event.preventDefault();
@@ -344,13 +344,15 @@
       const button = form.querySelector("button[type=submit]");
       button.disabled = true;
       try {
+        const attachment = await encodeAttachment(form.attachment.files[0]);
         const payload = {
           leave_type: form.leaveType.value,
           start_date: form.startDate.value,
           end_date: form.endDate.value,
           start_time: form.startTime.value,
           end_time: form.endTime.value,
-          reason: form.reason.value.trim()
+          reason: form.reason.value.trim(),
+          ...attachment
         };
         sessionStorage.setItem("hr_leave_draft", JSON.stringify(payload));
         window.location.href = "leave-confirm.html";
@@ -363,16 +365,25 @@
   <script>
     (async () => {
       try {
-        const [user, typePayload] = await Promise.all([getCurrentUser(), apiRequest("/leave-types/")]);
+        const [user, typePayload, balancePayload] = await Promise.all([getCurrentUser(), apiRequest("/leave-types/"), apiRequest("/leave-balances/")]);
         const leaveTypes = (Array.isArray(typePayload) ? typePayload : (typePayload.results || [])).filter((item) => item.is_active);
+        const balances = Array.isArray(balancePayload) ? balancePayload : (balancePayload.results || []);
         const leaveTypeSelect = document.querySelector("#leaveType");
         if (leaveTypeSelect) leaveTypeSelect.innerHTML = `<option value="">請選擇假別</option>${leaveTypes.map((item) => `<option value="${item.name}">${item.name}</option>`).join("")}`;
         const balance = document.querySelector(".leave-balance strong");
         const rows = document.querySelectorAll(".leave-summary .summary-row strong");
-        if (balance) balance.textContent = "尚無資料";
+        const updateBalance = () => {
+          const selected = leaveTypes.find((item) => item.name === leaveTypeSelect?.value);
+          const item = balances.find((entry) => entry.leave_type === selected?.id);
+          if (balance) balance.textContent = item ? `${Number(item.remaining_days)} 天` : (selected?.deduct_quota ? "0 天" : "不扣除額度");
+        };
+        leaveTypeSelect?.addEventListener("change", updateBalance);
+        const annual = leaveTypes.find((item) => item.code === "ANNUAL" || item.name.includes("特休"));
+        const annualBalance = balances.find((entry) => entry.leave_type === annual?.id);
+        if (balance) balance.textContent = annualBalance ? `${Number(annualBalance.remaining_days)} 天` : "請選擇假別";
         if (rows[0]) rows[0].textContent = user.display_name || user.username || "—";
         if (rows[1]) rows[1].textContent = user.department_name || "—";
-        if (rows[2]) rows[2].textContent = "尚無資料";
+        if (rows[2]) rows[2].textContent = user.manager_name || "尚未設定";
         const manager = user.manager_name || "尚未設定";
         const managerField = document.querySelector("#leaveManager");
         if (managerField) managerField.textContent = manager;

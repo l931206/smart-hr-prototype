@@ -2,16 +2,18 @@ from django.contrib.auth import logout
 from django.utils import timezone
 from rest_framework import status, viewsets
 from rest_framework.authtoken.models import Token
-from rest_framework.exceptions import MethodNotAllowed, PermissionDenied
+from rest_framework.exceptions import MethodNotAllowed, PermissionDenied, ValidationError
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Announcement, Department, LateNotice, LeaveRequest, LeaveType, Notification, ProfileChangeRequest, User
+from .models import AuditLog, Announcement, Department, LateNotice, LeaveBalance, LeaveRequest, LeaveType, Notification, ProfileChangeRequest, User
 from .serializers import (
     AnnouncementSerializer,
+    AuditLogSerializer,
     DepartmentSerializer,
     LateNoticeSerializer,
+    LeaveBalanceSerializer,
     LeaveRequestSerializer,
     LeaveTypeSerializer,
     LoginSerializer,
@@ -23,6 +25,18 @@ from .serializers import (
 
 def is_admin(user):
     return user.is_staff or user.role == User.Role.ADMIN
+
+
+def record_audit(request, action, target, details=None, actor_override=None):
+    AuditLog.objects.create(
+        actor=actor_override or (request.user if request.user.is_authenticated else None),
+        action=action,
+        target_type=target.__class__.__name__,
+        target_id=str(getattr(target, "pk", "") or ""),
+        target_label=str(target),
+        details=details or {},
+        ip_address=request.META.get("REMOTE_ADDR"),
+    )
 
 
 class AdminWriteMixin:
@@ -48,6 +62,18 @@ class AdminWriteMixin:
         self._require_admin(request)
         return super().destroy(request, *args, **kwargs)
 
+    def perform_create(self, serializer):
+        target = serializer.save()
+        record_audit(self.request, "新增", target)
+
+    def perform_update(self, serializer):
+        target = serializer.save()
+        record_audit(self.request, "更新", target)
+
+    def perform_destroy(self, instance):
+        record_audit(self.request, "刪除", instance)
+        instance.delete()
+
 
 class LoginView(APIView):
     permission_classes = [AllowAny]
@@ -57,6 +83,7 @@ class LoginView(APIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data["user"]
         token, _ = Token.objects.get_or_create(user=user)
+        record_audit(request, "登入", user, actor_override=user)
         return Response({"token": token.key, "user": UserSerializer(user).data})
 
 
@@ -71,6 +98,7 @@ class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
+        record_audit(request, "登出", request.user)
         Token.objects.filter(user=request.user).delete()
         logout(request)
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -88,6 +116,7 @@ class MeView(APIView):
         if "avatar_data" in request.data:
             user.avatar_data = request.data["avatar_data"]
             user.save(update_fields=["avatar_data"])
+            record_audit(request, "更新頭貼", user)
         return Response(UserSerializer(user).data)
 
 
@@ -128,6 +157,7 @@ class AnnouncementViewSet(viewsets.ModelViewSet):
         if serializer.validated_data.get("is_published"):
             values["published_at"] = timezone.now()
         announcement = serializer.save(**values)
+        record_audit(self.request, "發布公告" if announcement.is_published else "建立公告草稿", announcement)
         if announcement.is_published:
             Notification.objects.bulk_create([
                 Notification(recipient=employee, title="最新公告", content=announcement.title, category="announcement")
@@ -142,6 +172,7 @@ class AnnouncementViewSet(viewsets.ModelViewSet):
         if serializer.validated_data.get("is_published") and not serializer.instance.published_at:
             values["published_at"] = timezone.now()
         announcement = serializer.save(**values)
+        record_audit(self.request, "更新公告", announcement)
         if announcement.is_published and not was_published:
             Notification.objects.bulk_create([
                 Notification(recipient=employee, title="公告已發布", content=announcement.title, category="announcement")
@@ -151,6 +182,7 @@ class AnnouncementViewSet(viewsets.ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         if request.user.role == User.Role.EMPLOYEE:
             raise PermissionDenied("員工不可刪除公告。")
+        record_audit(request, "刪除公告", self.get_object())
         return super().destroy(request, *args, **kwargs)
 
 
@@ -187,6 +219,7 @@ class LeaveRequestViewSet(viewsets.ModelViewSet):
         if self.request.user.role != User.Role.EMPLOYEE:
             raise PermissionDenied("只有員工可以提出請假申請。")
         leave_request = serializer.save(employee=self.request.user, status=LeaveRequest.Status.PENDING)
+        record_audit(self.request, "提出請假", leave_request)
         department = self.request.user.department
         manager = self.request.user.manager or (department.employees.filter(role=User.Role.MANAGER).first() if department else None)
         if manager:
@@ -201,6 +234,17 @@ class LeaveRequestViewSet(viewsets.ModelViewSet):
         if self.request.user.role == User.Role.EMPLOYEE:
             raise PermissionDenied("員工不可修改請假審核狀態。")
         status_value = serializer.validated_data.get("status")
+        if status_value == LeaveRequest.Status.APPROVED and serializer.instance.status != LeaveRequest.Status.APPROVED:
+            leave_type = LeaveType.objects.filter(name=serializer.instance.leave_type, is_active=True).first()
+            if leave_type and leave_type.deduct_quota:
+                balance, _ = LeaveBalance.objects.get_or_create(
+                    employee=serializer.instance.employee,
+                    leave_type=leave_type,
+                    year=serializer.instance.start_date.year,
+                    defaults={"allocated_days": leave_type.default_days},
+                )
+                if balance.remaining_days < serializer.instance.days:
+                    raise ValidationError({"status": "員工此假別的剩餘額度不足，無法核准。"})
         if status_value in {LeaveRequest.Status.APPROVED, LeaveRequest.Status.REJECTED}:
             leave_request = serializer.save(reviewed_at=timezone.now())
             Notification.objects.create(
@@ -209,6 +253,7 @@ class LeaveRequestViewSet(viewsets.ModelViewSet):
                 content=f"您的{leave_request.leave_type}申請{leave_request.get_status_display()}。",
                 category="leave",
             )
+            record_audit(self.request, "核准請假" if status_value == LeaveRequest.Status.APPROVED else "退回請假", leave_request)
         else:
             serializer.save()
 
@@ -234,6 +279,7 @@ class LateNoticeViewSet(viewsets.ModelViewSet):
         if self.request.user.role != User.Role.EMPLOYEE:
             raise PermissionDenied("只有員工可以送出晚到通知。")
         notice = serializer.save(employee=self.request.user, status=LateNotice.Status.NOTIFIED)
+        record_audit(self.request, "送出晚到通知", notice)
         department = self.request.user.department
         manager = self.request.user.manager or (department.employees.filter(role=User.Role.MANAGER).first() if department else None)
         if manager:
@@ -263,6 +309,51 @@ class LateNoticeViewSet(viewsets.ModelViewSet):
 class LeaveTypeViewSet(AdminWriteMixin, viewsets.ModelViewSet):
     queryset = LeaveType.objects.all()
     serializer_class = LeaveTypeSerializer
+
+    def perform_create(self, serializer):
+        leave_type = serializer.save()
+        if leave_type.deduct_quota:
+            for employee in User.objects.filter(role=User.Role.EMPLOYEE, is_active=True):
+                LeaveBalance.objects.get_or_create(
+                    employee=employee,
+                    leave_type=leave_type,
+                    year=timezone.localdate().year,
+                    defaults={"allocated_days": leave_type.default_days},
+                )
+        record_audit(self.request, "新增", leave_type)
+
+
+class LeaveBalanceViewSet(AdminWriteMixin, viewsets.ModelViewSet):
+    queryset = LeaveBalance.objects.select_related("employee", "leave_type").all()
+    serializer_class = LeaveBalanceSerializer
+
+    def get_queryset(self):
+        year = int(self.request.query_params.get("year") or timezone.localdate().year)
+        employees = User.objects.filter(role=User.Role.EMPLOYEE, is_active=True)
+        if not is_admin(self.request.user):
+            if self.request.user.role == User.Role.MANAGER:
+                employees = employees.filter(department=self.request.user.department)
+            else:
+                employees = employees.filter(pk=self.request.user.pk)
+        for employee in employees:
+            for leave_type in LeaveType.objects.filter(is_active=True, deduct_quota=True):
+                LeaveBalance.objects.get_or_create(
+                    employee=employee,
+                    leave_type=leave_type,
+                    year=year,
+                    defaults={"allocated_days": leave_type.default_days},
+                )
+        return super().get_queryset().filter(employee__in=employees, year=year)
+
+
+class AuditLogViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = AuditLog.objects.select_related("actor").all()
+    serializer_class = AuditLogSerializer
+
+    def get_queryset(self):
+        if not is_admin(self.request.user):
+            raise PermissionDenied("只有系統管理者可以查看操作紀錄。")
+        return super().get_queryset()
 
 
 class ProfileChangeRequestViewSet(viewsets.ModelViewSet):
@@ -302,6 +393,7 @@ class ProfileChangeRequestViewSet(viewsets.ModelViewSet):
                 content=f"您的個人資料修改申請{request_item.get_status_display()}。",
                 category="profile",
             )
+            record_audit(self.request, "核准資料修改" if request_item.status == ProfileChangeRequest.Status.APPROVED else "退回資料修改", request_item)
 
     def update(self, request, *args, **kwargs):
         if not is_admin(request.user):

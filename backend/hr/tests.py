@@ -1,7 +1,7 @@
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
-from .models import Announcement, Department, LeaveRequest, LeaveType, ProfileChangeRequest, User
+from .models import AuditLog, Announcement, Department, LeaveBalance, LeaveRequest, LeaveType, ProfileChangeRequest, User
 
 
 class CoreApiTests(APITestCase):
@@ -160,3 +160,50 @@ class CoreApiTests(APITestCase):
             format="json",
         )
         self.assertEqual(response.status_code, 403)
+
+    def test_leave_balance_is_created_and_deducted_from_approved_requests(self):
+        leave_type = LeaveType.objects.create(code="ANNUAL", name="特休假", default_days="10.0", deduct_quota=True)
+        manager = User.objects.create_user(username="balance-manager", password="password", role=User.Role.MANAGER, department=self.department)
+        leave_request = LeaveRequest.objects.create(employee=self.user, leave_type="特休假", start_date="2026-08-12", end_date="2026-08-13", reason="休假")
+        self.client.force_authenticate(user=self.user)
+        balance_response = self.client.get("/api/leave-balances/?year=2026")
+        self.assertEqual(balance_response.status_code, 200)
+        self.assertEqual(balance_response.data[0]["remaining_days"], "10.0")
+        self.client.force_authenticate(user=manager)
+        approve = self.client.patch(f"/api/leave-requests/{leave_request.id}/", {"status": "approved"}, format="json")
+        self.assertEqual(approve.status_code, 200)
+        balance = LeaveBalance.objects.get(employee=self.user, leave_type=leave_type, year=2026)
+        self.assertEqual(balance.remaining_days, 8)
+
+    def test_required_leave_attachment_is_validated(self):
+        LeaveType.objects.create(code="SICK", name="病假", attachment_required=True, deduct_quota=False)
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post("/api/leave-requests/", {"leave_type":"病假", "start_date":"2026-08-12", "end_date":"2026-08-12", "reason":"就醫"}, format="json")
+        self.assertEqual(response.status_code, 400)
+        attached = self.client.post("/api/leave-requests/", {"leave_type":"病假", "start_date":"2026-08-12", "end_date":"2026-08-12", "reason":"就醫", "attachment_name":"proof.pdf", "attachment_data":"data:application/pdf;base64,VEVTVA=="}, format="json")
+        self.assertEqual(attached.status_code, 201)
+
+    def test_audit_logs_are_admin_only_and_record_login(self):
+        self.client.post(reverse("login"), {"username":"emp001", "password":"password-for-tests"}, format="json")
+        self.assertTrue(AuditLog.objects.filter(action="登入", actor=self.user).exists())
+        self.client.force_authenticate(user=self.user)
+        self.assertEqual(self.client.get("/api/audit-logs/").status_code, 403)
+        admin = User.objects.create_superuser(username="audit-admin", password="admin-password")
+        self.client.force_authenticate(user=admin)
+        self.assertEqual(self.client.get("/api/audit-logs/").status_code, 200)
+
+    def test_admin_can_store_termination_details_and_reactivation_clears_them(self):
+        admin = User.objects.create_superuser(username="hr-admin", password="admin-password")
+        self.client.force_authenticate(user=admin)
+        response = self.client.patch(
+            f"/api/employees/{self.user.id}/",
+            {"is_active": False, "termination_date": "2026-08-11", "termination_reason": "自願離職"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["termination_date"], "2026-08-11")
+        self.assertEqual(response.data["termination_reason"], "自願離職")
+        response = self.client.patch(f"/api/employees/{self.user.id}/", {"is_active": True}, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertIsNone(response.data["termination_date"])
+        self.assertEqual(response.data["termination_reason"], "")

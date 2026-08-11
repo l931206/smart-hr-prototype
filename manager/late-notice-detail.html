@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
@@ -236,7 +236,7 @@
 
         <div class="late-detail-row">
           <span>原上班時間</span>
-          <strong>09:00</strong>
+          <strong id="lateDetailWorkStart">—</strong>
         </div>
 
         <div class="late-detail-row">
@@ -316,7 +316,7 @@
       <small>更多</small>
     </a>
   </nav>
-  <script src="../assets/js/api.js?v=20260811-live43"></script>
+  <script src="../assets/js/api.js?v=20260811-live44"></script>
   <script>
     (async () => {
       const id = new URLSearchParams(window.location.search).get("id");
@@ -332,6 +332,7 @@
         set("#lateDetailStatus", notice.status_label);
         set("#lateDetailDepartment", notice.employee_department || employee.department_name);
         set("#lateDetailDate", notice.date);
+        set("#lateDetailWorkStart", employee.work_start_time ? employee.work_start_time.slice(0, 5) : "尚未設定");
         set("#lateDetailArrival", notice.expected_arrival);
         set("#lateDetailReasonType", notice.reason_type);
         set("#lateDetailCreated", new Date(notice.created_at).toLocaleString("zh-TW"));

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
@@ -247,9 +247,7 @@
 
     <section class="history-filter">
       <select aria-label="選擇年份">
-        <option>全部年份</option>
-        <option>2026 年</option>
-        <option>2025 年</option>
+        <option value="">年份載入中</option>
       </select>
 
       <select aria-label="選擇狀態">
@@ -261,9 +259,6 @@
 
       <select aria-label="選擇假別">
         <option>全部假別</option>
-        <option>特休假</option>
-        <option>病假</option>
-        <option>事假</option>
       </select>
     </section>
 
@@ -300,16 +295,18 @@
       <small>我的</small>
     </a>
   </nav>
-  <script src="../assets/js/api.js?v=20260811-live43"></script>
+  <script src="../assets/js/api.js?v=20260811-live44"></script>
   <script>
     (async () => {
       const list = document.querySelector("#historyList");
       try {
-        const payload = await apiRequest("/leave-requests/");
+        const [payload, balancePayload] = await Promise.all([apiRequest("/leave-requests/"), apiRequest("/leave-balances/")]);
         const requests = Array.isArray(payload) ? payload : (payload.results || []);
+        const balances = Array.isArray(balancePayload) ? balancePayload : (balancePayload.results || []);
         document.querySelector("#historyPendingCount").textContent = String(requests.filter((request) => request.status === "pending").length);
         document.querySelector("#historyApprovedCount").textContent = String(requests.filter((request) => request.status === "approved").length);
-        document.querySelector("#historyApprovedDays").textContent = "尚無資料";
+        const annual = balances.find((item) => item.leave_type_name.includes("特休")) || balances[0];
+        document.querySelector("#historyApprovedDays").textContent = annual ? `${Number(annual.remaining_days)} 天` : "0 天";
         const filters = document.querySelectorAll("select");
         const years = [...new Set(requests.map((request) => String(request.start_date || "").slice(0, 4)).filter(Boolean))].sort().reverse();
         const leaveTypes = [...new Set(requests.map((request) => request.leave_type).filter(Boolean))];

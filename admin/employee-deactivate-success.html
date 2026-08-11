@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
@@ -182,7 +182,7 @@
 
       <div class="info-row">
         <span>離職日期</span>
-        <strong>—1</strong>
+        <strong id="deactivatedEmployeeDate">—</strong>
       </div>
 
       <div class="info-row">
@@ -206,8 +206,8 @@
     </div>
   </main>
 </body>
-<script src="../assets/js/api.js?v=20260811-live43"></script>
+<script src="../assets/js/api.js?v=20260811-live44"></script>
 <script>
-  (async () => { const id = new URLSearchParams(window.location.search).get("id"); if (!id) return; try { const employee = await apiRequest(`/employees/${id}/`); document.querySelector("#deactivatedEmployeeName").textContent = employee.display_name || employee.username; document.querySelector("#deactivatedEmployeeNo").textContent = employee.employee_no || "—"; } catch (error) {} })();
+  (async () => { const id = new URLSearchParams(window.location.search).get("id"); if (!id) return; try { const employee = await apiRequest(`/employees/${id}/`); document.querySelector("#deactivatedEmployeeName").textContent = employee.display_name || employee.username; document.querySelector("#deactivatedEmployeeNo").textContent = employee.employee_no || "—"; document.querySelector("#deactivatedEmployeeDate").textContent = employee.termination_date || "未設定"; } catch (error) {} })();
 </script>
 </html>

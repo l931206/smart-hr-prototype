@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
@@ -262,19 +262,16 @@
       <small>我的</small>
     </a>
   </nav>
-  <script src="../assets/js/api.js?v=20260811-live43"></script>
-  <script src="../assets/js/employee-data-state.js?v=20260811-live43"></script>
+  <script src="../assets/js/api.js?v=20260811-live44"></script>
+  <script src="../assets/js/employee-data-state.js?v=20260811-live44"></script>
   <script>
     (async () => {
       try {
         const user = await getCurrentUser();
-        const payload = await apiRequest("/employees/");
-        const employees = Array.isArray(payload) ? payload : (payload.results || []);
-        const manager = employees.find((item) => item.role === "manager" && item.department === user.department);
         const managerField = document.querySelector("#lateManager");
-        if (managerField) managerField.textContent = manager?.display_name || "尚未設定";
+        if (managerField) managerField.textContent = user.manager_name || "尚未設定";
         const workTime = document.querySelector(".late-info-item strong");
-        if (workTime) workTime.textContent = "尚未設定";
+        if (workTime) workTime.textContent = user.work_start_time ? user.work_start_time.slice(0, 5) : "尚未設定";
       } catch (error) { window.location.href = "../login.html?next=employee/late-notice.html"; }
     })();
     document.querySelector("#lateNoticeForm").addEventListener("submit", async (event) => {

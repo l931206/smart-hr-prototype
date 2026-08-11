@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
@@ -386,9 +386,9 @@
       <small>我的</small>
     </a>
   </nav>
-  <script src="../assets/js/api.js?v=20260811-live43"></script>
-  <script src="../assets/js/dashboard-data.js?v=20260811-live43"></script>
-  <script src="../assets/js/employee-data-state.js?v=20260811-live43"></script>
+  <script src="../assets/js/api.js?v=20260811-live44"></script>
+  <script src="../assets/js/dashboard-data.js?v=20260811-live44"></script>
+  <script src="../assets/js/employee-data-state.js?v=20260811-live44"></script>
   <script>
     (async () => {
       try {
@@ -412,7 +412,7 @@
         document.querySelector("#departmentName").textContent = user.department_name || "尚未分配部門";
         document.querySelector("#profileDepartment").textContent = user.department_name || "尚未分配部門";
         document.querySelector("#managerName").textContent = `直屬主管：${user.manager_name || "尚未設定"}`;
-        document.querySelector("#jobTitle").textContent = user.role_label || "員工";
+        document.querySelector("#jobTitle").textContent = user.job_title || user.role_label || "員工";
       } catch (error) {
         window.location.href = "../login.html?next=employee/index.html";
       }

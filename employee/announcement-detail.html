@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
@@ -289,7 +289,7 @@
       <small>我的</small>
     </a>
   </nav>
-  <script src="../assets/js/api.js?v=20260811-live43"></script>
+  <script src="../assets/js/api.js?v=20260811-live44"></script>
   <script>
     (async () => {
       const id = new URLSearchParams(window.location.search).get("id");
@@ -300,7 +300,12 @@
         document.querySelector(".announcement-detail-head h1").textContent = item.title;
         document.querySelector(".announcement-meta").textContent = `發布人：${item.author_name || "—"}｜${new Date(item.published_at || item.created_at).toLocaleString("zh-TW")}`;
         document.querySelector(".announcement-content > p").textContent = item.content;
-        document.querySelectorAll(".activity-info, .attachment-box, .announcement-content h2, .announcement-content p ~ h2").forEach((node) => node.remove());
+        document.querySelectorAll(".activity-info, .announcement-content h2, .announcement-content p ~ h2").forEach((node) => node.remove());
+        const attachment = document.querySelector(".attachment-box");
+        if (attachment) {
+          attachment.innerHTML = item.attachment_data ? `<h2>附件</h2><button class="attachment-file" type="button"><strong>${item.attachment_name}</strong><span>下載附件 →</span></button>` : "<h2>附件</h2><p>目前沒有附件。</p>";
+          attachment.querySelector("button")?.addEventListener("click", () => downloadAttachment(item.attachment_name, item.attachment_data));
+        }
         document.title = `${item.title} - 公告`;
       } catch (error) {
         document.querySelector(".announcement-content").innerHTML = `<p>無法載入公告：${error.message}</p>`;

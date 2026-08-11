@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
@@ -254,7 +254,7 @@
       <div>
         <h2 id="profileName">—</h2>
         <p>員工編號：<span id="profileEmployeeNo">—</span></p>
-        <p><span id="profileDepartment">所屬部門</span>｜軟體工程師</p>
+        <p><span id="profileDepartment">載入中</span>｜<span id="profileJobTitle">載入中</span></p>
 
         <span class="profile-status">
           ● 在職中
@@ -303,7 +303,7 @@
 
         <div class="profile-field">
           <span>職稱</span>
-          <strong>軟體工程師</strong>
+          <strong id="profileJobTitleDetail">載入中</strong>
         </div>
 
         <div class="profile-field">
@@ -371,7 +371,7 @@
       <small>我的</small>
     </a>
   </nav>
-  <script src="../assets/js/api.js?v=20260811-live43"></script>
+  <script src="../assets/js/api.js?v=20260811-live44"></script>
   <script>
     (async () => {
       try {
@@ -390,14 +390,15 @@
         }
         document.querySelector("#profileName").textContent = name;
         document.querySelector("#profileEmployeeNo").textContent = user.employee_no || "—";
-        document.querySelector("#profileDepartment").parentElement.textContent = `${department}｜${user.role_label || "員工"}`;
+        document.querySelector("#profileDepartment").textContent = department;
+        document.querySelector("#profileJobTitle").textContent = user.job_title || user.role_label || "未設定職稱";
         document.querySelector("#profileFullName").textContent = name;
         document.querySelector("#profileEmail").textContent = user.email || "尚未設定";
         document.querySelector("#profilePhone").textContent = user.phone || "尚未設定";
         document.querySelector("#profileDepartmentDetail").textContent = department;
         document.querySelector("#profileHireDate").textContent = hireDate;
+        document.querySelector("#profileJobTitleDetail").textContent = user.job_title || user.role_label || "未設定職稱";
         const jobFields = document.querySelectorAll(".profile-card")[1]?.querySelectorAll(".profile-field strong");
-        if (jobFields?.[1]) jobFields[1].textContent = "尚無資料";
         if (jobFields?.[2]) jobFields[2].textContent = user.manager_name || "尚未設定";
       } catch (error) {
         window.location.href = "../login.html?next=employee/profile.html";
