@@ -172,22 +172,22 @@
     <section class="department-info">
       <div class="info-row">
         <span>部門名稱</span>
-        <strong>人資部</strong>
+        <strong id="createdDepartmentName">—</strong>
       </div>
 
       <div class="info-row">
         <span>部門代碼</span>
-        <strong>HR</strong>
+        <strong id="createdDepartmentCode">—</strong>
       </div>
 
       <div class="info-row">
         <span>部門主管</span>
-        <strong>吳主管</strong>
+        <strong id="createdDepartmentManager">尚未設定</strong>
       </div>
 
       <div class="info-row">
         <span>部門狀態</span>
-        <strong class="status">啟用中</strong>
+        <strong class="status" id="createdDepartmentStatus">—</strong>
       </div>
     </section>
 
@@ -200,5 +200,26 @@
       <a class="button secondary" href="department-create.html">繼續新增部門</a>
     </div>
   </main>
+  <script src="../assets/js/api.js?v=b399a09"></script>
+  <script>
+    (async () => {
+      const id = new URLSearchParams(window.location.search).get("id");
+      if (!id) return;
+      try {
+        const [department, employeePayload] = await Promise.all([
+          apiRequest(`/departments/${id}/`),
+          apiRequest("/employees/")
+        ]);
+        const employees = Array.isArray(employeePayload) ? employeePayload : (employeePayload.results || []);
+        const manager = employees.find((employee) => employee.department === department.id && employee.role === "manager" && employee.is_active);
+        document.querySelector("#createdDepartmentName").textContent = department.name || "—";
+        document.querySelector("#createdDepartmentCode").textContent = department.code || "—";
+        document.querySelector("#createdDepartmentManager").textContent = manager?.display_name || manager?.username || "尚未設定";
+        document.querySelector("#createdDepartmentStatus").textContent = department.is_active ? "啟用中" : "已停用";
+      } catch (error) {
+        document.querySelector("#createdDepartmentManager").textContent = "資料載入失敗";
+      }
+    })();
+  </script>
 </body>
 </html>
