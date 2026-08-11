@@ -88,6 +88,11 @@
       font-weight: 800;
     }
 
+    .status.inactive {
+      color: #b91c1c;
+      background: #fee2e2;
+    }
+
     .content-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -304,7 +309,7 @@
       <article class="card">
         <h2>目前權限</h2>
 
-        <div class="permission-list">
+        <div class="permission-list" id="permissionList">
           <div class="permission">
             <div class="check">✓</div>
             <div>
@@ -369,6 +374,22 @@
         set("#accountRole", user.role_label);
         set("#accountState", user.is_active ? "已啟用" : "已停用");
         set("#accountHireDate", user.hire_date);
+        document.querySelector("#accountStatus").classList.toggle("inactive", !user.is_active);
+        const permissions = user.role === "admin" ? [
+          ["管理員工與帳號", "可建立、編輯、停用員工與登入帳號。"],
+          ["管理部門與權限", "可建立部門並設定部門主管與角色權限。"],
+          ["查看全公司資料", "可查看公司員工、請假與通知資料。"]
+        ] : user.role === "manager" ? [
+          ["查看團隊資料", "可查看直屬員工的職務與聯絡資訊。"],
+          ["審核請假申請", "可核准或退回直屬員工的請假申請。"],
+          ["處理晚到通知", "可查看直屬員工送出的晚到通知。"]
+        ] : [
+          ["查看個人資料", "可查看自己的員工與職務資訊。"],
+          ["提出請假申請", "可新增請假並查看審核結果。"],
+          ["送出晚到通知", "可通知直屬主管預計到班時間。"],
+          ["查看個人通知", "可查看審核與系統通知。"]
+        ];
+        document.querySelector("#permissionList").innerHTML = permissions.map(([title, description]) => `<div class="permission"><div class="check">✓</div><div><strong>${title}</strong><span>${description}</span></div></div>`).join("");
         document.querySelector("#accountEditLink").href = `account-edit.html?id=${user.id}`;
         document.querySelector("#accountDisableLink").href = `account-disable.html?id=${user.id}`;
       } catch (error) { set("#accountName", `無法載入帳號：${error.message}`); }

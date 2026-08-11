@@ -146,23 +146,18 @@ width:100%;
 <p>建立新的登入帳號並指定角色與對應員工。</p>
 </header>
 
-<form class="form-card" action="account-create-success.html">
+<form class="form-card" id="accountCreateForm">
 
 <div class="two-column">
 
 <div class="form-group">
-<label>對應員工</label>
-<select required>
-<option value="">請選擇員工</option>
-<option>許員工</option>
-<option>陳員工</option>
-<option>林員工</option>
-</select>
+<label for="displayName">使用者姓名</label>
+<input id="displayName" type="text" placeholder="例如 王小明" required>
 </div>
 
 <div class="form-group">
 <label>登入帳號</label>
-<input type="text" placeholder="例如 employee31" required>
+<input id="username" type="text" placeholder="例如 employee31" required>
 </div>
 
 </div>
@@ -171,15 +166,15 @@ width:100%;
 
 <div class="form-group">
 <label>電子郵件</label>
-<input type="email" placeholder="employee@example.com" required>
+<input id="email" type="email" placeholder="employee@example.com" required>
 </div>
 
 <div class="form-group">
 <label>系統角色</label>
-<select required>
-<option>Employee</option>
-<option>Manager</option>
-<option>Admin</option>
+<select id="role" required>
+<option value="employee">員工</option>
+<option value="manager">主管</option>
+<option value="admin">系統管理者</option>
 </select>
 </div>
 
@@ -189,14 +184,14 @@ width:100%;
 
 <div class="form-group">
 <label>初始密碼</label>
-<input type="password" placeholder="********">
+<input id="password" type="password" placeholder="至少 8 個字元" minlength="8" required>
 </div>
 
 <div class="form-group">
 <label>帳號狀態</label>
-<select>
-<option selected>等待啟用</option>
-<option>已啟用</option>
+<select id="status">
+<option value="inactive">停用</option>
+<option value="active" selected>啟用</option>
 </select>
 </div>
 
@@ -221,6 +216,30 @@ width:100%;
 </form>
 
 </main>
+
+<script src="../assets/js/api.js?v=b399a09"></script>
+<script>
+  document.querySelector("#accountCreateForm").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const button = form.querySelector("button[type=submit]");
+    button.disabled = true;
+    try {
+      const user = await apiRequest("/employees/", { method: "POST", body: JSON.stringify({
+        display_name: document.querySelector("#displayName").value.trim(),
+        username: document.querySelector("#username").value.trim(),
+        email: document.querySelector("#email").value.trim(),
+        role: document.querySelector("#role").value,
+        password: document.querySelector("#password").value,
+        is_active: document.querySelector("#status").value === "active"
+      }) });
+      window.location.href = `account-create-success.html?id=${user.id}`;
+    } catch (error) {
+      alert(error.message || "建立帳號失敗。");
+      button.disabled = false;
+    }
+  });
+</script>
 
 </body>
 </html>

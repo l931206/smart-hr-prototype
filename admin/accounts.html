@@ -75,6 +75,14 @@
       border-radius: 18px;
       background: white;
       box-shadow: 0 10px 28px rgba(15, 23, 42, 0.05);
+      cursor: pointer;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    }
+
+    .summary-card.selected {
+      border-color: #4338ca;
+      box-shadow: 0 0 0 3px rgba(67, 56, 202, 0.16), 0 12px 30px rgba(67, 56, 202, 0.12);
+      transform: translateY(-2px);
     }
 
     .summary-card span {
@@ -282,24 +290,24 @@
     </header>
 
     <section class="summary-grid">
-      <article class="summary-card">
+      <article class="summary-card selected" data-filter="all">
         <span>全部帳號</span>
-        <strong>30</strong>
+        <strong>0</strong>
       </article>
 
-      <article class="summary-card">
+      <article class="summary-card" data-filter="active">
         <span>已啟用</span>
-        <strong>27</strong>
+        <strong>0</strong>
       </article>
 
-      <article class="summary-card">
+      <article class="summary-card" data-filter="pending">
         <span>等待啟用</span>
-        <strong>1</strong>
+        <strong>0</strong>
       </article>
 
-      <article class="summary-card">
+      <article class="summary-card" data-filter="inactive">
         <span>已停用</span>
-        <strong>2</strong>
+        <strong>0</strong>
       </article>
     </section>
 
@@ -492,8 +500,26 @@
         if (counts[1]) counts[1].textContent = String(active.length);
         if (counts[2]) counts[2].textContent = "0";
         if (counts[3]) counts[3].textContent = String(users.length - active.length);
-        document.querySelector("#accountList").innerHTML = users.map((user) => `
-          <a class="account-card" href="account-detail.html?id=${user.id}"><div class="account-head"><div class="account-main"><div class="avatar">${(user.display_name || user.username || "員").slice(0, 1)}</div><div><h2>${user.display_name || user.username}</h2><p>登入帳號：${user.username}｜${user.employee_no || "—"}</p></div></div><span class="status ${user.is_active ? "active" : "pending"}">${user.is_active ? "已啟用" : "已停用"}</span></div><div class="account-info"><div class="info-item"><span>系統角色</span><strong><span class="role-tag">${user.role_label}</span></strong></div><div class="info-item"><span>所屬部門</span><strong>${user.department_name || "—"}</strong></div><div class="info-item"><span>電子郵件</span><strong>${user.email || "—"}</strong></div></div><span class="view-link">查看與設定帳號權限 →</span></a>`).join("") || "<p>目前沒有帳號資料。</p>";
+        const search = document.querySelector('input[type="search"]');
+        const selects = document.querySelectorAll(".toolbar select");
+        const list = document.querySelector("#accountList");
+        let activeFilter = "all";
+        const render = () => {
+          const keyword = (search?.value || "").trim().toLowerCase();
+          const role = selects[0]?.value || "全部角色";
+          const status = selects[1]?.value || "全部狀態";
+          const filtered = users.filter((user) => {
+            const text = `${user.display_name || ""} ${user.username || ""} ${user.email || ""} ${user.employee_no || ""}`.toLowerCase();
+            const roleMatch = role === "全部角色" || user.role_label === role || user.role === role.toLowerCase();
+            const statusMatch = status === "全部狀態" || (status === "已啟用" && user.is_active) || (status === "已停用" && !user.is_active);
+            const filterMatch = activeFilter === "all" || (activeFilter === "active" && user.is_active) || (activeFilter === "inactive" && !user.is_active) || activeFilter === "pending" && false;
+            return text.includes(keyword) && roleMatch && statusMatch && filterMatch;
+          });
+          list.innerHTML = filtered.map((user) => `<a class="account-card" href="account-detail.html?id=${user.id}"><div class="account-head"><div class="account-main"><div class="avatar">${(user.display_name || user.username || "員").slice(0, 1)}</div><div><h2>${user.display_name || user.username}</h2><p>登入帳號：${user.username}｜${user.employee_no || "—"}</p></div></div><span class="status ${user.is_active ? "active" : "disabled"}">${user.is_active ? "已啟用" : "已停用"}</span></div><div class="account-info"><div class="info-item"><span>系統角色</span><strong><span class="role-tag">${user.role_label}</span></strong></div><div class="info-item"><span>所屬部門</span><strong>${user.department_name || "—"}</strong></div><div class="info-item"><span>電子郵件</span><strong>${user.email || "—"}</strong></div></div><span class="view-link">查看與設定帳號權限 →</span></a>`).join("") || `<p>${activeFilter === "pending" ? "目前沒有等待啟用的帳號。" : "目前沒有符合條件的帳號。"}</p>`;
+        };
+        document.querySelectorAll(".summary-card[data-filter]").forEach((card) => card.addEventListener("click", () => { activeFilter = card.dataset.filter; document.querySelectorAll(".summary-card[data-filter]").forEach((item) => item.classList.toggle("selected", item === card)); render(); }));
+        [search, ...selects].filter(Boolean).forEach((element) => element.addEventListener("input", render));
+        render();
       } catch (error) { document.querySelector("#accountList").innerHTML = `<p>${error.message || "無法載入帳號資料。"}</p>`; }
     })();
   </script>

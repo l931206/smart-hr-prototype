@@ -164,22 +164,22 @@ width:100%;
 
 <div class="row">
 <span>使用者</span>
-<strong>許員工</strong>
+<strong id="createdAccountName">—</strong>
 </div>
 
 <div class="row">
 <span>登入帳號</span>
-<strong>employee31</strong>
+<strong id="createdAccountUsername">—</strong>
 </div>
 
 <div class="row">
 <span>系統角色</span>
-<strong>Employee</strong>
+<strong id="createdAccountRole">—</strong>
 </div>
 
 <div class="row">
 <span>帳號狀態</span>
-<strong class="status">等待啟用</strong>
+<strong class="status" id="createdAccountStatus">—</strong>
 </div>
 
 </section>
@@ -201,6 +201,23 @@ width:100%;
 </div>
 
 </main>
+
+<script src="../assets/js/api.js?v=b399a09"></script>
+<script>
+  (async () => {
+    const id = new URLSearchParams(window.location.search).get("id");
+    if (!id) return;
+    try {
+      const user = await apiRequest(`/employees/${id}/`);
+      document.querySelector("#createdAccountName").textContent = user.display_name || user.username;
+      document.querySelector("#createdAccountUsername").textContent = user.username;
+      document.querySelector("#createdAccountRole").textContent = user.role_label;
+      document.querySelector("#createdAccountStatus").textContent = user.is_active ? "已啟用" : "已停用";
+    } catch (error) {
+      document.querySelector("#createdAccountName").textContent = "資料載入失敗";
+    }
+  })();
+</script>
 
 </body>
 </html>
