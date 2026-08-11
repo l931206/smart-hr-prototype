@@ -94,6 +94,11 @@
       font-weight: 800;
     }
 
+    .status.inactive {
+      color: #b91c1c;
+      background: #fee2e2;
+    }
+
     .notice {
       margin-top: 18px;
       padding: 16px;
@@ -165,29 +170,29 @@
     <h1>帳號權限已更新</h1>
 
     <p>
-      系統已儲存陳員工的角色與功能權限，
+      系統已儲存帳號的角色與功能權限，
       新設定將於下次登入時套用。
     </p>
 
     <section class="account-info">
       <div class="info-row">
         <span>使用者</span>
-        <strong>陳員工</strong>
+        <strong id="updatedAccountName">—</strong>
       </div>
 
       <div class="info-row">
         <span>登入帳號</span>
-        <strong>employee03</strong>
+        <strong id="updatedAccountUsername">—</strong>
       </div>
 
       <div class="info-row">
         <span>系統角色</span>
-        <strong>Employee</strong>
+        <strong id="updatedAccountRole">—</strong>
       </div>
 
       <div class="info-row">
         <span>帳號狀態</span>
-        <strong class="status">已啟用</strong>
+        <strong class="status" id="updatedAccountStatus">—</strong>
       </div>
     </section>
 
@@ -196,7 +201,7 @@
     </div>
 
     <div class="actions">
-      <a class="button primary" href="account-detail.html">查看帳號詳情</a>
+      <a class="button primary" id="updatedAccountDetail" href="accounts.html">查看帳號詳情</a>
       <a class="button secondary" href="accounts.html">返回帳號管理</a>
     </div>
   </main>
@@ -208,9 +213,13 @@
       if (!id) return;
       try {
         const user = await apiRequest(`/employees/${id}/`);
-        document.querySelectorAll("strong").forEach((element) => { if (element.textContent.includes("陳員工")) element.textContent = user.display_name || user.username; });
-        const link = document.querySelector("a[href='account-detail.html']");
-        if (link) link.href = `account-detail.html?id=${id}`;
+        document.querySelector("#updatedAccountName").textContent = user.display_name || user.username;
+        document.querySelector("#updatedAccountUsername").textContent = user.username;
+        document.querySelector("#updatedAccountRole").textContent = user.role_label;
+        const status = document.querySelector("#updatedAccountStatus");
+        status.textContent = user.is_active ? "已啟用" : "已停用";
+        status.classList.toggle("inactive", !user.is_active);
+        document.querySelector("#updatedAccountDetail").href = `account-detail.html?id=${id}`;
       } catch (error) { /* 保留儲存成功畫面 */ }
     })();
   </script>
