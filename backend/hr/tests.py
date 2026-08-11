@@ -216,3 +216,6 @@ class CoreApiTests(APITestCase):
         response = self.client.get("/api/accounts/")
         self.assertEqual(response.status_code, 200)
         self.assertEqual({item["username"] for item in response.data}, {"emp001", "account-admin"})
+        admin_data = next(item for item in response.data if item["username"] == "account-admin")
+        self.assertIn("last_login", admin_data)
+        self.assertIn("date_joined", admin_data)
