@@ -176,7 +176,7 @@
       <p>建立新的公司部門，並設定部門主管與基本資料。</p>
     </header>
 
-    <form class="form-card" action="department-create-success.html">
+    <form class="form-card" id="departmentCreateForm" action="department-create-success.html">
       <div class="two-column">
         <div class="form-group">
           <label for="departmentCode">部門代碼</label>
@@ -205,11 +205,7 @@
         <label for="manager">部門主管</label>
         <select id="manager" required>
           <option value="">請選擇部門主管</option>
-          <option>王主管</option>
-          <option>吳主管</option>
-          <option>林主管</option>
-          <option>蔡主管</option>
-          <option>暫不指定主管</option>
+          <option value="">載入中…</option>
         </select>
       </div>
 
@@ -225,8 +221,8 @@
       <div class="form-group">
         <label for="status">部門狀態</label>
         <select id="status" required>
-          <option selected>啟用中</option>
-          <option>暫停使用</option>
+          <option value="active" selected>啟用中</option>
+          <option value="inactive">暫停使用</option>
         </select>
       </div>
 
@@ -240,5 +236,25 @@
       </div>
     </form>
   </main>
+  <script src="../assets/js/api.js?v=b399a09"></script>
+  <script>
+    (async () => {
+      const managerSelect = document.querySelector("#manager");
+      try {
+        const payload = await apiRequest("/employees/");
+        const employees = Array.isArray(payload) ? payload : (payload.results || []);
+        const managers = employees.filter((employee) => employee.role === "manager" && employee.is_active);
+        managerSelect.innerHTML = `<option value="">暫不指定主管</option>${managers.map((manager) => `<option value="${manager.id}">${manager.display_name || manager.username}</option>`).join("")}`;
+      } catch (error) { managerSelect.innerHTML = "<option value=\"\">無法載入主管</option>"; }
+      document.querySelector("#departmentCreateForm").addEventListener("submit", async (event) => {
+        event.preventDefault(); const button = event.currentTarget.querySelector("button[type=submit]"); button.disabled = true;
+        try {
+          const department = await apiRequest("/departments/", { method: "POST", body: JSON.stringify({ code: document.querySelector("#departmentCode").value.trim().toUpperCase(), name: document.querySelector("#departmentName").value.trim(), is_active: document.querySelector("#status").value === "active" }) });
+          const managerId = Number(managerSelect.value); if (managerId) await apiRequest(`/employees/${managerId}/`, { method: "PATCH", body: JSON.stringify({ department: department.id, role: "manager" }) });
+          window.location.href = `department-create-success.html?id=${department.id}`;
+        } catch (error) { alert(error.message || "建立部門失敗。"); button.disabled = false; }
+      });
+    })();
+  </script>
 </body>
 </html>

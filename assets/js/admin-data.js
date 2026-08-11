@@ -85,6 +85,7 @@
     const search = document.querySelector(".toolbar input[type=search]");
     const status = document.querySelector(".toolbar select");
     let departments = [];
+    let departmentFilter = "all";
     try {
       departments = await apiRequest("/departments/");
     } catch (error) {
@@ -96,6 +97,7 @@
       const statusValue = status?.value || "";
       const filtered = departments.filter((department) =>
         `${department.code} ${department.name}`.toLowerCase().includes(keyword) &&
+        (departmentFilter === "all" || (departmentFilter === "active" && department.is_active) || (departmentFilter === "staffed" && Number(department.employee_count || 0) > 0)) &&
         (!statusValue || statusValue.includes("全部") ||
           (statusValue.includes("啟") && department.is_active) ||
           (statusValue.includes("停") && !department.is_active))
@@ -118,6 +120,12 @@
     if (totalCount) totalCount.textContent = String(departments.length);
     if (activeCount) activeCount.textContent = String(activeDepartments.length);
     if (totalEmployees) totalEmployees.textContent = String(employeeCount);
+    document.querySelectorAll(".summary-grid .summary-card[data-filter]").forEach((card) => card.addEventListener("click", () => {
+      departmentFilter = card.dataset.filter;
+      document.querySelectorAll(".summary-grid .summary-card[data-filter]").forEach((item) => item.classList.toggle("selected", item === card));
+      render();
+    }));
+    document.querySelector('.summary-grid .summary-card[data-filter="all"]')?.classList.add("selected");
     [search, status].filter(Boolean).forEach((element) => element.addEventListener("input", render));
     render();
   }
