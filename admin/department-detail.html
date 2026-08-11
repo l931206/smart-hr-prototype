@@ -87,6 +87,11 @@
       font-weight: 800;
     }
 
+    .status.inactive {
+      color: #b91c1c;
+      background: #fee2e2;
+    }
+
     .summary-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -296,7 +301,7 @@
           </div>
         </div>
 
-        <span class="status">啟用中</span>
+        <span class="status" id="departmentHeroStatus">—</span>
       </div>
     </section>
 
@@ -360,55 +365,7 @@
       <article class="card">
         <h2>部門成員</h2>
 
-        <div class="employee-list" id="departmentMembers">
-          <div class="employee">
-            <div class="employee-main">
-              <div class="avatar">王</div>
-              <div>
-                <h3>王主管</h3>
-                <p>資訊部主管｜EMP0002</p>
-              </div>
-            </div>
-
-            <span class="role-tag">Manager</span>
-          </div>
-
-          <div class="employee">
-            <div class="employee-main">
-              <div class="avatar">陳</div>
-              <div>
-                <h3>陳員工</h3>
-                <p>軟體工程師｜EMP0003</p>
-              </div>
-            </div>
-
-            <span class="role-tag">Employee</span>
-          </div>
-
-          <div class="employee">
-            <div class="employee-main">
-              <div class="avatar">林</div>
-              <div>
-                <h3>林員工</h3>
-                <p>軟體工程師｜EMP0004</p>
-              </div>
-            </div>
-
-            <span class="role-tag">Employee</span>
-          </div>
-
-          <div class="employee">
-            <div class="employee-main">
-              <div class="avatar">張</div>
-              <div>
-                <h3>張員工</h3>
-                <p>系統工程師｜EMP0005</p>
-              </div>
-            </div>
-
-            <span class="role-tag">Employee</span>
-          </div>
-        </div>
+        <div class="employee-list" id="departmentMembers"><p>資料載入中…</p></div>
       </article>
     </section>
 
@@ -433,6 +390,7 @@
         const today = new Date().toISOString().slice(0, 10);
         set("#departmentEmployeeCount", `${members.filter((user) => user.is_active && user.role === "employee").length} 人`); set("#departmentManagerCount", `${members.filter((user) => user.role === "manager" && user.is_active).length} 人`); set("#departmentPendingCount", `${leaves.filter((item) => item.status === "pending" && item.employee_department === department.name).length} 件`); set("#departmentTodayCount", `${leaves.filter((item) => item.employee_department === department.name && item.start_date <= today && item.end_date >= today && item.status === "approved").length} 人`);
         set("#departmentHeroName", department.name); set("#departmentHeroCode", `部門代碼：${department.code}`); set("#departmentHeroDescription", "部門人力與成員資料"); set("#departmentName", department.name); set("#departmentCode", department.code); set("#departmentManager", manager?.display_name); set("#departmentManagerUsername", manager?.username); set("#departmentCreated", department.created_at ? new Date(department.created_at).toLocaleDateString("zh-TW") : "—"); set("#departmentStatus", department.is_active ? "啟用中" : "已停用");
+        const heroStatus = document.querySelector("#departmentHeroStatus"); heroStatus.textContent = department.is_active ? "啟用中" : "已停用"; heroStatus.classList.toggle("inactive", !department.is_active);
         document.querySelector("#departmentMembers").innerHTML = members.map((user) => `<div class="employee"><div class="employee-main"><div class="avatar">${(user.display_name || user.username || "員").slice(0, 1)}</div><div><h3>${user.display_name || user.username}</h3><p>${user.department_name || "—"}｜${user.employee_no || "—"}</p></div></div><span class="role-tag">${user.role_label}</span></div>`).join("") || "<p>目前沒有部門成員。</p>";
         document.querySelector("#departmentEditLink").href = `department-edit.html?id=${id}`; document.querySelector("#departmentDeactivateLink").href = `department-deactivate.html?id=${id}`;
       } catch (error) { set("#departmentName", `無法載入部門：${error.message}`); }

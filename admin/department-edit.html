@@ -237,15 +237,25 @@
         document.querySelector("#status").value = department.is_active ? "active" : "inactive";
         const employeePayload = await apiRequest("/employees/");
         const employees = Array.isArray(employeePayload) ? employeePayload : (employeePayload.results || []);
-        const managers = employees.filter((employee) => employee.role === "manager" && employee.is_active && employee.department === department.id);
-        document.querySelector("#manager").innerHTML = `<option value="">尚未指定主管</option>${managers.map((manager) => `<option value="${manager.id}">${manager.display_name || manager.username}</option>`).join("")}`;
-        document.querySelector("#manager").value = managers[0]?.id || "";
+        const managers = employees.filter((employee) => employee.role === "manager" && employee.is_active);
+        const currentManager = managers.find((manager) => manager.department === department.id);
+        document.querySelector("#manager").innerHTML = `<option value="">尚未指定主管</option>${managers.map((manager) => `<option value="${manager.id}">${manager.display_name || manager.username}（${manager.department_name || "未分配部門"}）</option>`).join("")}`;
+        document.querySelector("#manager").value = currentManager?.id || "";
         document.querySelector(".back").href = `department-detail.html?id=${id}`;
         document.querySelector(".button.secondary").href = `department-detail.html?id=${id}`;
         document.querySelector("#departmentEditForm").addEventListener("submit", async (event) => {
           event.preventDefault();
           const button = event.currentTarget.querySelector("button[type=submit]"); button.disabled = true;
-          try { await apiRequest(`/departments/${id}/`, { method: "PATCH", body: JSON.stringify({ name: document.querySelector("#departmentName").value.trim(), is_active: document.querySelector("#status").value === "active" }) }); window.location.href = `department-edit-success.html?id=${id}`; }
+          try {
+            await apiRequest(`/departments/${id}/`, { method: "PATCH", body: JSON.stringify({ name: document.querySelector("#departmentName").value.trim(), is_active: document.querySelector("#status").value === "active" }) });
+            const selectedManagerId = Number(document.querySelector("#manager").value);
+            const currentManagerId = currentManager?.id || null;
+            if (selectedManagerId && selectedManagerId !== currentManagerId) {
+              if (currentManagerId) await apiRequest(`/employees/${currentManagerId}/`, { method: "PATCH", body: JSON.stringify({ role: "employee" }) });
+              await apiRequest(`/employees/${selectedManagerId}/`, { method: "PATCH", body: JSON.stringify({ department: Number(id), role: "manager" }) });
+            }
+            window.location.href = `department-edit-success.html?id=${id}`;
+          }
           catch (error) { alert(error.message || "儲存部門資料失敗。"); button.disabled = false; }
         });
       } catch (error) { alert(error.message || "無法載入部門資料。"); }
