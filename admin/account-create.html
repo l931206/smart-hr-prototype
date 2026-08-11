@@ -217,7 +217,7 @@ width:100%;
 
 </main>
 
-<script src="../assets/js/api.js?v=20260811-live45"></script>
+<script src="../assets/js/api.js?v=20260811-live46"></script>
 <script>
   document.querySelector("#accountCreateForm").addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -225,7 +225,7 @@ width:100%;
     const button = form.querySelector("button[type=submit]");
     button.disabled = true;
     try {
-      const user = await apiRequest("/employees/", { method: "POST", body: JSON.stringify({
+      const user = await apiRequest("/accounts/", { method: "POST", body: JSON.stringify({
         display_name: document.querySelector("#displayName").value.trim(),
         username: document.querySelector("#username").value.trim(),
         email: document.querySelector("#email").value.trim(),

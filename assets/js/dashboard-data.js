@@ -79,17 +79,18 @@
   }
 
   async function loadAdminDashboard() {
-    const [employeesPayload, departmentsPayload, requestsPayload, auditPayload] = await Promise.all([
-      apiRequest("/employees/"), apiRequest("/departments/"), apiRequest("/profile-change-requests/"), apiRequest("/audit-logs/")
+    const [employeesPayload, accountsPayload, departmentsPayload, requestsPayload, auditPayload] = await Promise.all([
+      apiRequest("/employees/"), apiRequest("/accounts/"), apiRequest("/departments/"), apiRequest("/profile-change-requests/"), apiRequest("/audit-logs/")
     ]);
     const employees = asList(employeesPayload);
+    const accounts = asList(accountsPayload);
     const departments = asList(departmentsPayload);
     const requests = asList(requestsPayload);
     const audits = asList(auditPayload);
     setValue(".summary-grid .summary-card strong", 0, String(employees.filter((item) => item.is_active).length));
     setValue(".summary-grid .summary-card strong", 1, String(departments.filter((item) => item.is_active).length));
     setValue(".summary-grid .summary-card strong", 2, String(requests.filter((item) => item.status === "pending").length));
-    setValue(".summary-grid .summary-card strong", 3, String(employees.filter((item) => item.is_active).length));
+    setValue(".summary-grid .summary-card strong", 3, String(accounts.filter((item) => item.is_active).length));
 
     const pending = requests.filter((item) => item.status === "pending");
     const profileCard = [...document.querySelectorAll(".action-card")].find((card) => card.getAttribute("href") === "profile-requests.html");

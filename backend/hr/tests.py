@@ -207,3 +207,12 @@ class CoreApiTests(APITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIsNone(response.data["termination_date"])
         self.assertEqual(response.data["termination_reason"], "")
+
+    def test_account_api_includes_admin_and_is_admin_only(self):
+        admin = User.objects.create_superuser(username="account-admin", password="admin-password", display_name="帳號管理者")
+        self.client.force_authenticate(user=self.user)
+        self.assertEqual(self.client.get("/api/accounts/").status_code, 403)
+        self.client.force_authenticate(user=admin)
+        response = self.client.get("/api/accounts/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual({item["username"] for item in response.data}, {"emp001", "account-admin"})

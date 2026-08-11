@@ -201,13 +201,13 @@
     </div>
   </main>
 </body>
-  <script src="../assets/js/api.js?v=20260811-live45"></script>
+  <script src="../assets/js/api.js?v=20260811-live46"></script>
   <script>
     (async () => {
       const id = new URLSearchParams(window.location.search).get("id");
       if (!id) return;
       try {
-        const user = await apiRequest(`/employees/${id}/`);
+        const user = await apiRequest(`/accounts/${id}/`);
         document.querySelector("#disabledName").textContent = user.display_name || user.username;
         document.querySelector("#disabledUsername").textContent = user.username;
         document.querySelector("#disabledRole").textContent = user.role_label;

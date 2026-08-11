@@ -138,6 +138,16 @@ class EmployeeViewSet(AdminWriteMixin, viewsets.ModelViewSet):
         return queryset.filter(pk=self.request.user.pk)
 
 
+class AccountViewSet(AdminWriteMixin, viewsets.ModelViewSet):
+    queryset = User.objects.select_related("department", "manager").all()
+    serializer_class = UserSerializer
+
+    def get_queryset(self):
+        if not is_admin(self.request.user):
+            raise PermissionDenied("只有系統管理者可以查看帳號資料。")
+        return super().get_queryset()
+
+
 class AnnouncementViewSet(viewsets.ModelViewSet):
     queryset = Announcement.objects.select_related("created_by").all()
     serializer_class = AnnouncementSerializer

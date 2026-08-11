@@ -1,11 +1,12 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from .views import AnnouncementViewSet, AuditLogViewSet, DepartmentViewSet, EmployeeViewSet, HealthView, LateNoticeViewSet, LeaveBalanceViewSet, LeaveRequestViewSet, LeaveTypeViewSet, LoginView, LogoutView, MeView, NotificationViewSet, ProfileChangeRequestViewSet
+from .views import AccountViewSet, AnnouncementViewSet, AuditLogViewSet, DepartmentViewSet, EmployeeViewSet, HealthView, LateNoticeViewSet, LeaveBalanceViewSet, LeaveRequestViewSet, LeaveTypeViewSet, LoginView, LogoutView, MeView, NotificationViewSet, ProfileChangeRequestViewSet
 
 router = DefaultRouter()
 router.register("departments", DepartmentViewSet, basename="department")
 router.register("employees", EmployeeViewSet, basename="employee")
+router.register("accounts", AccountViewSet, basename="account")
 router.register("leave-requests", LeaveRequestViewSet, basename="leave-request")
 router.register("late-notices", LateNoticeViewSet, basename="late-notice")
 router.register("announcements", AnnouncementViewSet, basename="announcement")

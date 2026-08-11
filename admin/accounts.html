@@ -334,11 +334,11 @@
     </section>
   </main>
 </body>
-  <script src="../assets/js/api.js?v=20260811-live45"></script>
+  <script src="../assets/js/api.js?v=20260811-live46"></script>
   <script>
     (async () => {
       try {
-        const payload = await apiRequest("/employees/");
+        const payload = await apiRequest("/accounts/");
         const users = Array.isArray(payload) ? payload : (payload.results || []);
         const counts = document.querySelectorAll(".summary-grid .summary-card strong");
         const active = users.filter((user) => user.is_active);

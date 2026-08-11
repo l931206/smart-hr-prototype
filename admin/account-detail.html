@@ -355,14 +355,14 @@
       <a class="button danger" id="accountDisableLink" href="account-disable.html">停用帳號</a>
     </div>
   </main>
-  <script src="../assets/js/api.js?v=20260811-live45"></script>
+  <script src="../assets/js/api.js?v=20260811-live46"></script>
   <script>
     (async () => {
       const id = new URLSearchParams(window.location.search).get("id");
       if (!id) return;
       const set = (selector, value) => { const element = document.querySelector(selector); if (element) element.textContent = value || "—"; };
       try {
-        const user = await apiRequest(`/employees/${id}/`);
+        const user = await apiRequest(`/accounts/${id}/`);
         const name = user.display_name || user.username;
         set("#accountAvatar", name.slice(0, 1));
         set("#accountName", name);

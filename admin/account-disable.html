@@ -250,20 +250,20 @@
       </div>
     </section>
   </main>
-  <script src="../assets/js/api.js?v=20260811-live45"></script>
+  <script src="../assets/js/api.js?v=20260811-live46"></script>
   <script>
     (async () => {
       const id = new URLSearchParams(window.location.search).get("id");
       if (!id) return;
       const set = (selector, value) => { const element = document.querySelector(selector); if (element) element.textContent = value || "—"; };
       try {
-        const user = await apiRequest(`/employees/${id}/`);
+        const user = await apiRequest(`/accounts/${id}/`);
         const name = user.display_name || user.username;
         set("#disableName", name); set("#disableUsername", user.username); set("#disableEmployeeNo", user.employee_no); set("#disableRole", user.role_label); set("#disableState", user.is_active ? "已啟用" : "已停用");
         document.querySelector("#cancelDisable").href = `account-detail.html?id=${id}`;
         document.querySelector("#confirmDisable").addEventListener("click", async (event) => {
           event.preventDefault();
-          try { await apiRequest(`/employees/${id}/`, { method: "PATCH", body: JSON.stringify({ is_active: false }) }); window.location.href = `account-disable-success.html?id=${id}`; }
+          try { await apiRequest(`/accounts/${id}/`, { method: "PATCH", body: JSON.stringify({ is_active: false }) }); window.location.href = `account-disable-success.html?id=${id}`; }
           catch (error) { alert(error.message || "停用帳號失敗。"); }
         });
       } catch (error) { set("#disableName", `無法載入帳號：${error.message}`); }
