@@ -179,27 +179,27 @@ textarea{
 
 <div class="row">
 <span>姓名</span>
-<strong>陳員工</strong>
+<strong id="deactivateEmployeeName">—</strong>
 </div>
 
 <div class="row">
 <span>員工編號</span>
-<strong>EMP0003</strong>
+<strong id="deactivateEmployeeNo">—</strong>
 </div>
 
 <div class="row">
 <span>部門</span>
-<strong>資訊部</strong>
+<strong id="deactivateEmployeeDepartment">—</strong>
 </div>
 
 <div class="row">
 <span>職稱</span>
-<strong>軟體工程師</strong>
+<strong id="deactivateEmployeeRole">—</strong>
 </div>
 
 <div class="row">
 <span>目前狀態</span>
-<strong>在職</strong>
+<strong id="deactivateEmployeeStatus">—</strong>
 </div>
 
 <label>離職日期</label>
@@ -226,13 +226,13 @@ textarea{
 
 <div class="actions">
 
-<a class="button primary"
-href="employee-deactivate-success.html">
+<a class="button primary" id="confirmEmployeeDeactivate"
+href="#">
 確認離職
 </a>
 
-<a class="button secondary"
-href="employee-detail.html">
+<a class="button secondary" id="cancelEmployeeDeactivate"
+href="employees.html">
 取消
 </a>
 
@@ -241,6 +241,22 @@ href="employee-detail.html">
 </section>
 
 </main>
+
+<script src="../assets/js/api.js?v=b399a09"></script>
+<script>
+  (async () => {
+    const id = new URLSearchParams(window.location.search).get("id");
+    if (!id) return;
+    const set = (selector, value) => { const element = document.querySelector(selector); if (element) element.textContent = value || "—"; };
+    try {
+      const employee = await apiRequest(`/employees/${id}/`);
+      const name = employee.display_name || employee.username;
+      set("#deactivateEmployeeName", name); set("#deactivateEmployeeNo", employee.employee_no); set("#deactivateEmployeeDepartment", employee.department_name); set("#deactivateEmployeeRole", employee.role_label); set("#deactivateEmployeeStatus", employee.is_active ? "在職" : "已離職");
+      document.querySelector("#cancelEmployeeDeactivate").href = `employee-detail.html?id=${id}`;
+      document.querySelector("#confirmEmployeeDeactivate").addEventListener("click", async (event) => { event.preventDefault(); try { await apiRequest(`/employees/${id}/`, { method: "PATCH", body: JSON.stringify({ is_active: false }) }); window.location.href = `employee-deactivate-success.html?id=${id}`; } catch (error) { alert(error.message || "設定離職失敗。"); } });
+    } catch (error) { set("#deactivateEmployeeName", `無法載入員工：${error.message}`); }
+  })();
+</script>
 
 </body>
 </html>

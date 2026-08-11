@@ -59,6 +59,14 @@
     if (summary[1]) summary[1].textContent = String(activeEmployees.length);
     if (summary[2]) summary[2].textContent = String(employees.filter((employee) => employee.role === "manager").length);
     if (summary[3]) summary[3].textContent = String(employees.length - activeEmployees.length);
+    document.querySelectorAll(".summary-grid .summary-card[data-filter]").forEach((card) => card.addEventListener("click", () => {
+      const filter = card.dataset.filter;
+      if (filter === "manager") role.value = "Manager";
+      else role.value = filter === "all" ? "全部角色" : "Employee";
+      status.value = filter === "active" ? "在職" : filter === "inactive" ? "已離職" : "全部狀態";
+      render();
+      document.querySelector(".toolbar")?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }));
     [search, role, status].filter(Boolean).forEach((element) => element.addEventListener("input", render));
     render();
   }
