@@ -51,11 +51,11 @@
         </a>`).join("") : `<p class="empty-state">目前沒有符合條件的員工資料。</p>`;
     };
     const summary = document.querySelectorAll(".summary-grid .summary-card strong");
-    const activeEmployees = employees.filter((employee) => employee.is_active);
+    const activeEmployees = employees.filter((employee) => employee.is_active && employee.role === "employee");
     if (summary[0]) summary[0].textContent = String(employees.length);
     if (summary[1]) summary[1].textContent = String(activeEmployees.length);
     if (summary[2]) summary[2].textContent = String(employees.filter((employee) => employee.role === "manager").length);
-    if (summary[3]) summary[3].textContent = String(employees.length - activeEmployees.length);
+    if (summary[3]) summary[3].textContent = String(employees.filter((employee) => employee.role === "employee" && !employee.is_active).length);
     document.querySelectorAll(".summary-grid .summary-card[data-filter]").forEach((card) => card.addEventListener("click", () => {
       activeFilter = card.dataset.filter;
       document.querySelectorAll(".summary-grid .summary-card[data-filter]").forEach((item) => item.classList.toggle("selected", item === card));
