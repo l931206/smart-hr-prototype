@@ -198,7 +198,7 @@
       <p>建立員工基本資料、職務資訊與登入帳號。</p>
     </header>
 
-    <form class="form-card" action="employee-create-success.html">
+    <form class="form-card" id="employeeCreateForm" action="employee-create-success.html">
       <h2 class="section-title">基本資料</h2>
 
       <div class="two-column">
@@ -252,11 +252,7 @@
           <label for="department">部門</label>
           <select id="department" required>
             <option value="">請選擇部門</option>
-            <option>資訊部</option>
-            <option>行政部</option>
-            <option>業務部</option>
-            <option>財務部</option>
-            <option>管理部</option>
+            <option value="">載入中…</option>
           </select>
         </div>
 
@@ -276,10 +272,7 @@
           <label for="manager">直屬主管</label>
           <select id="manager" required>
             <option value="">請選擇直屬主管</option>
-            <option>王主管</option>
-            <option>吳主管</option>
-            <option>林主管</option>
-            <option>無直屬主管</option>
+            <option value="">請先選擇部門</option>
           </select>
         </div>
 
@@ -304,12 +297,18 @@
         </div>
 
         <div class="form-group">
+          <label for="password">初始密碼</label>
+          <input id="password" type="password" minlength="8" required>
+          <p class="help">至少 8 個字元，請安全交付給員工。</p>
+        </div>
+
+        <div class="form-group">
           <label for="role">系統角色</label>
           <select id="role" required>
             <option value="">請選擇角色</option>
-            <option>Employee</option>
-            <option>Manager</option>
-            <option>Admin</option>
+            <option value="employee">Employee</option>
+            <option value="manager">Manager</option>
+            <option value="admin">Admin</option>
           </select>
         </div>
       </div>
@@ -332,5 +331,25 @@
       </div>
     </form>
   </main>
+  <script src="../assets/js/api.js?v=b399a09"></script>
+  <script>
+    (async () => {
+      const departmentSelect = document.querySelector("#department");
+      const managerSelect = document.querySelector("#manager");
+      try {
+        const [departmentPayload, employeePayload] = await Promise.all([apiRequest("/departments/"), apiRequest("/employees/")]);
+        const departments = Array.isArray(departmentPayload) ? departmentPayload : (departmentPayload.results || []);
+        const employees = Array.isArray(employeePayload) ? employeePayload : (employeePayload.results || []);
+        departmentSelect.innerHTML = `<option value="">請選擇部門</option>${departments.filter((department) => department.is_active).map((department) => `<option value="${department.id}">${department.name}</option>`).join("")}`;
+        const updateManagers = () => { const departmentId = Number(departmentSelect.value); const managers = employees.filter((employee) => employee.role === "manager" && employee.is_active && employee.department === departmentId); managerSelect.innerHTML = `<option value="">無直屬主管</option>${managers.map((manager) => `<option value="${manager.id}">${manager.display_name || manager.username}</option>`).join("")}`; };
+        departmentSelect.addEventListener("change", updateManagers); updateManagers();
+        document.querySelector("#employeeCreateForm").addEventListener("submit", async (event) => {
+          event.preventDefault(); const button = event.currentTarget.querySelector("button[type=submit]"); button.disabled = true;
+          try { const user = await apiRequest("/employees/", { method: "POST", body: JSON.stringify({ username: document.querySelector("#username").value.trim(), password: document.querySelector("#password").value, employee_no: document.querySelector("#employeeNo").value.trim(), display_name: document.querySelector("#name").value.trim(), email: document.querySelector("#email").value.trim(), phone: document.querySelector("#phone").value.trim(), department: Number(departmentSelect.value), manager: Number(managerSelect.value) || null, hire_date: document.querySelector("#hireDate").value, role: document.querySelector("#role").value, is_active: true }) }); window.location.href = `employee-create-success.html?id=${user.id}`; }
+          catch (error) { alert(error.message || "建立員工失敗。"); button.disabled = false; }
+        });
+      } catch (error) { departmentSelect.innerHTML = `<option value="">無法載入部門</option>`; alert(error.message || "無法載入部門與主管資料。"); }
+    })();
+  </script>
 </body>
 </html>

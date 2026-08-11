@@ -73,6 +73,7 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         return super().get_queryset().filter(is_staff=False)
 
 
+
 class AnnouncementViewSet(viewsets.ModelViewSet):
     queryset = Announcement.objects.select_related("created_by").all()
     serializer_class = AnnouncementSerializer

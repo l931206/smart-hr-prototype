@@ -36,6 +36,7 @@ class DepartmentSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     department_name = serializers.CharField(source="department.name", read_only=True)
     manager_name = serializers.CharField(source="manager.display_name", read_only=True)
+    password = serializers.CharField(write_only=True, required=False, min_length=8)
     role_label = serializers.CharField(source="get_role_display", read_only=True)
 
     class Meta:
@@ -46,6 +47,16 @@ class UserSerializer(serializers.ModelSerializer):
             "is_active",
         ]
         read_only_fields = ["id", "role_label", "department_name"]
+
+    def create(self, validated_data):
+        password = validated_data.pop("password", None)
+        user = User(**validated_data)
+        if password:
+            user.set_password(password)
+        else:
+            user.set_unusable_password()
+        user.save()
+        return user
 
 
 class LoginSerializer(serializers.Serializer):
