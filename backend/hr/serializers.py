@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 
-from .models import Announcement, Department, LateNotice, LeaveRequest, Notification, User
+from .models import Announcement, Department, LateNotice, LeaveRequest, LeaveType, Notification, ProfileChangeRequest, User
 
 
 class NotificationSerializer(serializers.ModelSerializer):
@@ -115,3 +115,22 @@ class LateNoticeSerializer(serializers.ModelSerializer):
         model = LateNotice
         fields = ["id", "employee", "employee_name", "employee_department", "date", "expected_arrival", "reason_type", "reason", "status", "status_label", "created_at"]
         read_only_fields = ["id", "employee", "employee_name", "employee_department", "status_label", "created_at"]
+
+
+class LeaveTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LeaveType
+        fields = ["id", "code", "name", "default_days", "is_paid", "is_active", "description", "created_at"]
+        read_only_fields = ["id", "created_at"]
+
+
+class ProfileChangeRequestSerializer(serializers.ModelSerializer):
+    employee_name = serializers.CharField(source="employee.display_name", read_only=True)
+    employee_no = serializers.CharField(source="employee.employee_no", read_only=True)
+    employee_department = serializers.CharField(source="employee.department.name", read_only=True)
+    status_label = serializers.CharField(source="get_status_display", read_only=True)
+
+    class Meta:
+        model = ProfileChangeRequest
+        fields = ["id", "employee", "employee_name", "employee_no", "employee_department", "requested_data", "status", "status_label", "reviewer_comment", "created_at", "reviewed_at"]
+        read_only_fields = ["id", "employee", "employee_name", "employee_no", "employee_department", "status_label", "created_at", "reviewed_at"]

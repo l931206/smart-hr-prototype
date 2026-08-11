@@ -6,14 +6,16 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Announcement, Department, LateNotice, LeaveRequest, Notification, User
+from .models import Announcement, Department, LateNotice, LeaveRequest, LeaveType, Notification, ProfileChangeRequest, User
 from .serializers import (
     AnnouncementSerializer,
     DepartmentSerializer,
     LeaveRequestSerializer,
     LateNoticeSerializer,
+    LeaveTypeSerializer,
     LoginSerializer,
     NotificationSerializer,
+    ProfileChangeRequestSerializer,
     UserSerializer,
 )
 
@@ -186,3 +188,34 @@ class LateNoticeViewSet(viewsets.ModelViewSet):
                 content=f"{self.request.user.display_name or self.request.user.username} 預計於 {notice.expected_arrival.strftime('%H:%M')} 到班。",
                 category="late",
             )
+
+
+class LeaveTypeViewSet(viewsets.ModelViewSet):
+    queryset = LeaveType.objects.all()
+    serializer_class = LeaveTypeSerializer
+
+
+class ProfileChangeRequestViewSet(viewsets.ModelViewSet):
+    queryset = ProfileChangeRequest.objects.select_related("employee", "employee__department").all()
+    serializer_class = ProfileChangeRequestSerializer
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if self.request.user.role == User.Role.ADMIN or self.request.user.is_staff:
+            return queryset
+        return queryset.filter(employee=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(employee=self.request.user)
+
+    def perform_update(self, serializer):
+        request_item = serializer.save(reviewed_at=timezone.now())
+        if request_item.status == ProfileChangeRequest.Status.APPROVED:
+            allowed_fields = {"display_name", "email", "phone", "avatar_data"}
+            changed_fields = []
+            for field, value in request_item.requested_data.items():
+                if field in allowed_fields:
+                    setattr(request_item.employee, field, value)
+                    changed_fields.append(field)
+            if changed_fields:
+                request_item.employee.save(update_fields=changed_fields)

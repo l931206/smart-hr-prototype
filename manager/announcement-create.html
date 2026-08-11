@@ -277,7 +277,7 @@
 
       <div class="actions">
         <button class="button primary" type="submit">立即發布</button>
-        <a class="button secondary" href="announcement-draft-success.html">儲存草稿</a>
+        <button class="button secondary" id="saveDraft" type="button">儲存草稿</button>
         <a class="button secondary" href="announcements.html">取消</a>
       </div>
     </form>
@@ -291,7 +291,7 @@
       const button = form.querySelector("button[type=submit]");
       button.disabled = true;
       try {
-        await apiRequest("/announcements/", {
+        const item = await apiRequest("/announcements/", {
           method: "POST",
           body: JSON.stringify({
             title: form.querySelector("#title").value.trim(),
@@ -300,11 +300,21 @@
             is_published: true
           })
         });
-        window.location.href = "announcements.html?created=1";
+        window.location.href = `announcement-create-success.html?id=${item.id}`;
       } catch (error) {
         button.disabled = false;
         alert(error.message || "公告發布失敗");
       }
+    });
+    document.querySelector("#saveDraft").addEventListener("click", async (event) => {
+      const button = event.currentTarget;
+      const form = document.querySelector(".form-card");
+      const categoryMap = { "部門公告": "company", "行政通知": "admin", "人事公告": "hr", "緊急通知": "system" };
+      button.disabled = true;
+      try {
+        const item = await apiRequest("/announcements/", {method:"POST", body:JSON.stringify({title:form.querySelector("#title").value.trim(), category:categoryMap[form.querySelector("#type").value] || "company", content:form.querySelector("#content").value.trim(), is_published:false})});
+        window.location.href = `announcement-draft-success.html?id=${item.id}`;
+      } catch (error) { button.disabled = false; alert(error.message || "儲存草稿失敗"); }
     });
   </script>
 </body>

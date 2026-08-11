@@ -74,14 +74,5 @@
         })();
       }
     }
-    if (path.endsWith("/late-notice.html")) {
-      const form = document.querySelector(".late-form");
-      if (form) {
-        form.addEventListener("submit", (event) => {
-          event.preventDefault();
-          alert("晚到通知 API 尚未啟用，目前不會送出資料。");
-        });
-      }
-    }
   });
 })();

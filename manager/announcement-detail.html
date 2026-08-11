@@ -219,8 +219,8 @@
 
           <div class="meta">
             <span>公告編號：ANN-20260731-001</span>
-            <span>發布人：王主管</span>
-            <span>發布時間：2026/07/31 09:00</span>
+            <span>發布人：—</span>
+            <span>發布時間：—1 09:00</span>
           </div>
         </div>
 
@@ -291,6 +291,8 @@
         document.querySelector(".announcement-detail-card h1").textContent = item.title;
         document.querySelector(".announcement-content > p").textContent = item.content;
         document.querySelector(".announcement-meta").textContent = `發布人：${item.author_name || "—"}｜${item.published_at ? new Date(item.published_at).toLocaleString("zh-TW") : "草稿"}`;
+        document.querySelector('a[href="announcement-edit.html"]').href = `announcement-edit.html?id=${id}`;
+        document.querySelector('a[href="announcement-deactivate.html"]').href = `announcement-deactivate.html?id=${id}`;
         document.querySelectorAll(".announcement-content h2, .announcement-content p ~ h2, .attachment-box").forEach((node) => node.remove());
         document.title = `${item.title} - 公告詳情`;
       } catch (error) {

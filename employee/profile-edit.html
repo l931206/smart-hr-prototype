@@ -145,7 +145,7 @@
           id="name"
           name="name"
           type="text"
-          value="陳員工"
+          value="—"
           autocomplete="name"
           required
         >
@@ -158,7 +158,7 @@
           id="email"
           name="email"
           type="email"
-          value="employee@example.com"
+          value="—"
           autocomplete="email"
           required
         >
@@ -285,11 +285,11 @@
             phone: form.querySelector("#phone").value.trim()
           };
           if (avatarData) payload.avatar_data = avatarData;
-          await apiRequest("/auth/me/", {
-            method: "PUT",
+          const requestItem = await apiRequest("/profile-change-requests/", {
+            method: "POST",
             body: JSON.stringify(payload)
           });
-          window.location.href = "profile.html?updated=1";
+          window.location.href = `profile-success.html?id=${requestItem.id}`;
         } catch (error) {
           button.disabled = false;
           alert(error.message || "資料更新失敗");

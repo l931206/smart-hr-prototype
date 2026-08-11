@@ -260,7 +260,7 @@ width:100%;
 </div>
 
 <div class="time">
-2026/07/31 11:25
+—1 11:25
 </div>
 
 </div>
@@ -274,7 +274,7 @@ width:100%;
 
 <div class="item">
 <span>對象</span>
-<strong>陳員工</strong>
+<strong>—</strong>
 </div>
 
 <div class="item">
@@ -306,7 +306,7 @@ width:100%;
 </div>
 
 <div class="time">
-2026/07/31 10:42
+—1 10:42
 </div>
 
 </div>
@@ -320,7 +320,7 @@ width:100%;
 
 <div class="item">
 <span>對象</span>
-<strong>許員工</strong>
+<strong>—</strong>
 </div>
 
 <div class="item">
@@ -336,7 +336,7 @@ width:100%;
 </div>
 
 <div class="desc">
-建立登入帳號 employee31。
+建立登入帳號 —。
 </div>
 
 <span class="tag">CREATE</span>
@@ -352,7 +352,7 @@ width:100%;
 </div>
 
 <div class="time">
-2026/07/30 16:30
+—0 16:30
 </div>
 
 </div>
@@ -382,7 +382,7 @@ width:100%;
 </div>
 
 <div class="desc">
-更新部門主管為王主管。
+更新部門主管為—。
 </div>
 
 <span class="tag">UPDATE</span>
@@ -393,5 +393,12 @@ width:100%;
 
 </main>
 
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll(".summary-grid .summary-card strong").forEach((item) => { item.textContent = "0"; });
+      const list = document.querySelector(".log-list, .table-card tbody, tbody");
+      if (list) list.innerHTML = list.tagName === "TBODY" ? '<tr><td colspan="8">目前尚無系統操作紀錄。</td></tr>' : '<p>目前尚無系統操作紀錄。</p>';
+    });
+  </script>
 </body>
 </html>

@@ -180,7 +180,7 @@
 
         <div class="info-row">
           <span>審核主管</span>
-          <strong>王主管</strong>
+          <strong>—</strong>
         </div>
 
         <div class="info-row">
@@ -242,5 +242,20 @@
       <small>我的</small>
     </a>
   </nav>
+  <script src="../assets/js/api.js?v=b399a09"></script>
+  <script>
+    (async () => {
+      const id = new URLSearchParams(location.search).get("id");
+      if (!id) return;
+      try {
+        const [item, user] = await Promise.all([apiRequest(`/leave-requests/${id}/`), getCurrentUser()]);
+        const values = document.querySelectorAll(".application-info .info-row strong");
+        if (values[0]) values[0].textContent = `LEAVE-${String(item.id).padStart(6, "0")}`;
+        if (values[1]) values[1].textContent = item.leave_type;
+        if (values[2]) values[2].textContent = user.manager_name || "尚未設定";
+        if (values[3]) values[3].textContent = item.status_label;
+      } catch (error) { document.querySelector(".application-info").innerHTML = `<p>無法載入申請資料：${error.message}</p>`; }
+    })();
+  </script>
 </body>
 </html>

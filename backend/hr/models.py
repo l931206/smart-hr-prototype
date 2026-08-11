@@ -115,3 +115,36 @@ class LateNotice(models.Model):
 
     class Meta:
         ordering = ["-created_at"]
+
+
+class LeaveType(models.Model):
+    code = models.CharField(max_length=30, unique=True)
+    name = models.CharField(max_length=100)
+    default_days = models.PositiveIntegerField(default=0)
+    is_paid = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+    description = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
+
+
+class ProfileChangeRequest(models.Model):
+    class Status(models.TextChoices):
+        PENDING = "pending", "待審核"
+        APPROVED = "approved", "已核准"
+        REJECTED = "rejected", "已退回"
+
+    employee = models.ForeignKey(User, on_delete=models.CASCADE, related_name="profile_change_requests")
+    requested_data = models.JSONField(default=dict)
+    status = models.CharField(max_length=20, choices=Status.choices, default=Status.PENDING)
+    reviewer_comment = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    reviewed_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ["-created_at"]

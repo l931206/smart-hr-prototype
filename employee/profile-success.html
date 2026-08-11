@@ -138,9 +138,7 @@ font-size:16px;
 申請編號
 </small>
 
-<strong>
-PROFILE-20260730-001
-</strong>
+<strong id="profileRequestNumber">—</strong>
 
 </div>
 
@@ -166,5 +164,18 @@ href="profile.html"
 
 </div>
 
+<script src="../assets/js/api.js?v=b399a09"></script>
+<script>
+  (async () => {
+    const id = new URLSearchParams(location.search).get("id");
+    if (!id) return;
+    try {
+      const requestItem = await apiRequest(`/profile-change-requests/${id}/`);
+      document.querySelector("#profileRequestNumber").textContent = `PROFILE-${requestItem.id}`;
+    } catch (error) {
+      document.querySelector("#profileRequestNumber").textContent = "資料載入失敗";
+    }
+  })();
+</script>
 </body>
 </html>
