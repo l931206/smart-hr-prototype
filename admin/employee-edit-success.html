@@ -186,7 +186,7 @@
     </div>
   </main>
 </body>
-  <script src="../assets/js/api.js?v=20260811-live44"></script>
+  <script src="../assets/js/api.js?v=20260811-live45"></script>
   <script>
     (async () => { const id = new URLSearchParams(window.location.search).get("id"); if (!id) return; try { const user = await apiRequest(`/employees/${id}/`); document.querySelector("#updatedEmployeeName").textContent = user.display_name || user.username; document.querySelector("#updatedEmployeeNo").textContent = user.employee_no || "—"; document.querySelector("#updatedEmployeeLink").href = `employee-detail.html?id=${id}`; } catch (error) {} })();
   </script>

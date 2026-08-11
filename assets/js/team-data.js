@@ -7,11 +7,12 @@
     const list = document.querySelector(".team-grid");
     if (!list || !localStorage.getItem("hr_token")) return;
     try {
-      const [user, employeesPayload, requestsPayload] = await Promise.all([
-        getCurrentUser(), apiRequest("/employees/"), apiRequest("/leave-requests/")
+      const [user, employeesPayload, requestsPayload, balancesPayload] = await Promise.all([
+        getCurrentUser(), apiRequest("/employees/"), apiRequest("/leave-requests/"), apiRequest("/leave-balances/")
       ]);
       const employees = Array.isArray(employeesPayload) ? employeesPayload : (employeesPayload.results || []);
       const requests = Array.isArray(requestsPayload) ? requestsPayload : (requestsPayload.results || []);
+      const balances = Array.isArray(balancesPayload) ? balancesPayload : (balancesPayload.results || []);
       const team = employees.filter((employee) =>
         user.department && employee.department === user.department && employee.role === "employee"
       );
@@ -26,6 +27,9 @@
         list.innerHTML = filtered.length ? filtered.map((employee) => {
           const name = employee.display_name || employee.username;
           const pending = pendingByEmployee.has(employee.id);
+          const employeeBalances = balances.filter((balance) => String(balance.employee) === String(employee.id));
+          const annualBalance = employeeBalances.find((balance) => String(balance.leave_type_name || "").includes("特休")) || employeeBalances[0];
+          const balanceText = annualBalance ? `${Number(annualBalance.remaining_days)} 天` : "未設定額度";
           return `<a class="team-member-card" href="team-member-detail.html?id=${employee.id}">
             <div class="team-member-head"><div class="team-member-main"><div class="team-member-avatar">${escapeHtml(name.slice(0, 1))}</div>
               <div><h2>${escapeHtml(name)}</h2><p>員工編號：${escapeHtml(employee.employee_no || "—")}</p></div>
@@ -33,7 +37,7 @@
             <div class="team-member-info"><div class="team-info-item"><span>電子郵件</span><strong>${escapeHtml(employee.email || "—")}</strong></div>
               <div class="team-info-item"><span>聯絡電話</span><strong>${escapeHtml(employee.phone || "—")}</strong></div>
               <div class="team-info-item"><span>到職日期</span><strong>${escapeHtml(employee.hire_date || "—")}</strong></div>
-              <div class="team-info-item"><span>假期餘額</span><strong>尚無資料</strong></div></div>
+              <div class="team-info-item"><span>假期餘額</span><strong>${escapeHtml(balanceText)}</strong></div></div>
             <span class="team-view-link">查看員工資料 →</span></a>`;
         }).join("") : "<p class=\"empty-state\">目前沒有直屬員工資料。</p>";
       };
