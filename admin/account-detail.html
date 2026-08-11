@@ -351,7 +351,7 @@
 
     <div class="actions">
       <a class="button primary" id="accountEditLink" href="account-edit.html">編輯角色與權限</a>
-      <a class="button secondary" href="account-reset-password.html">重設密碼</a>
+      <a class="button secondary" id="accountResetLink" href="account-reset-password.html">重設密碼</a>
       <a class="button danger" id="accountDisableLink" href="account-disable.html">停用帳號</a>
     </div>
   </main>
@@ -391,6 +391,7 @@
         ];
         document.querySelector("#permissionList").innerHTML = permissions.map(([title, description]) => `<div class="permission"><div class="check">✓</div><div><strong>${title}</strong><span>${description}</span></div></div>`).join("");
         document.querySelector("#accountEditLink").href = `account-edit.html?id=${user.id}`;
+        document.querySelector("#accountResetLink").href = `account-reset-password.html?id=${user.id}`;
         document.querySelector("#accountDisableLink").href = `account-disable.html?id=${user.id}`;
       } catch (error) { set("#accountName", `無法載入帳號：${error.message}`); }
     })();
