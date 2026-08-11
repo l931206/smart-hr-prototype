@@ -172,12 +172,12 @@
     <section class="employee-info">
       <div class="info-row">
         <span>員工姓名</span>
-        <strong>陳員工</strong>
+        <strong id="deactivatedEmployeeName">—</strong>
       </div>
 
       <div class="info-row">
         <span>員工編號</span>
-        <strong>EMP0003</strong>
+        <strong id="deactivatedEmployeeNo">—</strong>
       </div>
 
       <div class="info-row">
@@ -206,4 +206,8 @@
     </div>
   </main>
 </body>
+<script src="../assets/js/api.js?v=b399a09"></script>
+<script>
+  (async () => { const id = new URLSearchParams(window.location.search).get("id"); if (!id) return; try { const employee = await apiRequest(`/employees/${id}/`); document.querySelector("#deactivatedEmployeeName").textContent = employee.display_name || employee.username; document.querySelector("#deactivatedEmployeeNo").textContent = employee.employee_no || "—"; } catch (error) {} })();
+</script>
 </html>
