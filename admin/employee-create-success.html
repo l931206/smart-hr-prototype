@@ -171,22 +171,22 @@
     <section class="employee-info">
       <div class="info-row">
         <span>員工姓名</span>
-        <strong>許員工</strong>
+        <strong id="createdEmployeeName">—</strong>
       </div>
 
       <div class="info-row">
         <span>員工編號</span>
-        <strong>EMP0031</strong>
+        <strong id="createdEmployeeNo">—</strong>
       </div>
 
       <div class="info-row">
         <span>登入帳號</span>
-        <strong>employee31</strong>
+        <strong id="createdEmployeeUsername">—</strong>
       </div>
 
       <div class="info-row">
         <span>系統角色</span>
-        <strong>Employee</strong>
+        <strong id="createdEmployeeRole">—</strong>
       </div>
 
       <div class="info-row">
@@ -205,4 +205,8 @@
     </div>
   </main>
 </body>
+  <script src="../assets/js/api.js?v=b399a09"></script>
+  <script>
+    (async () => { const id = new URLSearchParams(window.location.search).get("id"); if (!id) return; try { const user = await apiRequest(`/employees/${id}/`); document.querySelector("#createdEmployeeName").textContent = user.display_name || user.username; document.querySelector("#createdEmployeeNo").textContent = user.employee_no || "—"; document.querySelector("#createdEmployeeUsername").textContent = user.username; document.querySelector("#createdEmployeeRole").textContent = user.role_label; } catch (error) {} })();
+  </script>
 </html>
