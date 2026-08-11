@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
@@ -409,24 +409,24 @@
       <h1>部門請假日曆</h1>
 
       <p>
-        查看資訊部員工的請假、待審核申請與晚到狀況。
+        查看所屬部門員工的請假、待審核申請與晚到狀況。
       </p>
     </header>
 
     <section class="summary-grid calendar-summary">
       <article class="summary-card">
         <span>本月請假人次</span>
-        <strong>8</strong>
+        <strong>0</strong>
       </article>
 
       <article class="summary-card">
         <span>待審核申請</span>
-        <strong>2</strong>
+        <strong>0</strong>
       </article>
 
       <article class="summary-card">
         <span>今日不在辦公室</span>
-        <strong>1</strong>
+        <strong>0</strong>
       </article>
     </section>
 
@@ -455,224 +455,11 @@
 
       <!-- 電腦版月曆 -->
       <div class="calendar-grid" id="calendarGrid">
-        <div class="calendar-weekday">日</div>
-        <div class="calendar-weekday">一</div>
-        <div class="calendar-weekday">二</div>
-        <div class="calendar-weekday">三</div>
-        <div class="calendar-weekday">四</div>
-        <div class="calendar-weekday">五</div>
-        <div class="calendar-weekday">六</div>
-
-        <div class="calendar-day muted"><span class="date-number">26</span></div>
-        <div class="calendar-day muted"><span class="date-number">27</span></div>
-        <div class="calendar-day muted"><span class="date-number">28</span></div>
-        <div class="calendar-day muted"><span class="date-number">29</span></div>
-        <div class="calendar-day muted"><span class="date-number">30</span></div>
-        <div class="calendar-day muted"><span class="date-number">31</span></div>
-        <div class="calendar-day"><span class="date-number">1</span></div>
-
-        <div class="calendar-day"><span class="date-number">2</span></div>
-
-        <div class="calendar-day">
-          <span class="date-number">3</span>
-          <span class="calendar-event pending">
-            —｜特休待審核
-          </span>
-        </div>
-
-        <div class="calendar-day">
-          <span class="date-number">4</span>
-          <span class="calendar-event pending">
-            —｜特休待審核
-          </span>
-        </div>
-
-        <div class="calendar-day">
-          <span class="date-number">5</span>
-          <span class="calendar-event approved">
-            —｜特休
-          </span>
-        </div>
-
-        <div class="calendar-day">
-          <span class="date-number">6</span>
-        </div>
-
-        <div class="calendar-day">
-          <span class="date-number">7</span>
-          <span class="calendar-event approved">
-            李員工｜事假
-          </span>
-        </div>
-
-        <div class="calendar-day"><span class="date-number">8</span></div>
-        <div class="calendar-day"><span class="date-number">9</span></div>
-
-        <div class="calendar-day today">
-          <span class="date-number">10</span>
-          <span class="calendar-event late">
-            —｜預計 10:00 到班
-          </span>
-        </div>
-
-        <div class="calendar-day"><span class="date-number">11</span></div>
-
-        <div class="calendar-day">
-          <span class="date-number">12</span>
-          <span class="calendar-event approved">
-            王員工｜病假
-          </span>
-        </div>
-
-        <div class="calendar-day"><span class="date-number">13</span></div>
-        <div class="calendar-day"><span class="date-number">14</span></div>
-        <div class="calendar-day"><span class="date-number">15</span></div>
-        <div class="calendar-day"><span class="date-number">16</span></div>
-        <div class="calendar-day"><span class="date-number">17</span></div>
-
-        <div class="calendar-day">
-          <span class="date-number">18</span>
-          <span class="calendar-event approved">
-            —｜公假
-          </span>
-        </div>
-
-        <div class="calendar-day"><span class="date-number">19</span></div>
-        <div class="calendar-day"><span class="date-number">20</span></div>
-
-        <div class="calendar-day">
-          <span class="date-number">21</span>
-          <span class="calendar-event approved">
-            —｜特休
-          </span>
-        </div>
-
-        <div class="calendar-day"><span class="date-number">22</span></div>
-        <div class="calendar-day"><span class="date-number">23</span></div>
-        <div class="calendar-day"><span class="date-number">24</span></div>
-        <div class="calendar-day"><span class="date-number">25</span></div>
-        <div class="calendar-day"><span class="date-number">26</span></div>
-
-        <div class="calendar-day">
-          <span class="date-number">27</span>
-          <span class="calendar-event pending">
-            李員工｜事假待審核
-          </span>
-        </div>
-
-        <div class="calendar-day"><span class="date-number">28</span></div>
-        <div class="calendar-day"><span class="date-number">29</span></div>
-        <div class="calendar-day"><span class="date-number">30</span></div>
-        <div class="calendar-day"><span class="date-number">31</span></div>
-        <div class="calendar-day muted"><span class="date-number">1</span></div>
-        <div class="calendar-day muted"><span class="date-number">2</span></div>
-        <div class="calendar-day muted"><span class="date-number">3</span></div>
-        <div class="calendar-day muted"><span class="date-number">4</span></div>
-        <div class="calendar-day muted"><span class="date-number">5</span></div>
+        <div class="calendar-weekday">日</div><div class="calendar-weekday">一</div><div class="calendar-weekday">二</div><div class="calendar-weekday">三</div><div class="calendar-weekday">四</div><div class="calendar-weekday">五</div><div class="calendar-weekday">六</div>
       </div>
 
       <!-- 手機版重點行程 -->
-      <div class="mobile-schedule" id="mobileSchedule">
-
-        <article class="mobile-day-card">
-          <div class="mobile-day-head">
-            <strong>8 月 3 日</strong>
-            <span>星期一</span>
-          </div>
-
-          <span class="calendar-event pending">
-            —｜特休待審核
-          </span>
-        </article>
-
-        <article class="mobile-day-card">
-          <div class="mobile-day-head">
-            <strong>8 月 4 日</strong>
-            <span>星期二</span>
-          </div>
-
-          <span class="calendar-event pending">
-            —｜特休待審核
-          </span>
-        </article>
-
-        <article class="mobile-day-card">
-          <div class="mobile-day-head">
-            <strong>8 月 5 日</strong>
-            <span>星期三</span>
-          </div>
-
-          <span class="calendar-event approved">
-            —｜特休
-          </span>
-        </article>
-
-        <article class="mobile-day-card">
-          <div class="mobile-day-head">
-            <strong>8 月 7 日</strong>
-            <span>星期五</span>
-          </div>
-
-          <span class="calendar-event approved">
-            李員工｜事假
-          </span>
-        </article>
-
-        <article class="mobile-day-card today">
-          <div class="mobile-day-head">
-            <strong>8 月 10 日</strong>
-            <span>今天</span>
-          </div>
-
-          <span class="calendar-event late">
-            —｜預計 10:00 到班
-          </span>
-        </article>
-
-        <article class="mobile-day-card">
-          <div class="mobile-day-head">
-            <strong>8 月 12 日</strong>
-            <span>星期三</span>
-          </div>
-
-          <span class="calendar-event approved">
-            王員工｜病假
-          </span>
-        </article>
-
-        <article class="mobile-day-card">
-          <div class="mobile-day-head">
-            <strong>8 月 18 日</strong>
-            <span>星期二</span>
-          </div>
-
-          <span class="calendar-event approved">
-            —｜公假
-          </span>
-        </article>
-
-        <article class="mobile-day-card">
-          <div class="mobile-day-head">
-            <strong>8 月 21 日</strong>
-            <span>星期五</span>
-          </div>
-
-          <span class="calendar-event approved">
-            —｜特休
-          </span>
-        </article>
-
-        <article class="mobile-day-card">
-          <div class="mobile-day-head">
-            <strong>8 月 27 日</strong>
-            <span>星期四</span>
-          </div>
-
-          <span class="calendar-event pending">
-            李員工｜事假待審核
-          </span>
-        </article>
-      </div>
+      <div class="mobile-schedule" id="mobileSchedule"><p>資料載入中…</p></div>
     </section>
 
     <section class="card schedule-card" id="scheduleCard">
@@ -712,7 +499,7 @@
       >
         <div>
           <h3>—－晚到通知</h3>
-          <p>—0，預計上午 10:00 到班。</p>
+          <p>—，預計上午 10:00 到班。</p>
         </div>
 
         <span class="schedule-status late">
@@ -749,17 +536,40 @@
       <small>更多</small>
     </a>
   </nav>
-  <script src="../assets/js/api.js?v=b399a09"></script>
+  <script src="../assets/js/api.js?v=20260811-live43"></script>
   <script>
     (async () => {
       try {
         const [leavePayload, latePayload] = await Promise.all([apiRequest("/leave-requests/"), apiRequest("/late-notices/")]);
         const leaves = Array.isArray(leavePayload) ? leavePayload : (leavePayload.results || []);
         const lateNotices = Array.isArray(latePayload) ? latePayload : (latePayload.results || []);
-        const monthTitle = document.querySelector(".calendar-card-head h2")?.textContent.trim() || "";
-        const monthMatch = monthTitle.match(/(\d{4}).*?(\d{1,2})/);
-        const year = Number(monthMatch?.[1]) || new Date().getFullYear();
-        const month = (Number(monthMatch?.[2]) || new Date().getMonth() + 1) - 1;
+        const now = new Date();
+        const params = new URLSearchParams(location.search);
+        const year = Number(params.get("year")) || now.getFullYear();
+        const month = Math.min(11, Math.max(0, (Number(params.get("month")) || now.getMonth() + 1) - 1));
+        document.querySelector(".calendar-card-head h2").textContent = `${year} 年 ${month + 1} 月`;
+        const monthLinks = document.querySelectorAll(".calendar-topbar a[href='#']");
+        const previous = new Date(year, month - 1, 1);
+        const next = new Date(year, month + 1, 1);
+        if (monthLinks[0]) monthLinks[0].href = `?year=${previous.getFullYear()}&month=${previous.getMonth() + 1}`;
+        if (monthLinks[1]) monthLinks[1].href = `?year=${now.getFullYear()}&month=${now.getMonth() + 1}`;
+        if (monthLinks[2]) monthLinks[2].href = `?year=${next.getFullYear()}&month=${next.getMonth() + 1}`;
+        const calendarGrid = document.querySelector("#calendarGrid");
+        calendarGrid.querySelectorAll(".calendar-day").forEach((node) => node.remove());
+        const firstWeekday = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const previousMonthDays = new Date(year, month, 0).getDate();
+        for (let index = 0; index < 42; index += 1) {
+          const offset = index - firstWeekday + 1;
+          const day = document.createElement("div");
+          day.className = "calendar-day";
+          let dayNumber = offset;
+          if (offset < 1) { dayNumber = previousMonthDays + offset; day.classList.add("muted"); }
+          if (offset > daysInMonth) { dayNumber = offset - daysInMonth; day.classList.add("muted"); }
+          if (year === now.getFullYear() && month === now.getMonth() && dayNumber === now.getDate() && !day.classList.contains("muted")) day.classList.add("today");
+          day.innerHTML = `<span class="date-number">${dayNumber}</span>`;
+          calendarGrid.appendChild(day);
+        }
         const events = [];
         leaves.forEach((item) => {
           const start = new Date(`${item.start_date}T00:00:00`);
@@ -768,7 +578,19 @@
             if (cursor.getFullYear() === year && cursor.getMonth() === month) events.push({ date: cursor.getDate(), type: item.status, text: `${item.employee_name || "員工"}｜${item.leave_type}${item.status === "pending" ? "待審核" : ""}`, id: item.id });
           }
         });
-        lateNotices.forEach((item) => { const date = new Date(`${item.date}T00:00:00`); if (date.getFullYear() === year && date.getMonth() === month) events.push({ date: date.getDate(), type: "late", text: `${item.employee_name || "員工"}｜預計 ${item.expected_arrival} 到班`, id: item.id }); });
+        lateNotices.forEach((item) => { const date = new Date(`${item.late_date || item.date}T00:00:00`); if (date.getFullYear() === year && date.getMonth() === month) events.push({ date: date.getDate(), type: "late", text: `${item.employee_name || "員工"}｜預計 ${item.expected_arrival} 到班`, id: item.id }); });
+        const monthStart = `${year}-${String(month + 1).padStart(2, "0")}-01`;
+        const monthEnd = `${year}-${String(month + 1).padStart(2, "0")}-${String(daysInMonth).padStart(2, "0")}`;
+        const monthLeaves = leaves.filter((item) => item.start_date <= monthEnd && item.end_date >= monthStart);
+        const today = now.toISOString().slice(0, 10);
+        const absentToday = new Set([
+          ...leaves.filter((item) => item.status === "approved" && item.start_date <= today && item.end_date >= today).map((item) => item.employee),
+          ...lateNotices.filter((item) => String(item.late_date || item.date).slice(0, 10) === today).map((item) => item.employee)
+        ]).size;
+        const summary = document.querySelectorAll(".calendar-summary .summary-card strong");
+        if (summary[0]) summary[0].textContent = String(monthLeaves.length);
+        if (summary[1]) summary[1].textContent = String(monthLeaves.filter((item) => item.status === "pending").length);
+        if (summary[2]) summary[2].textContent = String(absentToday);
         document.querySelectorAll("#calendarGrid .calendar-event").forEach((node) => node.remove());
         events.forEach((event) => { const day = [...document.querySelectorAll("#calendarGrid .calendar-day")].find((node) => node.querySelector(".date-number")?.textContent.trim() === String(event.date) && !node.classList.contains("muted")); if (day) { const link = document.createElement("a"); link.className = `calendar-event ${event.type}`; link.href = event.type === "late" ? `late-notice-detail.html?id=${event.id}` : `leave-request-detail.html?id=${event.id}`; link.textContent = event.text; day.appendChild(link); } });
         const grouped = events.reduce((map, event) => { (map[event.date] ||= []).push(event); return map; }, {});

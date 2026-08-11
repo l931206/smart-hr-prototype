@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
@@ -225,7 +225,7 @@
 
           <div>
             <h1 id="requestTitle">—的特休假申請</h1>
-            <p id="requestNumber">申請編號：LEAVE-20260730-001</p>
+            <p id="requestNumber">申請編號：—</p>
           </div>
         </div>
 
@@ -237,7 +237,7 @@
       <section class="request-info-box">
         <div class="request-info-row">
           <span>所屬部門</span>
-          <strong>資訊部</strong>
+          <strong>所屬部門</strong>
         </div>
 
         <div class="request-info-row">
@@ -277,12 +277,12 @@
 
         <div class="request-info-row">
           <span>申請時間</span>
-          <strong>—0 13:45</strong>
+          <strong>— 13:45</strong>
         </div>
       </section>
 
       <div class="notice request-warning">
-        核准後，系統會更新員工請假紀錄與剩餘假期；
+        核准後，系統會更新員工請假紀錄；
         退回時請填寫明確原因，方便員工重新調整申請。
       </div>
 
@@ -352,7 +352,7 @@
       <small>更多</small>
     </a>
   </nav>
-  <script src="../assets/js/api.js?v=b399a09"></script>
+  <script src="../assets/js/api.js?v=20260811-live43"></script>
   <script>
     (async () => {
       const requestId = new URLSearchParams(window.location.search).get("id");
@@ -364,10 +364,13 @@
         document.querySelector("#requestStatus").textContent = request.status_label;
         const values = document.querySelectorAll(".request-info-row strong");
         values[0].textContent = request.employee_department || "—";
+        values[1].textContent = "尚無資料";
         values[2].textContent = request.leave_type;
         values[3].textContent = `${request.start_date} ${request.start_time} 至 ${request.end_date} ${request.end_time}`;
         values[4].textContent = `${request.days} 天`;
+        values[5].textContent = "尚無資料";
         values[6].textContent = request.reason;
+        values[7].textContent = "尚無附件資料";
         values[8].textContent = new Date(request.created_at).toLocaleString("zh-TW");
         const updateStatus = async (event, status, target) => {
           event.preventDefault();

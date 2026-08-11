@@ -2,9 +2,7 @@ services:
   - type: web
     name: smart-hr-api
     runtime: python
-    plan: free
-    rootDir: backend
-    buildCommand: pip install -r requirements.txt && python manage.py migrate && python manage.py bootstrap_demo && python manage.py collectstatic --no-input
+    buildCommand: pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --no-input
     startCommand: gunicorn config.wsgi:application
     healthCheckPath: /api/health/
     envVars:
@@ -13,8 +11,15 @@ services:
       - key: DJANGO_DEBUG
         value: "0"
       - key: DJANGO_ALLOWED_HOSTS
-        value: "*"
+        value: smart-hr-api.onrender.com
       - key: CORS_ALLOWED_ORIGINS
         value: https://l931206.github.io
       - key: CSRF_TRUSTED_ORIGINS
         value: https://l931206.github.io
+      - key: DATABASE_URL
+        fromDatabase:
+          name: smart-hr-db
+          property: connectionString
+
+databases:
+  - name: smart-hr-db

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
@@ -139,25 +139,22 @@
 
         <h1 id="welcomeName">午安，—</h1>
 
-        <p>
-          今天是 2026 年 7 月 30 日，所有個人人事資訊與常用功能
-          都集中在這個工作台中。
-        </p>
+        <p>日期載入中，所有個人人事資訊與常用功能都集中在這個工作台中。</p>
 
         <div class="employee-meta">
-          <span id="departmentName">資訊部</span>
+          <span id="departmentName">所屬部門</span>
           <span id="jobTitle">員工</span>
           <span id="managerName">直屬主管：—</span>
         </div>
       </article>
 
       <article class="profile-card">
-        <span class="avatar">陳</span>
+        <span class="avatar">員</span>
 
         <h2 id="profileName">—</h2>
 
-        <p id="employeeNo">EMP0003</p>
-        <p id="profileDepartment">資訊部</p>
+        <p id="employeeNo">—</p>
+        <p id="profileDepartment">所屬部門</p>
 
         <a href="profile.html">
           查看我的資料 →
@@ -196,7 +193,7 @@
         <small>剩餘特休</small>
 
         <div class="stat-value">
-          <strong>8</strong>
+          <strong>0</strong>
           <span>天</span>
         </div>
       </article>
@@ -205,7 +202,7 @@
         <small>待簽核申請</small>
 
         <div class="stat-value">
-          <strong>1</strong>
+          <strong>0</strong>
           <span>件</span>
         </div>
       </article>
@@ -214,7 +211,7 @@
         <small>未讀通知</small>
 
         <div class="stat-value">
-          <strong>3</strong>
+          <strong>0</strong>
           <span>則</span>
         </div>
       </article>
@@ -334,47 +331,7 @@
           </a>
         </div>
 
-        <a
-          class="announcement announcement-link"
-          href="announcement-detail.html"
-        >
-          <div>
-            <strong>公司聚餐活動</strong>
-            <p>本週五晚上六點舉辦公司聚餐。</p>
-          </div>
-
-          <time datetime="—0">
-            07/30
-          </time>
-        </a>
-
-        <a
-          class="announcement announcement-link"
-          href="announcement-detail.html"
-        >
-          <div>
-            <strong>系統維護通知</strong>
-            <p>週五晚間將進行系統維護。</p>
-          </div>
-
-          <time datetime="—8">
-            07/28
-          </time>
-        </a>
-
-        <a
-          class="announcement announcement-link"
-          href="announcement-detail.html"
-        >
-          <div>
-            <strong>新人報到</strong>
-            <p>歡迎新同事加入資訊部。</p>
-          </div>
-
-          <time datetime="—5">
-            07/25
-          </time>
-        </a>
+        <p>公告資料載入中…</p>
       </article>
 
       <article class="panel empty-task">
@@ -429,9 +386,9 @@
       <small>我的</small>
     </a>
   </nav>
-  <script src="../assets/js/api.js?v=b399a09"></script>
-  <script src="../assets/js/dashboard-data.js?v=20260810"></script>
-  <script src="../assets/js/employee-data-state.js?v=eb49e4e"></script>
+  <script src="../assets/js/api.js?v=20260811-live43"></script>
+  <script src="../assets/js/dashboard-data.js?v=20260811-live43"></script>
+  <script src="../assets/js/employee-data-state.js?v=20260811-live43"></script>
   <script>
     (async () => {
       try {
@@ -444,6 +401,7 @@
         document.querySelector("#welcomeName").textContent = `午安，${name}`;
         document.querySelector("#profileName").textContent = name;
         const avatar = document.querySelector(".profile-card .avatar");
+        avatar.textContent = name.slice(0, 1);
         if (user.avatar_data) {
           avatar.textContent = "";
           avatar.style.backgroundImage = `url(${user.avatar_data})`;
@@ -454,6 +412,7 @@
         document.querySelector("#departmentName").textContent = user.department_name || "尚未分配部門";
         document.querySelector("#profileDepartment").textContent = user.department_name || "尚未分配部門";
         document.querySelector("#managerName").textContent = `直屬主管：${user.manager_name || "尚未設定"}`;
+        document.querySelector("#jobTitle").textContent = user.role_label || "員工";
       } catch (error) {
         window.location.href = "../login.html?next=employee/index.html";
       }

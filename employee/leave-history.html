@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
@@ -268,121 +268,7 @@
     </section>
 
     <section class="history-list" id="historyList">
-
-      <article class="history-card">
-        <div class="history-head">
-          <div>
-            <h2>特休假</h2>
-            <p class="application-no">
-              申請編號：LEAVE-20260730-001
-            </p>
-          </div>
-
-          <span class="status pending">
-            等待主管審核
-          </span>
-        </div>
-
-        <div class="history-details">
-          <div class="history-detail">
-            <span>請假日期</span>
-            <strong>—－—</strong>
-          </div>
-
-          <div class="history-detail">
-            <span>請假天數</span>
-            <strong>2 天</strong>
-          </div>
-
-          <div class="history-detail">
-            <span>審核主管</span>
-            <strong>—</strong>
-          </div>
-        </div>
-
-        <div class="history-reason">
-          請假原因：處理個人事務。
-        </div>
-
-        <a
-          class="history-link"
-          href="leave-confirm.html"
-        >
-          查看申請內容 →
-        </a>
-      </article>
-
-      <article class="history-card">
-        <div class="history-head">
-          <div>
-            <h2>病假</h2>
-            <p class="application-no">
-              申請編號：LEAVE-20260612-003
-            </p>
-          </div>
-
-          <span class="status approved">
-            已核准
-          </span>
-        </div>
-
-        <div class="history-details">
-          <div class="history-detail">
-            <span>請假日期</span>
-            <strong>—2</strong>
-          </div>
-
-          <div class="history-detail">
-            <span>請假天數</span>
-            <strong>1 天</strong>
-          </div>
-
-          <div class="history-detail">
-            <span>審核主管</span>
-            <strong>—</strong>
-          </div>
-        </div>
-
-        <div class="history-reason">
-          請假原因：身體不適，已檢附就醫證明。
-        </div>
-      </article>
-
-      <article class="history-card">
-        <div class="history-head">
-          <div>
-            <h2>事假</h2>
-            <p class="application-no">
-              申請編號：LEAVE-20260507-002
-            </p>
-          </div>
-
-          <span class="status rejected">
-            已退回
-          </span>
-        </div>
-
-        <div class="history-details">
-          <div class="history-detail">
-            <span>請假日期</span>
-            <strong>—</strong>
-          </div>
-
-          <div class="history-detail">
-            <span>請假天數</span>
-            <strong>1 天</strong>
-          </div>
-
-          <div class="history-detail">
-            <span>審核主管</span>
-            <strong>—</strong>
-          </div>
-        </div>
-
-        <div class="history-reason">
-          退回原因：當日部門人力不足，請重新選擇日期。
-        </div>
-      </article>
+      <p class="empty-state">資料載入中…</p>
     </section>
   </main>
 
@@ -414,7 +300,7 @@
       <small>我的</small>
     </a>
   </nav>
-  <script src="../assets/js/api.js?v=b399a09"></script>
+  <script src="../assets/js/api.js?v=20260811-live43"></script>
   <script>
     (async () => {
       const list = document.querySelector("#historyList");
@@ -423,12 +309,19 @@
         const requests = Array.isArray(payload) ? payload : (payload.results || []);
         document.querySelector("#historyPendingCount").textContent = String(requests.filter((request) => request.status === "pending").length);
         document.querySelector("#historyApprovedCount").textContent = String(requests.filter((request) => request.status === "approved").length);
-        document.querySelector("#historyApprovedDays").textContent = `${requests.filter((request) => request.status === "approved").reduce((total, request) => total + Number(request.days || 0), 0)} 天`;
-        if (!requests.length) {
-          list.innerHTML = "<div class=\"card\"><p>目前沒有請假紀錄。</p></div>";
-          return;
-        }
-        list.innerHTML = requests.map((request) => `
+        document.querySelector("#historyApprovedDays").textContent = "尚無資料";
+        const filters = document.querySelectorAll("select");
+        const years = [...new Set(requests.map((request) => String(request.start_date || "").slice(0, 4)).filter(Boolean))].sort().reverse();
+        const leaveTypes = [...new Set(requests.map((request) => request.leave_type).filter(Boolean))];
+        if (filters[0]) filters[0].innerHTML = `<option value="">全部年份</option>${years.map((year) => `<option value="${year}">${year} 年</option>`).join("")}`;
+        if (filters[2]) filters[2].innerHTML = `<option value="">全部假別</option>${leaveTypes.map((name) => `<option value="${name}">${name}</option>`).join("")}`;
+        const render = () => {
+          const year = filters[0]?.value || "";
+          const statusText = filters[1]?.value || "全部狀態";
+          const type = filters[2]?.value || "";
+          const statusMap = {"等待審核":"pending", "已核准":"approved", "已退回":"rejected"};
+          const filtered = requests.filter((request) => (!year || String(request.start_date).startsWith(year)) && (!statusMap[statusText] || request.status === statusMap[statusText]) && (!type || request.leave_type === type));
+          list.innerHTML = filtered.length ? filtered.map((request) => `
           <article class="history-card">
             <div class="history-head">
               <div>
@@ -444,7 +337,10 @@
             </div>
             <div class="history-reason">請假原因：${request.reason}</div>
           </article>
-        `).join("");
+        `).join("") : "<div class=\"card\"><p>目前沒有符合條件的請假紀錄。</p></div>";
+        };
+        filters.forEach((filter) => filter.addEventListener("change", render));
+        render();
       } catch (error) {
         list.innerHTML = `<div class="card"><p>${error.message || "無法載入請假紀錄。"}</p></div>`;
       }

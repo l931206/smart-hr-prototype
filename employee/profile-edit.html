@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
@@ -134,7 +134,7 @@
 
         <div class="readonly-box">
           <span>不可自行修改</span>
-          <strong>EMP0003</strong>
+          <strong>—</strong>
         </div>
       </div>
 
@@ -171,7 +171,7 @@
           id="phone"
           name="phone"
           type="tel"
-          value="0912-345-678"
+          value=""
           autocomplete="tel"
           inputmode="tel"
           required
@@ -244,7 +244,7 @@
       <small>我的</small>
     </a>
   </nav>
-  <script src="../assets/js/api.js?v=b399a09"></script>
+  <script src="../assets/js/api.js?v=20260811-live43"></script>
   <script>
     (async () => {
       const form = document.querySelector(".edit-form");
@@ -282,12 +282,13 @@
           const payload = {
             display_name: form.querySelector("#name").value.trim(),
             email: form.querySelector("#email").value.trim(),
-            phone: form.querySelector("#phone").value.trim()
+            phone: form.querySelector("#phone").value.trim(),
+            reason: form.querySelector("#reason").value.trim()
           };
           if (avatarData) payload.avatar_data = avatarData;
           const requestItem = await apiRequest("/profile-change-requests/", {
             method: "POST",
-            body: JSON.stringify(payload)
+            body: JSON.stringify({ requested_data: payload })
           });
           window.location.href = `profile-success.html?id=${requestItem.id}`;
         } catch (error) {

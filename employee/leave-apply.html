@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
@@ -182,7 +182,7 @@
 
         <div class="summary-row">
           <span>部門</span>
-          <strong>資訊部</strong>
+          <strong>所屬部門</strong>
         </div>
 
         <div class="summary-row">
@@ -336,7 +336,7 @@
       <small>我的</small>
     </a>
   </nav>
-  <script src="../assets/js/api.js?v=b399a09"></script>
+  <script src="../assets/js/api.js?v=20260811-live43"></script>
   <script>
     document.querySelector("#leaveForm").addEventListener("submit", async (event) => {
       event.preventDefault();
@@ -363,7 +363,10 @@
   <script>
     (async () => {
       try {
-        const user = await getCurrentUser();
+        const [user, typePayload] = await Promise.all([getCurrentUser(), apiRequest("/leave-types/")]);
+        const leaveTypes = (Array.isArray(typePayload) ? typePayload : (typePayload.results || [])).filter((item) => item.is_active);
+        const leaveTypeSelect = document.querySelector("#leaveType");
+        if (leaveTypeSelect) leaveTypeSelect.innerHTML = `<option value="">請選擇假別</option>${leaveTypes.map((item) => `<option value="${item.name}">${item.name}</option>`).join("")}`;
         const balance = document.querySelector(".leave-balance strong");
         const rows = document.querySelectorAll(".leave-summary .summary-row strong");
         if (balance) balance.textContent = "尚無資料";

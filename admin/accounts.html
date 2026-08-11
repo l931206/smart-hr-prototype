@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
@@ -290,25 +290,25 @@
     </header>
 
     <section class="summary-grid">
-      <article class="summary-card selected" data-filter="all">
+      <a class="summary-card selected" data-filter="all" href="?filter=all">
         <span>全部帳號</span>
         <strong>0</strong>
-      </article>
+      </a>
 
-      <article class="summary-card" data-filter="active">
+      <a class="summary-card" data-filter="active" href="?filter=active">
         <span>已啟用</span>
         <strong>0</strong>
-      </article>
+      </a>
 
-      <article class="summary-card" data-filter="pending">
+      <a class="summary-card" data-filter="pending" href="?filter=pending">
         <span>等待啟用</span>
         <strong>0</strong>
-      </article>
+      </a>
 
-      <article class="summary-card" data-filter="inactive">
+      <a class="summary-card" data-filter="inactive" href="?filter=inactive">
         <span>已停用</span>
         <strong>0</strong>
-      </article>
+      </a>
     </section>
 
     <section class="toolbar">
@@ -330,165 +330,11 @@
     </section>
 
     <section class="account-list" id="accountList">
-      <a class="account-card" href="account-detail.html">
-        <div class="account-head">
-          <div class="account-main">
-            <div class="avatar">陳</div>
-
-            <div>
-              <h2>—</h2>
-              <p>登入帳號：—｜EMP0003</p>
-            </div>
-          </div>
-
-          <span class="status active">已啟用</span>
-        </div>
-
-        <div class="account-info">
-          <div class="info-item">
-            <span>系統角色</span>
-            <strong><span class="role-tag">Employee</span></strong>
-          </div>
-
-          <div class="info-item">
-            <span>所屬部門</span>
-            <strong>資訊部</strong>
-          </div>
-
-          <div class="info-item">
-            <span>電子郵件</span>
-            <strong>—</strong>
-          </div>
-
-          <div class="info-item">
-            <span>最後登入</span>
-            <strong>—1 08:55</strong>
-          </div>
-        </div>
-
-        <span class="view-link">查看與設定帳號權限 →</span>
-      </a>
-
-      <a class="account-card" href="account-detail.html">
-        <div class="account-head">
-          <div class="account-main">
-            <div class="avatar">王</div>
-
-            <div>
-              <h2>—</h2>
-              <p>登入帳號：manager01｜EMP0002</p>
-            </div>
-          </div>
-
-          <span class="status active">已啟用</span>
-        </div>
-
-        <div class="account-info">
-          <div class="info-item">
-            <span>系統角色</span>
-            <strong><span class="role-tag">Manager</span></strong>
-          </div>
-
-          <div class="info-item">
-            <span>所屬部門</span>
-            <strong>資訊部</strong>
-          </div>
-
-          <div class="info-item">
-            <span>電子郵件</span>
-            <strong>—</strong>
-          </div>
-
-          <div class="info-item">
-            <span>最後登入</span>
-            <strong>—1 08:30</strong>
-          </div>
-        </div>
-
-        <span class="view-link">查看與設定帳號權限 →</span>
-      </a>
-
-      <a class="account-card" href="account-detail.html">
-        <div class="account-head">
-          <div class="account-main">
-            <div class="avatar">許</div>
-
-            <div>
-              <h2>—</h2>
-              <p>登入帳號：—｜EMP0031</p>
-            </div>
-          </div>
-
-          <span class="status pending">等待啟用</span>
-        </div>
-
-        <div class="account-info">
-          <div class="info-item">
-            <span>系統角色</span>
-            <strong><span class="role-tag">Employee</span></strong>
-          </div>
-
-          <div class="info-item">
-            <span>所屬部門</span>
-            <strong>行政部</strong>
-          </div>
-
-          <div class="info-item">
-            <span>電子郵件</span>
-            <strong>—</strong>
-          </div>
-
-          <div class="info-item">
-            <span>邀請狀態</span>
-            <strong>尚未設定密碼</strong>
-          </div>
-        </div>
-
-        <span class="view-link">查看與設定帳號權限 →</span>
-      </a>
-
-      <a class="account-card" href="account-detail.html">
-        <div class="account-head">
-          <div class="account-main">
-            <div class="avatar">周</div>
-
-            <div>
-              <h2>—</h2>
-              <p>登入帳號：—｜EMP0012</p>
-            </div>
-          </div>
-
-          <span class="status disabled">已停用</span>
-        </div>
-
-        <div class="account-info">
-          <div class="info-item">
-            <span>系統角色</span>
-            <strong><span class="role-tag">Employee</span></strong>
-          </div>
-
-          <div class="info-item">
-            <span>所屬部門</span>
-            <strong>行政部</strong>
-          </div>
-
-          <div class="info-item">
-            <span>電子郵件</span>
-            <strong>—</strong>
-          </div>
-
-          <div class="info-item">
-            <span>停用原因</span>
-            <strong>員工已離職</strong>
-          </div>
-        </div>
-
-        <span class="view-link">查看與設定帳號權限 →</span>
-      </a>
+      <p class="empty-state">資料載入中…</p>
     </section>
   </main>
 </body>
-  <script src="../assets/js/api.js?v=b399a09"></script>
+  <script src="../assets/js/api.js?v=20260811-live43"></script>
   <script>
     (async () => {
       try {
@@ -503,7 +349,7 @@
         const search = document.querySelector('input[type="search"]');
         const selects = document.querySelectorAll(".toolbar select");
         const list = document.querySelector("#accountList");
-        let activeFilter = "all";
+        let activeFilter = new URLSearchParams(window.location.search).get("filter") || "all";
         const render = () => {
           const keyword = (search?.value || "").trim().toLowerCase();
           const role = selects[0]?.value || "全部角色";
@@ -518,7 +364,9 @@
           list.innerHTML = filtered.map((user) => `<a class="account-card" href="account-detail.html?id=${user.id}"><div class="account-head"><div class="account-main"><div class="avatar">${(user.display_name || user.username || "員").slice(0, 1)}</div><div><h2>${user.display_name || user.username}</h2><p>登入帳號：${user.username}｜${user.employee_no || "—"}</p></div></div><span class="status ${user.is_active ? "active" : "disabled"}">${user.is_active ? "已啟用" : "已停用"}</span></div><div class="account-info"><div class="info-item"><span>系統角色</span><strong><span class="role-tag">${user.role_label}</span></strong></div><div class="info-item"><span>所屬部門</span><strong>${user.department_name || "—"}</strong></div><div class="info-item"><span>電子郵件</span><strong>${user.email || "—"}</strong></div></div><span class="view-link">查看與設定帳號權限 →</span></a>`).join("") || `<p>${activeFilter === "pending" ? "目前沒有等待啟用的帳號。" : "目前沒有符合條件的帳號。"}</p>`;
         };
         document.querySelectorAll(".summary-card[data-filter]").forEach((card) => card.addEventListener("click", () => { activeFilter = card.dataset.filter; document.querySelectorAll(".summary-card[data-filter]").forEach((item) => item.classList.toggle("selected", item === card)); render(); }));
+        document.querySelectorAll(".summary-card[data-filter]").forEach((card) => card.addEventListener("keydown", (event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); card.click(); } }));
         [search, ...selects].filter(Boolean).forEach((element) => element.addEventListener("input", render));
+        document.querySelectorAll(".summary-card[data-filter]").forEach((item) => item.classList.toggle("selected", item.dataset.filter === activeFilter));
         render();
       } catch (error) { document.querySelector("#accountList").innerHTML = `<p>${error.message || "無法載入帳號資料。"}</p>`; }
     })();

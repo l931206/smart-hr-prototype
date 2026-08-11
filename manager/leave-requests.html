@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
@@ -295,100 +295,7 @@
     </section>
 
     <section class="request-list" id="requestList">
-
-      <a
-        class="request-card"
-        href="leave-request-detail.html"
-      >
-        <div class="request-head">
-          <div class="request-employee">
-            <div class="request-avatar">
-              陳
-            </div>
-
-            <div>
-              <h2>—－特休假</h2>
-              <p>申請編號：LEAVE-20260730-001</p>
-            </div>
-          </div>
-
-          <span class="request-status">
-            等待審核
-          </span>
-        </div>
-
-        <div class="request-details">
-          <div class="request-detail">
-            <span>請假日期</span>
-            <strong>—－—</strong>
-          </div>
-
-          <div class="request-detail">
-            <span>請假天數</span>
-            <strong>2 天</strong>
-          </div>
-
-          <div class="request-detail">
-            <span>申請時間</span>
-            <strong>—0 13:45</strong>
-          </div>
-        </div>
-
-        <div class="request-reason">
-          請假原因：處理個人事務。
-        </div>
-
-        <span class="request-view-link">
-          查看申請詳情 →
-        </span>
-      </a>
-
-      <a
-        class="request-card"
-        href="leave-request-detail.html"
-      >
-        <div class="request-head">
-          <div class="request-employee">
-            <div class="request-avatar">
-              林
-            </div>
-
-            <div>
-              <h2>—－病假</h2>
-              <p>申請編號：LEAVE-20260730-002</p>
-            </div>
-          </div>
-
-          <span class="request-status">
-            等待審核
-          </span>
-        </div>
-
-        <div class="request-details">
-          <div class="request-detail">
-            <span>請假日期</span>
-            <strong>—1</strong>
-          </div>
-
-          <div class="request-detail">
-            <span>請假天數</span>
-            <strong>1 天</strong>
-          </div>
-
-          <div class="request-detail">
-            <span>申請時間</span>
-            <strong>—0 09:10</strong>
-          </div>
-        </div>
-
-        <div class="request-reason">
-          請假原因：身體不適，已上傳就醫證明。
-        </div>
-
-        <span class="request-view-link">
-          查看申請詳情 →
-        </span>
-      </a>
+      <p class="empty-state">資料載入中…</p>
     </section>
   </main>
 
@@ -420,7 +327,7 @@
       <small>更多</small>
     </a>
   </nav>
-  <script src="../assets/js/api.js?v=b399a09"></script>
+  <script src="../assets/js/api.js?v=20260811-live43"></script>
   <script>
     (async () => {
       const list = document.querySelector("#requestList");
@@ -440,7 +347,16 @@
           ["approved", "rejected"].includes(request.status) && sameDay(request.reviewed_at)
         ).length);
         document.querySelector("#monthlyRequestCount").textContent = String(requests.filter((request) => sameMonth(request.created_at)).length);
-        list.innerHTML = pending.length ? pending.map((request) => `
+        const filters = document.querySelectorAll(".request-filter select");
+        const leaveTypes = [...new Set(requests.map((request) => request.leave_type).filter(Boolean))];
+        if (filters[1]) filters[1].innerHTML = `<option value="">全部假別</option>${leaveTypes.map((name) => `<option value="${name}">${name}</option>`).join("")}`;
+        const render = () => {
+          const statusText = filters[0]?.value || "全部狀態";
+          const typeText = filters[1]?.value || "";
+          const statusMap = {"等待審核":"pending", "已核准":"approved", "已退回":"rejected"};
+          let filtered = requests.filter((request) => (!statusMap[statusText] || request.status === statusMap[statusText]) && (!typeText || request.leave_type === typeText));
+          filtered = [...filtered].sort((a, b) => filters[2]?.selectedIndex === 1 ? String(a.start_date).localeCompare(String(b.start_date)) : new Date(b.created_at) - new Date(a.created_at));
+          list.innerHTML = filtered.length ? filtered.map((request) => `
           <a class="request-card" href="leave-request-detail.html?id=${request.id}">
             <div class="request-head">
               <div class="request-employee"><div class="request-avatar">${(request.employee_name || "員").slice(0, 1)}</div><div><h2>${request.employee_name}－${request.leave_type}</h2><p>申請編號：LEAVE-${String(request.id).padStart(6, "0")}</p></div></div>
@@ -450,7 +366,10 @@
             <div class="request-reason">請假原因：${request.reason}</div>
             <span class="request-view-link">查看申請詳情 →</span>
           </a>
-        `).join("") : "<div class=\"card\"><p>目前沒有待審核申請。</p></div>";
+        `).join("") : "<div class=\"card\"><p>目前沒有符合條件的請假申請。</p></div>";
+        };
+        filters.forEach((filter) => filter.addEventListener("change", render));
+        render();
       } catch (error) {
         list.innerHTML = `<div class="card"><p>${error.message || "無法載入審核資料。"}</p></div>`;
       }

@@ -15,7 +15,7 @@
     const search = document.querySelector(".toolbar input[type=search]");
     const department = document.querySelector(".toolbar select");
     const status = document.querySelectorAll(".toolbar select")[1];
-    let activeFilter = "all";
+    let activeFilter = new URLSearchParams(window.location.search).get("filter") || "all";
     let employees = [];
     try {
       employees = await apiRequest("/employees/");
@@ -44,7 +44,7 @@
         const text = `${employee.display_name} ${employee.employee_no} ${employee.email} ${employee.department_name}`.toLowerCase();
         const departmentMatch = !departmentValue || departmentValue.includes("全部") || text.includes(departmentValue.toLowerCase());
         const statusMatch = !statusValue || statusValue.includes("全部") || (statusValue.includes("在") && employee.is_active) || (statusValue.includes("離") && !employee.is_active);
-        const filterMatch = activeFilter === "all" || (activeFilter === "active" && employee.role === "employee" && employee.is_active) || (activeFilter === "manager" && employee.role === "manager") || (activeFilter === "inactive" && !employee.is_active);
+        const filterMatch = (activeFilter === "all" && employee.role === "employee") || (activeFilter === "active" && employee.role === "employee" && employee.is_active) || (activeFilter === "manager" && employee.role === "manager") || (activeFilter === "inactive" && employee.role === "employee" && !employee.is_active);
         return text.includes(keyword) && departmentMatch && statusMatch && filterMatch;
       });
       list.innerHTML = filtered.length ? filtered.map((employee) => `
@@ -64,7 +64,7 @@
     };
     const summary = document.querySelectorAll(".summary-grid .summary-card strong");
     const activeEmployees = employees.filter((employee) => employee.is_active && employee.role === "employee");
-    if (summary[0]) summary[0].textContent = String(employees.length);
+    if (summary[0]) summary[0].textContent = String(employees.filter((employee) => employee.role === "employee").length);
     if (summary[1]) summary[1].textContent = String(activeEmployees.length);
     if (summary[2]) summary[2].textContent = String(employees.filter((employee) => employee.role === "manager").length);
     if (summary[3]) summary[3].textContent = String(employees.filter((employee) => employee.role === "employee" && !employee.is_active).length);
@@ -74,7 +74,10 @@
       render();
       document.querySelector(".toolbar")?.scrollIntoView({ behavior: "smooth", block: "center" });
     }));
-    document.querySelector('.summary-grid .summary-card[data-filter="all"]')?.classList.add("selected");
+    document.querySelectorAll(".summary-grid .summary-card[data-filter]").forEach((card) => card.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") { event.preventDefault(); card.click(); }
+    }));
+    document.querySelectorAll(".summary-grid .summary-card[data-filter]").forEach((item) => item.classList.toggle("selected", item.dataset.filter === activeFilter));
     [search, department, status].filter(Boolean).forEach((element) => element.addEventListener("input", () => { activeFilter = "all"; render(); }));
     render();
   }
@@ -86,7 +89,7 @@
     const status = document.querySelector(".toolbar select");
     let departments = [];
     let employees = [];
-    let departmentFilter = "all";
+    let departmentFilter = new URLSearchParams(window.location.search).get("filter") || "all";
     try {
       const [departmentPayload, employeePayload] = await Promise.all([apiRequest("/departments/"), apiRequest("/employees/")]);
       departments = Array.isArray(departmentPayload) ? departmentPayload : (departmentPayload.results || []);
@@ -138,7 +141,10 @@
       document.querySelectorAll(".summary-grid .summary-card[data-filter]").forEach((item) => item.classList.toggle("selected", item === card));
       render();
     }));
-    document.querySelector('.summary-grid .summary-card[data-filter="all"]')?.classList.add("selected");
+    document.querySelectorAll(".summary-grid .summary-card[data-filter]").forEach((card) => card.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") { event.preventDefault(); card.click(); }
+    }));
+    document.querySelectorAll(".summary-grid .summary-card[data-filter]").forEach((item) => item.classList.toggle("selected", item.dataset.filter === departmentFilter));
     [search, status].filter(Boolean).forEach((element) => element.addEventListener("input", render));
     render();
   }

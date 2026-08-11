@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
@@ -253,8 +253,8 @@
 
       <div>
         <h2 id="profileName">—</h2>
-        <p>員工編號：<span id="profileEmployeeNo">EMP0003</span></p>
-        <p><span id="profileDepartment">資訊部</span>｜軟體工程師</p>
+        <p>員工編號：<span id="profileEmployeeNo">—</span></p>
+        <p><span id="profileDepartment">所屬部門</span>｜軟體工程師</p>
 
         <span class="profile-status">
           ● 在職中
@@ -298,7 +298,7 @@
 
         <div class="profile-field">
           <span>所屬部門</span>
-          <strong id="profileDepartmentDetail">資訊部</strong>
+          <strong id="profileDepartmentDetail">所屬部門</strong>
         </div>
 
         <div class="profile-field">
@@ -371,7 +371,7 @@
       <small>我的</small>
     </a>
   </nav>
-  <script src="../assets/js/api.js?v=b399a09"></script>
+  <script src="../assets/js/api.js?v=20260811-live43"></script>
   <script>
     (async () => {
       try {
@@ -390,7 +390,7 @@
         }
         document.querySelector("#profileName").textContent = name;
         document.querySelector("#profileEmployeeNo").textContent = user.employee_no || "—";
-        document.querySelector("#profileDepartment").textContent = department;
+        document.querySelector("#profileDepartment").parentElement.textContent = `${department}｜${user.role_label || "員工"}`;
         document.querySelector("#profileFullName").textContent = name;
         document.querySelector("#profileEmail").textContent = user.email || "尚未設定";
         document.querySelector("#profilePhone").textContent = user.phone || "尚未設定";

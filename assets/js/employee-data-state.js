@@ -1,5 +1,6 @@
 (function () {
   const empty = (text) => `<div class="card"><p>${text}</p></div>`;
+  const escapeHtml = (value) => String(value ?? "").replace(/[&<>"']/g, (char) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[char]));
   document.addEventListener("DOMContentLoaded", () => {
     if (!localStorage.getItem("hr_token")) return;
     const path = window.location.pathname;
@@ -8,12 +9,27 @@
         try {
           const payload = await apiRequest("/announcements/");
           const announcements = Array.isArray(payload) ? payload : (payload.results || []);
-          document.querySelectorAll(".announcement-summary .summary-card strong").forEach((node, index) => {
-            node.textContent = String(index === 0 ? announcements.length : index === 1 ? announcements.length : 0);
-          });
+          const now = new Date();
+          const currentMonth = announcements.filter((item) => { const date = new Date(item.published_at || item.created_at); return date.getFullYear() === now.getFullYear() && date.getMonth() === now.getMonth(); });
+          const summary = document.querySelectorAll(".announcement-summary .summary-card strong");
+          if (summary[0]) summary[0].textContent = String(announcements.length);
+          if (summary[1]) summary[1].textContent = String(currentMonth.length);
+          if (summary[2]) summary[2].textContent = "尚無資料";
           const list = document.querySelector(".announcement-list");
           if (!list) return;
-          list.innerHTML = announcements.length ? announcements.map((item) => `<a class="announcement-card" href="announcement-detail.html?id=${item.id}"><div class="announcement-head"><div class="announcement-title-group"><div class="announcement-icon">📢</div><div><h2>${item.title}</h2><p>發布人：${item.author_name || "—"}</p></div></div><time class="announcement-date">${new Date(item.published_at || item.created_at).toLocaleDateString("zh-TW")}</time></div><p class="announcement-excerpt">${item.content}</p><span class="announcement-tag tag-company">${item.category_label || "公告"}</span><span class="announcement-view-link">查看公告內容 →</span></a>`).join("") : empty("目前尚無公告資料。");
+          const search = document.querySelector('input[type="search"]');
+          const selects = document.querySelectorAll("select");
+          const categories = [...new Set(announcements.map((item) => item.category_label).filter(Boolean))];
+          if (selects[0]) selects[0].innerHTML = `<option value="">全部類型</option>${categories.map((name) => `<option value="${escapeHtml(name)}">${escapeHtml(name)}</option>`).join("")}`;
+          const render = () => {
+            const keyword = (search?.value || "").trim().toLowerCase();
+            const category = selects[0]?.value || "";
+            let filtered = announcements.filter((item) => `${item.title} ${item.content}`.toLowerCase().includes(keyword) && (!category || item.category_label === category));
+            filtered = [...filtered].sort((a, b) => (selects[1]?.selectedIndex === 1 ? 1 : -1) * (new Date(b.published_at || b.created_at) - new Date(a.published_at || a.created_at)));
+            list.innerHTML = filtered.length ? filtered.map((item) => `<a class="announcement-card" href="announcement-detail.html?id=${item.id}"><div class="announcement-head"><div class="announcement-title-group"><div class="announcement-icon">📢</div><div><h2>${escapeHtml(item.title)}</h2><p>發布人：${escapeHtml(item.author_name || "—")}</p></div></div><time class="announcement-date">${new Date(item.published_at || item.created_at).toLocaleDateString("zh-TW")}</time></div><p class="announcement-excerpt">${escapeHtml(item.content)}</p><span class="announcement-tag tag-company">${escapeHtml(item.category_label || "公告")}</span><span class="announcement-view-link">查看公告內容 →</span></a>`).join("") : empty("目前尚無符合條件的公告資料。");
+          };
+          [search, ...selects].filter(Boolean).forEach((element) => element.addEventListener("input", render));
+          render();
         } catch (error) {
           const list = document.querySelector(".announcement-list");
           if (list) list.innerHTML = empty(`無法載入公告：${error.message}`);
@@ -32,6 +48,12 @@
           const list = document.querySelector(".notification-list");
           if (!list) return;
           list.innerHTML = notifications.length ? notifications.map((item) => `<a class="notification-card ${item.is_read ? "read" : "unread"}" href="notification-detail.html?id=${item.id}"><div class="notification-icon">🔔</div><div class="notification-content"><div class="notification-head"><h2>${item.title}</h2><time>${new Date(item.created_at).toLocaleString("zh-TW")}</time></div><p>${item.content}</p><span class="notification-status">${item.is_read ? "已讀" : "未讀"}</span></div></a>`).join("") : empty("目前尚無通知資料。");
+          const markAll = [...document.querySelectorAll("button")].find((button) => button.textContent.includes("全部標示為已讀"));
+          markAll?.addEventListener("click", async () => {
+            markAll.disabled = true;
+            await Promise.all(notifications.filter((item) => !item.is_read).map((item) => apiRequest(`/notifications/${item.id}/`, { method: "PATCH", body: JSON.stringify({ is_read: true }) })));
+            window.location.reload();
+          });
         } catch (error) {
           const list = document.querySelector(".notification-list");
           if (list) list.innerHTML = empty(`無法載入通知：${error.message}`);

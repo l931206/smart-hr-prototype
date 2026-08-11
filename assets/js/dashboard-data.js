@@ -6,10 +6,17 @@
   const asList = (payload) => Array.isArray(payload) ? payload : (payload?.results || []);
 
   async function loadEmployeeDashboard() {
-    const requests = asList(await apiRequest("/leave-requests/"));
-    setValue(".summary-grid .summary-card strong", 0, "尚未設定");
-    setValue(".summary-grid .summary-card strong", 1, String(requests.length));
-    setValue(".summary-grid .summary-card strong", 2, "尚無資料");
+    const [requestPayload, notificationPayload] = await Promise.all([apiRequest("/leave-requests/"), apiRequest("/notifications/")]);
+    const requests = asList(requestPayload);
+    const notifications = asList(notificationPayload);
+    setValue(".stat-grid .stat-card strong", 0, "尚無資料");
+    setValue(".stat-grid .stat-card strong", 1, String(requests.filter((item) => item.status === "pending").length));
+    setValue(".stat-grid .stat-card strong", 2, String(notifications.filter((item) => !item.is_read).length));
+    const units = document.querySelectorAll(".stat-grid .stat-card .stat-value span");
+    if (units[0]) units[0].textContent = "";
+    const dateText = new Intl.DateTimeFormat("zh-TW", { year: "numeric", month: "long", day: "numeric" }).format(new Date());
+    const welcomeDescription = document.querySelector(".welcome-card > p:not(.eyebrow)");
+    if (welcomeDescription) welcomeDescription.textContent = `今天是 ${dateText}，所有個人人事資訊與常用功能都集中在這個工作台中。`;
   }
 
   async function loadManagerDashboard() {
@@ -23,7 +30,7 @@
     const lateNotices = asList(latePayload);
     const pending = requests.filter((item) => item.status === "pending");
     const today = new Date().toISOString().slice(0, 10);
-    const todayLate = lateNotices;
+    const todayLate = lateNotices.filter((item) => String(item.late_date || item.date || "").slice(0, 10) === today);
     const todayLeave = requests.filter((item) =>
       item.status === "approved" && item.start_date <= today && item.end_date >= today
     );
@@ -71,7 +78,7 @@
 
   async function loadAdminDashboard() {
     const [employeesPayload, departmentsPayload, requestsPayload] = await Promise.all([
-      apiRequest("/employees/"), apiRequest("/departments/"), apiRequest("/leave-requests/")
+      apiRequest("/employees/"), apiRequest("/departments/"), apiRequest("/profile-change-requests/")
     ]);
     const employees = asList(employeesPayload);
     const departments = asList(departmentsPayload);
@@ -79,7 +86,22 @@
     setValue(".summary-grid .summary-card strong", 0, String(employees.filter((item) => item.is_active).length));
     setValue(".summary-grid .summary-card strong", 1, String(departments.filter((item) => item.is_active).length));
     setValue(".summary-grid .summary-card strong", 2, String(requests.filter((item) => item.status === "pending").length));
-    setValue(".summary-grid .summary-card strong", 3, String(employees.length));
+    setValue(".summary-grid .summary-card strong", 3, String(employees.filter((item) => item.is_active).length));
+
+    const pending = requests.filter((item) => item.status === "pending");
+    const profileCard = [...document.querySelectorAll(".action-card")].find((card) => card.getAttribute("href") === "profile-requests.html");
+    const badge = profileCard?.querySelector(".badge");
+    if (badge) badge.textContent = `${pending.length} 件待處理`;
+
+    const panels = document.querySelectorAll(".panel-grid .panel");
+    if (panels[0]) {
+      panels[0].innerHTML = `<h2>等待處理</h2>${pending.length ? pending.slice(0, 5).map((request) => `
+        <a class="task" href="profile-request-detail.html?id=${request.id}">
+          <div><h3>${request.employee_name || "未提供姓名"}－個人資料修改申請</h3>
+          <p>申請編號：PROFILE-${request.id}</p></div><span class="task-status">等待審核</span>
+        </a>`).join("") : "<p>目前沒有待處理的資料修改申請。</p>"}`;
+    }
+    if (panels[1]) panels[1].innerHTML = "<h2>近期系統活動</h2><p>目前尚無可顯示的操作紀錄。</p>";
   }
 
   document.addEventListener("DOMContentLoaded", async () => {
@@ -90,7 +112,7 @@
       if (user.role === "manager") await loadManagerDashboard();
       if (user.role === "admin") await loadAdminDashboard();
     } catch (error) {
-      document.querySelectorAll(".summary-grid .summary-card strong").forEach((node) => { node.textContent = "無法載入"; });
+      document.querySelectorAll(".summary-grid .summary-card strong, .stat-grid .stat-card strong").forEach((node) => { node.textContent = "無法載入"; });
       console.error("Dashboard data load failed", error);
     }
   });

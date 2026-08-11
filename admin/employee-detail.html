@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
@@ -219,8 +219,8 @@
 
           <div>
             <h1>—</h1>
-            <p>員工編號：EMP0003</p>
-            <p>資訊部｜軟體工程師</p>
+            <p>員工編號：—</p>
+            <p>所屬部門｜軟體工程師</p>
           </div>
         </div>
 
@@ -244,7 +244,7 @@
 
         <div class="row">
           <span>聯絡電話</span>
-          <strong>0912-345-678</strong>
+          <strong>—</strong>
         </div>
 
         <div class="row">
@@ -263,7 +263,7 @@
 
         <div class="row">
           <span>部門</span>
-          <strong>資訊部</strong>
+          <strong>所屬部門</strong>
         </div>
 
         <div class="row">
@@ -303,7 +303,7 @@
       <a class="button danger" id="employeeDeactivateLink" href="employee-deactivate.html">設定為離職</a>
     </div>
   </main>
-  <script src="../assets/js/api.js?v=b399a09"></script>
+  <script src="../assets/js/api.js?v=20260811-live43"></script>
   <script>
     (async () => {
       const id = new URLSearchParams(window.location.search).get("id");
@@ -320,8 +320,12 @@
         [name, employee.email || "—", employee.phone || "—", employee.hire_date || "—", employee.is_active ? "啟用" : "停用"].forEach((value, index) => { if (firstRows[index]) firstRows[index].textContent = value; });
         const secondRows = document.querySelectorAll(".content-grid .card:nth-child(2) > .row strong");
         if (secondRows[0]) secondRows[0].textContent = employee.department_name || "—";
-        if (secondRows[1]) secondRows[1].textContent = "員工";
+        if (secondRows[1]) secondRows[1].textContent = employee.role_label || employee.role || "—";
         if (secondRows[2]) secondRows[2].textContent = employee.manager_name || "尚未設定";
+        const accountRows = document.querySelectorAll(".account-box .row strong");
+        if (accountRows[0]) accountRows[0].textContent = employee.username || "—";
+        if (accountRows[1]) accountRows[1].textContent = employee.is_active ? "已啟用" : "已停用";
+        if (accountRows[2]) accountRows[2].textContent = employee.role_label || employee.role || "—";
         document.title = `${name} - 員工資料`;
         document.querySelector("#employeeEditLink").href = `employee-edit.html?id=${employee.id}`;
         document.querySelector("#employeeDeactivateLink").href = `employee-deactivate.html?id=${employee.id}`;

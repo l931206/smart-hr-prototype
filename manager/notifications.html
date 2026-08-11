@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
@@ -244,142 +244,22 @@
     <section class="summary-grid manager-notification-summary">
       <article class="summary-card">
         <span>未讀通知</span>
-        <strong>3</strong>
+        <strong>0</strong>
       </article>
 
       <article class="summary-card">
         <span>待處理事項</span>
-        <strong>2</strong>
+        <strong>0</strong>
       </article>
 
       <article class="summary-card">
         <span>全部通知</span>
-        <strong>5</strong>
+        <strong>0</strong>
       </article>
     </section>
 
     <section class="manager-notification-list" id="managerNotificationList">
-
-      <a
-        class="manager-notification-card unread"
-        href="notification-detail.html"
-      >
-        <div class="manager-notification-head">
-          <div class="manager-notification-title">
-            <span class="manager-notification-dot"></span>
-            <h2>新的特休假申請</h2>
-          </div>
-
-          <span class="manager-notification-time">
-            今天 13:45
-          </span>
-        </div>
-
-        <p class="manager-notification-message">
-          —提出 — 至 — 的特休假申請，
-          等待你的審核。
-        </p>
-
-        <span class="manager-notification-tag tag-approval">
-          等待審核
-        </span>
-      </a>
-
-      <a
-        class="manager-notification-card unread"
-        href="notification-detail.html"
-      >
-        <div class="manager-notification-head">
-          <div class="manager-notification-title">
-            <span class="manager-notification-dot"></span>
-            <h2>員工晚到通知</h2>
-          </div>
-
-          <span class="manager-notification-time">
-            今天 08:40
-          </span>
-        </div>
-
-        <p class="manager-notification-message">
-          —因交通延誤，預計上午 10:00 到班。
-        </p>
-
-        <span class="manager-notification-tag tag-late">
-          晚到通知
-        </span>
-      </a>
-
-      <a
-        class="manager-notification-card unread"
-        href="notification-detail.html"
-      >
-        <div class="manager-notification-head">
-          <div class="manager-notification-title">
-            <span class="manager-notification-dot"></span>
-            <h2>部門人力不足提醒</h2>
-          </div>
-
-          <span class="manager-notification-time">
-            昨天 16:20
-          </span>
-        </div>
-
-        <p class="manager-notification-message">
-          — 已有兩位員工請假，
-          核准其他申請前請先確認人力安排。
-        </p>
-
-        <span class="manager-notification-tag tag-warning">
-          人力提醒
-        </span>
-      </a>
-
-      <a
-        class="manager-notification-card"
-        href="notification-detail.html"
-      >
-        <div class="manager-notification-head">
-          <div class="manager-notification-title">
-            <h2>請假審核已完成</h2>
-          </div>
-
-          <span class="manager-notification-time">
-            —9
-          </span>
-        </div>
-
-        <p class="manager-notification-message">
-          你已核准—的特休假，
-          系統已通知申請人。
-        </p>
-
-        <span class="manager-notification-tag tag-system">
-          系統通知
-        </span>
-      </a>
-
-      <a
-        class="manager-notification-card"
-        href="notification-detail.html"
-      >
-        <div class="manager-notification-head">
-          <div class="manager-notification-title">
-            <h2>主管資料已更新</h2>
-          </div>
-
-          <span class="manager-notification-time">
-            —5
-          </span>
-        </div>
-
-        <p class="manager-notification-message">
-          系統管理者已更新你的部門與直屬員工資料。
-        </p>
-
-        <span class="manager-notification-tag tag-system">
-          系統通知
-        </span>
-      </a>
+      <p class="empty-state">資料載入中…</p>
     </section>
   </main>
 
@@ -412,7 +292,7 @@
     </a>
   </nav>
 </body>
-  <script src="../assets/js/api.js?v=b399a09"></script>
+  <script src="../assets/js/api.js?v=20260811-live43"></script>
   <script>
     (async () => {
       try {
@@ -423,6 +303,12 @@
         if (counts[1]) counts[1].textContent = String(notifications.filter((item) => item.category === "leave" && !item.is_read).length);
         if (counts[2]) counts[2].textContent = String(notifications.length);
         document.querySelector("#managerNotificationList").innerHTML = notifications.map((item) => `<a class="manager-notification-card ${item.is_read ? "" : "unread"}" href="notification-detail.html?id=${item.id}"><div class="manager-notification-head"><div class="manager-notification-title"><span class="manager-notification-dot"></span><h2>${item.title}</h2></div><span class="manager-notification-time">${new Date(item.created_at).toLocaleString("zh-TW")}</span></div><p class="manager-notification-message">${item.content}</p><span class="manager-notification-tag tag-system">${item.category === "leave" ? "請假" : "系統通知"}</span></a>`).join("") || "<p>目前沒有通知。</p>";
+        const markAll = document.querySelector(".manager-mark-read");
+        markAll?.addEventListener("click", async () => {
+          markAll.disabled = true;
+          await Promise.all(notifications.filter((item) => !item.is_read).map((item) => apiRequest(`/notifications/${item.id}/`, { method: "PATCH", body: JSON.stringify({ is_read: true }) })));
+          window.location.reload();
+        });
       } catch (error) { document.querySelector("#managerNotificationList").innerHTML = `<p>${error.message || "無法載入通知。"}</p>`; }
     })();
   </script>

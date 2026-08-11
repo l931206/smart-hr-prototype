@@ -35,7 +35,7 @@ class DepartmentSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     department_name = serializers.CharField(source="department.name", read_only=True)
-    manager_name = serializers.CharField(source="manager.display_name", read_only=True)
+    manager_name = serializers.SerializerMethodField()
     password = serializers.CharField(write_only=True, required=False, min_length=8)
     role_label = serializers.CharField(source="get_role_display", read_only=True)
 
@@ -57,6 +57,12 @@ class UserSerializer(serializers.ModelSerializer):
             user.set_unusable_password()
         user.save()
         return user
+
+    def get_manager_name(self, user):
+        manager = user.manager
+        if not manager and user.department_id:
+            manager = user.department.employees.filter(role=User.Role.MANAGER, is_active=True).first()
+        return (manager.display_name or manager.username) if manager else ""
 
     def update(self, instance, validated_data):
         password = validated_data.pop("password", None)
@@ -120,7 +126,11 @@ class LateNoticeSerializer(serializers.ModelSerializer):
 class LeaveTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = LeaveType
-        fields = ["id", "code", "name", "default_days", "is_paid", "is_active", "description", "created_at"]
+        fields = [
+            "id", "code", "name", "default_days", "quota_type", "minimum_unit", "is_paid",
+            "deduct_quota", "requires_manager_approval", "attachment_required", "allow_hourly",
+            "allow_carry_over", "attachment_rule", "is_active", "description", "created_at",
+        ]
         read_only_fields = ["id", "created_at"]
 
 

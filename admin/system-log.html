@@ -209,17 +209,17 @@ width:100%;
 
 <div class="card">
 <span>今日操作</span>
-<strong>18</strong>
+<strong>0</strong>
 </div>
 
 <div class="card">
 <span>本月操作</span>
-<strong>462</strong>
+<strong>0</strong>
 </div>
 
 <div class="card">
 <span>管理者</span>
-<strong>3</strong>
+<strong>0</strong>
 </div>
 
 <div class="card">
@@ -250,152 +250,14 @@ width:100%;
 </section>
 
 <section class="log-list">
-
-<article class="log">
-
-<div class="log-head">
-
-<div>
-<h2>更新員工資料</h2>
-</div>
-
-<div class="time">
-—1 11:25
-</div>
-
-</div>
-
-<div class="detail">
-
-<div class="item">
-<span>操作人</span>
-<strong>管理者</strong>
-</div>
-
-<div class="item">
-<span>對象</span>
-<strong>—</strong>
-</div>
-
-<div class="item">
-<span>模組</span>
-<strong>員工管理</strong>
-</div>
-
-<div class="item">
-<span>IP</span>
-<strong>192.168.0.10</strong>
-</div>
-
-</div>
-
-<div class="desc">
-修改聯絡電話與電子郵件。
-</div>
-
-<span class="tag">UPDATE</span>
-
-</article>
-
-<article class="log">
-
-<div class="log-head">
-
-<div>
-<h2>建立新帳號</h2>
-</div>
-
-<div class="time">
-—1 10:42
-</div>
-
-</div>
-
-<div class="detail">
-
-<div class="item">
-<span>操作人</span>
-<strong>管理者</strong>
-</div>
-
-<div class="item">
-<span>對象</span>
-<strong>—</strong>
-</div>
-
-<div class="item">
-<span>模組</span>
-<strong>帳號管理</strong>
-</div>
-
-<div class="item">
-<span>IP</span>
-<strong>192.168.0.10</strong>
-</div>
-
-</div>
-
-<div class="desc">
-建立登入帳號 —。
-</div>
-
-<span class="tag">CREATE</span>
-
-</article>
-
-<article class="log">
-
-<div class="log-head">
-
-<div>
-<h2>部門資料更新</h2>
-</div>
-
-<div class="time">
-—0 16:30
-</div>
-
-</div>
-
-<div class="detail">
-
-<div class="item">
-<span>操作人</span>
-<strong>管理者</strong>
-</div>
-
-<div class="item">
-<span>對象</span>
-<strong>資訊部</strong>
-</div>
-
-<div class="item">
-<span>模組</span>
-<strong>部門管理</strong>
-</div>
-
-<div class="item">
-<span>IP</span>
-<strong>192.168.0.10</strong>
-</div>
-
-</div>
-
-<div class="desc">
-更新部門主管為—。
-</div>
-
-<span class="tag">UPDATE</span>
-
-</article>
-
-</section>
+      <p class="empty-state">資料載入中…</p>
+    </section>
 
 </main>
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      document.querySelectorAll(".summary-grid .summary-card strong").forEach((item) => { item.textContent = "0"; });
+      document.querySelectorAll(".summary strong, .summary-grid .summary-card strong").forEach((item) => { item.textContent = "0"; });
       const list = document.querySelector(".log-list, .table-card tbody, tbody");
       if (list) list.innerHTML = list.tagName === "TBODY" ? '<tr><td colspan="8">目前尚無系統操作紀錄。</td></tr>' : '<p>目前尚無系統操作紀錄。</p>';
     });

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
@@ -271,20 +271,20 @@
     </header>
 
     <section class="summary-grid">
-      <article class="summary-card" data-filter="all">
+      <a class="summary-card" data-filter="all" href="?filter=all">
         <span>全部部門</span>
         <strong id="departmentTotalCount">0</strong>
-      </article>
+      </a>
 
-      <article class="summary-card" data-filter="managed">
+      <a class="summary-card" data-filter="managed" href="?filter=managed">
         <span>已設定主管</span>
         <strong id="departmentActiveCount">0</strong>
-      </article>
+      </a>
 
-      <article class="summary-card" data-filter="employees">
+      <a class="summary-card" data-filter="employees" href="?filter=employees">
         <span>在職員工</span>
         <strong id="departmentEmployeeCount">0</strong>
-      </article>
+      </a>
     </section>
 
     <section class="toolbar">
@@ -298,165 +298,11 @@
     </section>
 
     <section class="department-list" id="departmentList">
-      <a class="department-card" href="department-detail.html">
-        <div class="department-head">
-          <div class="department-main">
-            <div class="icon">💻</div>
-
-            <div>
-              <h2>資訊部</h2>
-              <p>部門代碼：IT</p>
-            </div>
-          </div>
-
-          <span class="status">啟用中</span>
-        </div>
-
-        <div class="department-info">
-          <div class="info-item">
-            <span>部門主管</span>
-            <strong>—</strong>
-          </div>
-
-          <div class="info-item">
-            <span>員工人數</span>
-            <strong>6 人</strong>
-          </div>
-
-          <div class="info-item">
-            <span>待審核請假</span>
-            <strong>2 件</strong>
-          </div>
-
-          <div class="info-item">
-            <span>建立日期</span>
-            <strong>—</strong>
-          </div>
-        </div>
-
-        <span class="view-link">查看與編輯部門 →</span>
-      </a>
-
-      <a class="department-card" href="department-detail.html">
-        <div class="department-head">
-          <div class="department-main">
-            <div class="icon">📄</div>
-
-            <div>
-              <h2>行政部</h2>
-              <p>部門代碼：AD</p>
-            </div>
-          </div>
-
-          <span class="status">啟用中</span>
-        </div>
-
-        <div class="department-info">
-          <div class="info-item">
-            <span>部門主管</span>
-            <strong>—</strong>
-          </div>
-
-          <div class="info-item">
-            <span>員工人數</span>
-            <strong>5 人</strong>
-          </div>
-
-          <div class="info-item">
-            <span>待審核請假</span>
-            <strong>0 件</strong>
-          </div>
-
-          <div class="info-item">
-            <span>建立日期</span>
-            <strong>—</strong>
-          </div>
-        </div>
-
-        <span class="view-link">查看與編輯部門 →</span>
-      </a>
-
-      <a class="department-card" href="department-detail.html">
-        <div class="department-head">
-          <div class="department-main">
-            <div class="icon">📈</div>
-
-            <div>
-              <h2>業務部</h2>
-              <p>部門代碼：SA</p>
-            </div>
-          </div>
-
-          <span class="status">啟用中</span>
-        </div>
-
-        <div class="department-info">
-          <div class="info-item">
-            <span>部門主管</span>
-            <strong>—</strong>
-          </div>
-
-          <div class="info-item">
-            <span>員工人數</span>
-            <strong>8 人</strong>
-          </div>
-
-          <div class="info-item">
-            <span>待審核請假</span>
-            <strong>1 件</strong>
-          </div>
-
-          <div class="info-item">
-            <span>建立日期</span>
-            <strong>—</strong>
-          </div>
-        </div>
-
-        <span class="view-link">查看與編輯部門 →</span>
-      </a>
-
-      <a class="department-card" href="department-detail.html">
-        <div class="department-head">
-          <div class="department-main">
-            <div class="icon">💰</div>
-
-            <div>
-              <h2>財務部</h2>
-              <p>部門代碼：FI</p>
-            </div>
-          </div>
-
-          <span class="status">啟用中</span>
-        </div>
-
-        <div class="department-info">
-          <div class="info-item">
-            <span>部門主管</span>
-            <strong>—</strong>
-          </div>
-
-          <div class="info-item">
-            <span>員工人數</span>
-            <strong>4 人</strong>
-          </div>
-
-          <div class="info-item">
-            <span>待審核請假</span>
-            <strong>0 件</strong>
-          </div>
-
-          <div class="info-item">
-            <span>建立日期</span>
-            <strong>—</strong>
-          </div>
-        </div>
-
-        <span class="view-link">查看與編輯部門 →</span>
-      </a>
+      <p class="empty-state">資料載入中…</p>
     </section>
 </main>
-  <script src="../assets/js/api.js?v=ec96ddf"></script>
-  <script src="../assets/js/admin-data.js?v=20260811-3"></script>
+  <script src="../assets/js/api.js?v=20260811-live43"></script>
+  <script src="../assets/js/admin-data.js?v=20260811-live43"></script>
 </body>
   <script>
     (async () => {

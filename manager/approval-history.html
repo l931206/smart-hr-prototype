@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
@@ -263,17 +263,17 @@
     <section class="summary-grid approval-history-summary">
       <article class="summary-card">
         <span>本月已處理</span>
-        <strong>8</strong>
+        <strong>0</strong>
       </article>
 
       <article class="summary-card">
         <span>已核准</span>
-        <strong>6</strong>
+        <strong>0</strong>
       </article>
 
       <article class="summary-card">
         <span>已退回</span>
-        <strong>2</strong>
+        <strong>0</strong>
       </article>
     </section>
 
@@ -299,162 +299,7 @@
     </section>
 
     <section class="approval-history-list" id="approvalHistoryList">
-
-      <article class="approval-history-card">
-        <div class="approval-history-head">
-          <div class="approval-history-employee">
-            <div class="approval-history-avatar">
-              陳
-            </div>
-
-            <div>
-              <h2>—－特休假</h2>
-              <p>申請編號：LEAVE-20260730-001</p>
-            </div>
-          </div>
-
-          <span class="approval-history-status approved">
-            已核准
-          </span>
-        </div>
-
-        <div class="approval-history-details">
-          <div class="approval-history-detail">
-            <span>請假日期</span>
-            <strong>—－—</strong>
-          </div>
-
-          <div class="approval-history-detail">
-            <span>請假天數</span>
-            <strong>2 天</strong>
-          </div>
-
-          <div class="approval-history-detail">
-            <span>處理時間</span>
-            <strong>—0 14:30</strong>
-          </div>
-
-          <div class="approval-history-detail">
-            <span>處理人</span>
-            <strong>—</strong>
-          </div>
-        </div>
-
-        <div class="approval-history-comment">
-          主管備註：已確認部門工作安排，准予請假。
-        </div>
-
-        <a
-          class="approval-history-link"
-          href="approval-record-detail.html"
-        >
-          查看完整審核紀錄 →
-        </a>
-      </article>
-
-      <article class="approval-history-card">
-        <div class="approval-history-head">
-          <div class="approval-history-employee">
-            <div class="approval-history-avatar">
-              林
-            </div>
-
-            <div>
-              <h2>—－病假</h2>
-              <p>申請編號：LEAVE-20260721-003</p>
-            </div>
-          </div>
-
-          <span class="approval-history-status approved">
-            已核准
-          </span>
-        </div>
-
-        <div class="approval-history-details">
-          <div class="approval-history-detail">
-            <span>請假日期</span>
-            <strong>—2</strong>
-          </div>
-
-          <div class="approval-history-detail">
-            <span>請假天數</span>
-            <strong>1 天</strong>
-          </div>
-
-          <div class="approval-history-detail">
-            <span>處理時間</span>
-            <strong>—1 16:10</strong>
-          </div>
-
-          <div class="approval-history-detail">
-            <span>處理人</span>
-            <strong>—</strong>
-          </div>
-        </div>
-
-        <div class="approval-history-comment">
-          主管備註：已檢附就醫證明，核准病假。
-        </div>
-
-        <a
-          class="approval-history-link"
-          href="approval-record-detail.html"
-        >
-          查看完整審核紀錄 →
-        </a>
-      </article>
-
-      <article class="approval-history-card">
-        <div class="approval-history-head">
-          <div class="approval-history-employee">
-            <div class="approval-history-avatar">
-              張
-            </div>
-
-            <div>
-              <h2>—－事假</h2>
-              <p>申請編號：LEAVE-20260715-002</p>
-            </div>
-          </div>
-
-          <span class="approval-history-status rejected">
-            已退回
-          </span>
-        </div>
-
-        <div class="approval-history-details">
-          <div class="approval-history-detail">
-            <span>請假日期</span>
-            <strong>—8</strong>
-          </div>
-
-          <div class="approval-history-detail">
-            <span>請假天數</span>
-            <strong>1 天</strong>
-          </div>
-
-          <div class="approval-history-detail">
-            <span>處理時間</span>
-            <strong>—5 11:25</strong>
-          </div>
-
-          <div class="approval-history-detail">
-            <span>處理人</span>
-            <strong>—</strong>
-          </div>
-        </div>
-
-        <div class="approval-history-comment">
-          退回原因：當日已有兩位同仁請假，請重新選擇日期。
-        </div>
-
-        <a
-          class="approval-history-link"
-          href="approval-record-detail.html"
-        >
-          查看完整審核紀錄 →
-        </a>
-      </article>
+      <p class="empty-state">資料載入中…</p>
     </section>
   </main>
 
@@ -486,7 +331,7 @@
       <small>更多</small>
     </a>
   </nav>
-  <script src="../assets/js/api.js?v=b399a09"></script>
+  <script src="../assets/js/api.js?v=20260811-live43"></script>
   <script>
     (async () => {
       const list = document.querySelector("#approvalHistoryList");
@@ -498,7 +343,20 @@
         if (counts[1]) counts[1].textContent = String(requests.filter((item) => item.status === "approved").length);
         if (counts[2]) counts[2].textContent = String(requests.filter((item) => item.status === "rejected").length);
         const formatDate = (value) => value ? new Date(value).toLocaleString("zh-TW") : "—";
-        list.innerHTML = requests.map((item) => `<article class="approval-history-card"><div class="approval-history-head"><div class="approval-history-employee"><div class="approval-history-avatar">${(item.employee_name || "員").slice(0, 1)}</div><div><h2>${item.employee_name || "未提供姓名"}－${item.leave_type}</h2><p>申請編號：LEAVE-${String(item.id).padStart(6, "0")}</p></div></div><span class="approval-history-status ${item.status === "approved" ? "approved" : "rejected"}">${item.status_label}</span></div><div class="approval-history-details"><div class="approval-history-detail"><span>請假日期</span><strong>${item.start_date}－${item.end_date}</strong></div><div class="approval-history-detail"><span>請假天數</span><strong>${item.days} 天</strong></div><div class="approval-history-detail"><span>處理時間</span><strong>${formatDate(item.reviewed_at)}</strong></div><div class="approval-history-detail"><span>處理人</span><strong>目前登入主管</strong></div></div><div class="approval-history-comment">${item.reviewer_comment || "未填寫主管備註。"}</div><a class="approval-history-link" href="approval-record-detail.html?id=${item.id}">查看完整審核紀錄 →</a></article>`).join("") || "<p>目前沒有已完成的審核紀錄。</p>";
+        const search = document.querySelector('input[type="search"]');
+        const filters = document.querySelectorAll(".approval-history-filter select");
+        const leaveTypes = [...new Set(requests.map((item) => item.leave_type).filter(Boolean))];
+        if (filters[1]) filters[1].innerHTML = `<option value="">全部假別</option>${leaveTypes.map((name) => `<option value="${name}">${name}</option>`).join("")}`;
+        const render = () => {
+          const keyword = (search?.value || "").trim().toLowerCase();
+          const statusText = filters[0]?.value || "全部處理結果";
+          const typeText = filters[1]?.value || "";
+          const statusMap = {"已核准":"approved", "已退回":"rejected"};
+          const filtered = requests.filter((item) => `${item.employee_name || ""} ${item.leave_type || ""} ${item.reason || ""}`.toLowerCase().includes(keyword) && (!statusMap[statusText] || item.status === statusMap[statusText]) && (!typeText || item.leave_type === typeText));
+          list.innerHTML = filtered.map((item) => `<article class="approval-history-card"><div class="approval-history-head"><div class="approval-history-employee"><div class="approval-history-avatar">${(item.employee_name || "員").slice(0, 1)}</div><div><h2>${item.employee_name || "未提供姓名"}－${item.leave_type}</h2><p>申請編號：LEAVE-${String(item.id).padStart(6, "0")}</p></div></div><span class="approval-history-status ${item.status === "approved" ? "approved" : "rejected"}">${item.status_label}</span></div><div class="approval-history-details"><div class="approval-history-detail"><span>請假日期</span><strong>${item.start_date}－${item.end_date}</strong></div><div class="approval-history-detail"><span>請假天數</span><strong>${item.days} 天</strong></div><div class="approval-history-detail"><span>處理時間</span><strong>${formatDate(item.reviewed_at)}</strong></div><div class="approval-history-detail"><span>處理人</span><strong>目前登入主管</strong></div></div><div class="approval-history-comment">${item.reviewer_comment || "未填寫主管備註。"}</div><a class="approval-history-link" href="approval-record-detail.html?id=${item.id}">查看完整審核紀錄 →</a></article>`).join("") || "<p>目前沒有符合條件的審核紀錄。</p>";
+        };
+        [search, ...filters].filter(Boolean).forEach((element) => element.addEventListener("input", render));
+        render();
       } catch (error) { list.innerHTML = `<p>${error.message || "無法載入審核紀錄。"}</p>`; }
     })();
   </script>
