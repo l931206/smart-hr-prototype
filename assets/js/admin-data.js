@@ -23,6 +23,18 @@
       list.innerHTML = `<p class="empty-state">無法載入員工資料：${escapeHtml(error.message)}</p>`;
       return;
     }
+    try {
+      const departmentPayload = await apiRequest("/departments/");
+      const departments = Array.isArray(departmentPayload) ? departmentPayload : (departmentPayload.results || []);
+      if (department) department.innerHTML = `<option value="">全部部門</option>${departments.filter((item) => item.is_active).map((item) => `<option value="${escapeHtml(item.name)}">${escapeHtml(item.name)}</option>`).join("")}`;
+    } catch (error) {
+      if (department) department.innerHTML = `<option value="">全部部門</option>${[...new Set(employees.map((item) => item.department_name).filter(Boolean))].map((name) => `<option value="${escapeHtml(name)}">${escapeHtml(name)}</option>`).join("")}`;
+    }
+    if (status) {
+      const hasActive = employees.some((employee) => employee.is_active);
+      const hasInactive = employees.some((employee) => !employee.is_active);
+      status.innerHTML = `<option value="">全部狀態</option>${hasActive ? "<option value=\"在職\">在職</option>" : ""}${hasInactive ? "<option value=\"已離職\">已離職</option>" : ""}`;
+    }
 
     const render = () => {
       const keyword = (search?.value || "").trim().toLowerCase();
