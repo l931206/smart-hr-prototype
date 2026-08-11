@@ -13,8 +13,9 @@
     const list = document.querySelector(".employee-list");
     if (!list) return;
     const search = document.querySelector(".toolbar input[type=search]");
-    const role = document.querySelector(".toolbar select");
+    const department = document.querySelector(".toolbar select");
     const status = document.querySelectorAll(".toolbar select")[1];
+    let activeFilter = "all";
     let employees = [];
     try {
       employees = await apiRequest("/employees/");
@@ -25,18 +26,14 @@
 
     const render = () => {
       const keyword = (search?.value || "").trim().toLowerCase();
-      const roleValue = role?.value || "";
+      const departmentValue = department?.value || "";
       const statusValue = status?.value || "";
       const filtered = employees.filter((employee) => {
         const text = `${employee.display_name} ${employee.employee_no} ${employee.email} ${employee.department_name}`.toLowerCase();
-        const roleMatch = !roleValue || roleValue.includes("券") || roleValue.includes("全部") ||
-          (roleValue.includes("員工") && employee.role === "employee") ||
-          (roleValue.includes("主管") && employee.role === "manager") ||
-          (roleValue.includes("管理") && employee.role === "admin");
-        const statusMatch = !statusValue || statusValue.includes("全部") ||
-          (statusValue.includes("啟") && employee.is_active) ||
-          (statusValue.includes("停") && !employee.is_active);
-        return text.includes(keyword) && roleMatch && statusMatch;
+        const departmentMatch = !departmentValue || departmentValue.includes("全部") || text.includes(departmentValue.toLowerCase());
+        const statusMatch = !statusValue || statusValue.includes("全部") || (statusValue.includes("在") && employee.is_active) || (statusValue.includes("離") && !employee.is_active);
+        const filterMatch = activeFilter === "all" || (activeFilter === "active" && employee.role === "employee" && employee.is_active) || (activeFilter === "manager" && employee.role === "manager") || (activeFilter === "inactive" && !employee.is_active);
+        return text.includes(keyword) && departmentMatch && statusMatch && filterMatch;
       });
       list.innerHTML = filtered.length ? filtered.map((employee) => `
         <a class="employee-card" href="employee-detail.html?id=${employee.id}">
@@ -60,14 +57,13 @@
     if (summary[2]) summary[2].textContent = String(employees.filter((employee) => employee.role === "manager").length);
     if (summary[3]) summary[3].textContent = String(employees.length - activeEmployees.length);
     document.querySelectorAll(".summary-grid .summary-card[data-filter]").forEach((card) => card.addEventListener("click", () => {
-      const filter = card.dataset.filter;
-      if (filter === "manager") role.value = "Manager";
-      else role.value = filter === "all" ? "全部角色" : "Employee";
-      status.value = filter === "active" ? "在職" : filter === "inactive" ? "已離職" : "全部狀態";
+      activeFilter = card.dataset.filter;
+      document.querySelectorAll(".summary-grid .summary-card[data-filter]").forEach((item) => item.classList.toggle("selected", item === card));
       render();
       document.querySelector(".toolbar")?.scrollIntoView({ behavior: "smooth", block: "center" });
     }));
-    [search, role, status].filter(Boolean).forEach((element) => element.addEventListener("input", render));
+    document.querySelector('.summary-grid .summary-card[data-filter="all"]')?.classList.add("selected");
+    [search, department, status].filter(Boolean).forEach((element) => element.addEventListener("input", () => { activeFilter = "all"; render(); }));
     render();
   }
 
