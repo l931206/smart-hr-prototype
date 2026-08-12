@@ -56,6 +56,8 @@ class Command(BaseCommand):
             user.is_superuser = role == User.Role.ADMIN
             user.work_start_time = "09:00"
             user.work_end_time = "18:00"
+            if not user.date_joined:
+                user.date_joined = timezone.now()
             user.save()
             users[role] = user
 

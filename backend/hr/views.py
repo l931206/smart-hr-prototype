@@ -82,6 +82,13 @@ class LoginView(APIView):
         serializer = LoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data["user"]
+        now = timezone.now()
+        update_fields = ["last_login"]
+        user.last_login = now
+        if not user.date_joined:
+            user.date_joined = now
+            update_fields.append("date_joined")
+        user.save(update_fields=update_fields)
         token, _ = Token.objects.get_or_create(user=user)
         record_audit(request, "登入", user, actor_override=user)
         return Response({"token": token.key, "user": UserSerializer(user).data})
