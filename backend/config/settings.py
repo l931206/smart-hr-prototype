@@ -18,6 +18,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "corsheaders",
     "rest_framework",
+    "drf_spectacular",
     "rest_framework.authtoken",
     "hr",
 ]
@@ -102,12 +103,33 @@ STORAGES = {
     "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},
 }
 
+AUTH_MODE = os.getenv("AUTH_MODE", "local").lower()
+CENTRAL_TOKEN_VERIFY_URL = os.getenv("CENTRAL_TOKEN_VERIFY_URL", "")
+CENTRAL_TOKEN_FIELD = os.getenv("CENTRAL_TOKEN_FIELD", "token")
+CENTRAL_API_KEY = os.getenv("CENTRAL_API_KEY", "")
+CENTRAL_SYSTEM_CODE = os.getenv("CENTRAL_SYSTEM_CODE", "smart-hr")
+
+authentication_classes = ["rest_framework.authentication.SessionAuthentication"]
+if AUTH_MODE in {"local", "hybrid"}:
+    authentication_classes.insert(0, "rest_framework.authentication.TokenAuthentication")
+if AUTH_MODE in {"central", "hybrid"}:
+    authentication_classes.insert(0, "hr.authentication.CentralTokenAuthentication")
+
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework.authentication.TokenAuthentication",
-        "rest_framework.authentication.SessionAuthentication",
-    ],
+    "DEFAULT_AUTHENTICATION_CLASSES": authentication_classes,
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Smart HR API",
+    "DESCRIPTION": "智慧人資管理平台 API，提供中控系統與前端應用串接。",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "ENUM_NAME_OVERRIDES": {
+        "ApprovalStatusEnum": [("pending", "待審核"), ("approved", "已核准"), ("rejected", "已退回")],
+        "LateNoticeStatusEnum": [("notified", "已通知主管"), ("arrived", "已到班")],
+    },
 }
 
 CORS_ALLOWED_ORIGINS = [origin for origin in os.getenv("CORS_ALLOWED_ORIGINS", "").split(",") if origin]

@@ -48,7 +48,7 @@ class DepartmentSerializer(serializers.ModelSerializer):
         fields = ["id", "code", "name", "is_active", "employee_count", "created_at"]
         read_only_fields = ["id", "employee_count", "created_at"]
 
-    def get_employee_count(self, department):
+    def get_employee_count(self, department) -> int:
         return department.employees.filter(role=User.Role.EMPLOYEE, is_active=True).count()
 
 
@@ -61,7 +61,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
-            "id", "username", "employee_no", "display_name", "job_title", "email", "role",
+            "id", "username", "employee_no", "external_user_id", "display_name", "job_title", "email", "role",
             "role_label", "department", "department_name", "manager", "manager_name", "phone", "hire_date", "termination_date", "termination_reason", "avatar_data",
             "work_start_time", "work_end_time", "is_active", "last_login", "date_joined", "password",
         ]
@@ -77,7 +77,7 @@ class UserSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
-    def get_manager_name(self, user):
+    def get_manager_name(self, user) -> str:
         manager = user.manager
         if not manager and user.department_id:
             manager = user.department.employees.filter(role=User.Role.MANAGER, is_active=True).first()
@@ -196,5 +196,5 @@ class AuditLogSerializer(serializers.ModelSerializer):
         fields = ["id", "actor", "actor_name", "action", "target_type", "target_id", "target_label", "details", "ip_address", "created_at"]
         read_only_fields = fields
 
-    def get_actor_name(self, item):
+    def get_actor_name(self, item) -> str:
         return (item.actor.display_name or item.actor.username) if item.actor else "系統"

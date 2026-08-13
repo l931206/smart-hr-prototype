@@ -1,6 +1,8 @@
 from django.contrib.auth import logout
 from django.utils import timezone
+from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
 from rest_framework import status, viewsets
+from rest_framework import serializers as drf_serializers
 from rest_framework.authtoken.models import Token
 from rest_framework.exceptions import MethodNotAllowed, PermissionDenied, ValidationError
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -78,6 +80,17 @@ class AdminWriteMixin:
 class LoginView(APIView):
     permission_classes = [AllowAny]
 
+    @extend_schema(
+        summary="使用人資系統本機帳號登入",
+        request=LoginSerializer,
+        responses={
+            200: inline_serializer(
+                name="LoginResponse",
+                fields={"token": drf_serializers.CharField(), "user": UserSerializer()},
+            )
+        },
+        auth=[],
+    )
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -97,6 +110,11 @@ class LoginView(APIView):
 class HealthView(APIView):
     permission_classes = [AllowAny]
 
+    @extend_schema(
+        summary="檢查 API 服務狀態",
+        responses={200: inline_serializer(name="HealthResponse", fields={"status": drf_serializers.CharField()})},
+        auth=[],
+    )
     def get(self, request):
         return Response({"status": "ok"})
 
@@ -104,6 +122,7 @@ class HealthView(APIView):
 class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(request=None, summary="登出並撤銷本機 Token", responses={204: OpenApiResponse(description="已登出")})
     def post(self, request):
         record_audit(request, "登出", request.user)
         Token.objects.filter(user=request.user).delete()
@@ -114,9 +133,11 @@ class LogoutView(APIView):
 class MeView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(summary="取得目前登入者資料", responses={200: UserSerializer})
     def get(self, request):
         return Response(UserSerializer(request.user).data)
 
+    @extend_schema(summary="更新目前登入者頭像", request=UserSerializer, responses={200: UserSerializer})
     def put(self, request):
         # 基本資料異動必須走審核流程；頭貼允許本人即時更新。
         user = request.user

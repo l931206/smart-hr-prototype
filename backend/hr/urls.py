@@ -1,6 +1,7 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
+from .integration_views import IntegrationManifestView, IntegrationMeView
 from .views import AccountViewSet, AnnouncementViewSet, AuditLogViewSet, DepartmentViewSet, EmployeeViewSet, HealthView, LateNoticeViewSet, LeaveBalanceViewSet, LeaveRequestViewSet, LeaveTypeViewSet, LoginView, LogoutView, MeView, NotificationViewSet, ProfileChangeRequestViewSet
 
 router = DefaultRouter()
@@ -21,5 +22,7 @@ urlpatterns = [
     path("auth/login/", LoginView.as_view(), name="login"),
     path("auth/logout/", LogoutView.as_view(), name="logout"),
     path("auth/me/", MeView.as_view(), name="me"),
+    path("integration/manifest/", IntegrationManifestView.as_view(), name="integration-manifest"),
+    path("integration/me/", IntegrationMeView.as_view(), name="integration-me"),
     path("", include(router.urls)),
 ]

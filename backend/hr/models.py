@@ -22,6 +22,7 @@ class User(AbstractUser):
         ADMIN = "admin", "系統管理者"
 
     employee_no = models.CharField(max_length=30, unique=True, null=True, blank=True)
+    external_user_id = models.CharField(max_length=100, unique=True, null=True, blank=True)
     display_name = models.CharField(max_length=100, blank=True)
     job_title = models.CharField(max_length=100, blank=True)
     role = models.CharField(max_length=20, choices=Role.choices, default=Role.EMPLOYEE)

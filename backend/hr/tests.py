@@ -1,6 +1,9 @@
 from django.urls import reverse
-from rest_framework.test import APITestCase
+from django.test import override_settings
+from rest_framework.test import APIRequestFactory, APITestCase
+from unittest.mock import MagicMock, patch
 
+from .authentication import CentralTokenAuthentication
 from .models import AuditLog, Announcement, Department, LeaveBalance, LeaveRequest, LeaveType, ProfileChangeRequest, User
 
 
@@ -219,3 +222,51 @@ class CoreApiTests(APITestCase):
         admin_data = next(item for item in response.data if item["username"] == "account-admin")
         self.assertIn("last_login", admin_data)
         self.assertIn("date_joined", admin_data)
+
+    def test_integration_manifest_is_public_and_lists_real_roles(self):
+        response = self.client.get("/api/integration/manifest/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["system_code"], "smart-hr")
+        self.assertEqual(set(response.data["roles"]), {"employee", "manager", "admin"})
+        self.assertIn("leave.apply", response.data["roles"]["employee"])
+        self.assertIn("leave.review", response.data["roles"]["manager"])
+        self.assertIn("account.manage", response.data["roles"]["admin"])
+
+    def test_integration_me_requires_authentication(self):
+        response = self.client.get("/api/integration/me/")
+        self.assertEqual(response.status_code, 401)
+
+    def test_integration_me_returns_mapped_identity_and_permissions(self):
+        self.user.external_user_id = "central-user-123"
+        self.user.save(update_fields=["external_user_id"])
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get("/api/integration/me/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["user"]["external_user_id"], "central-user-123")
+        self.assertEqual(response.data["user"]["role"], "employee")
+        self.assertEqual(response.data["user"]["department"], self.department.name)
+        self.assertIn("leave.apply", response.data["permissions"])
+        self.assertNotIn("account.manage", response.data["permissions"])
+
+    def test_openapi_schema_and_swagger_are_available(self):
+        schema = self.client.get("/api/schema/")
+        docs = self.client.get("/api/docs/")
+        self.assertEqual(schema.status_code, 200)
+        self.assertEqual(docs.status_code, 200)
+
+    @override_settings(
+        CENTRAL_TOKEN_VERIFY_URL="https://central.example.test/token/verify",
+        CENTRAL_TOKEN_FIELD="token",
+        CENTRAL_API_KEY="test-api-key",
+    )
+    def test_central_bearer_token_maps_only_prelinked_user(self):
+        self.user.external_user_id = "central-user-123"
+        self.user.save(update_fields=["external_user_id"])
+        response = MagicMock()
+        response.read.return_value = b'{"active": true, "user_id": "central-user-123"}'
+        response.__enter__.return_value = response
+        request = APIRequestFactory().get("/api/integration/me/", HTTP_AUTHORIZATION="Bearer central-token")
+        with patch("hr.authentication.urlopen", return_value=response):
+            authenticated_user, auth_context = CentralTokenAuthentication().authenticate(request)
+        self.assertEqual(authenticated_user, self.user)
+        self.assertEqual(auth_context["source"], "central")
