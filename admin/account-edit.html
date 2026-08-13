@@ -250,6 +250,12 @@
 
       <h2 class="section-title">功能權限</h2>
 
+      <div class="form-group">
+        <label for="externalUserId">中控使用者 ID</label>
+        <input id="externalUserId" type="text" maxlength="100" placeholder="例如：central-employee-001">
+        <small>用來將公司中控帳號對應到這個人資帳號；正式中控上線後填入其唯一使用者 ID。</small>
+      </div>
+
       <div class="permission-list">
         <div class="permission">
           <input id="profilePermission" type="checkbox" checked>
@@ -310,7 +316,7 @@
       </div>
     </form>
   </main>
-  <script src="../assets/js/api.js?v=20260811-live47"></script>
+  <script src="../assets/js/api.js?v=20260813-sso1"></script>
   <script>
     (async () => {
       const id = new URLSearchParams(window.location.search).get("id");
@@ -321,6 +327,7 @@
         document.querySelector("#employee").value = `${user.display_name || user.username}｜${user.employee_no || "—"}`;
         document.querySelector("#role").value = user.role;
         document.querySelector("#status").value = user.is_active ? "active" : "inactive";
+        document.querySelector("#externalUserId").value = user.external_user_id || "";
         document.querySelector(".back").href = `account-detail.html?id=${id}`;
         document.querySelector(".button.secondary").href = `account-detail.html?id=${id}`;
         document.querySelector("#accountEditForm").addEventListener("submit", async (event) => {
@@ -328,7 +335,7 @@
           const button = event.currentTarget.querySelector("button[type=submit]");
           button.disabled = true;
           try {
-            await apiRequest(`/accounts/${id}/`, { method: "PATCH", body: JSON.stringify({ role: document.querySelector("#role").value, is_active: document.querySelector("#status").value === "active" }) });
+            await apiRequest(`/accounts/${id}/`, { method: "PATCH", body: JSON.stringify({ role: document.querySelector("#role").value, is_active: document.querySelector("#status").value === "active", external_user_id: document.querySelector("#externalUserId").value.trim() || null }) });
             window.location.href = `account-edit-success.html?id=${id}`;
           } catch (error) { alert(error.message || "儲存帳號設定失敗。"); button.disabled = false; }
         });

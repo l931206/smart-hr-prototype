@@ -5,12 +5,13 @@ const HR_API_BASE_URL = window.HR_API_BASE_URL
 
 async function apiRequest(path, options = {}) {
   const token = localStorage.getItem("hr_token");
-  const isLoginRequest = path.startsWith("/auth/login/");
+  const tokenScheme = localStorage.getItem("hr_token_scheme") || "Token";
+  const isLoginRequest = path.startsWith("/auth/login/") || path.startsWith("/mock-central/login/");
   const response = await fetch(`${HR_API_BASE_URL}${path}`, {
     ...options,
     headers: {
       "Content-Type": "application/json",
-      ...(token && !isLoginRequest ? { Authorization: `Token ${token}` } : {}),
+      ...(token && !isLoginRequest ? { Authorization: `${tokenScheme} ${token}` } : {}),
       ...(options.headers || {})
     }
   });
@@ -18,6 +19,7 @@ async function apiRequest(path, options = {}) {
   if (!response.ok) {
     if (response.status === 401 && !path.startsWith("/auth/login/")) {
       localStorage.removeItem("hr_token");
+      localStorage.removeItem("hr_token_scheme");
       localStorage.removeItem("hr_user");
       const next = `${window.location.pathname}${window.location.search}`;
       window.location.href = `../login.html?next=${encodeURIComponent(next.replace(/^\//, ""))}`;
@@ -40,12 +42,28 @@ async function login(username, password) {
   // A stale token must never be sent with a new login request. DRF rejects the
   // request during authentication before it reaches the login view otherwise.
   localStorage.removeItem("hr_token");
+  localStorage.removeItem("hr_token_scheme");
   localStorage.removeItem("hr_user");
   const data = await apiRequest("/auth/login/", {
     method: "POST",
     body: JSON.stringify({ username, password })
   });
   localStorage.setItem("hr_token", data.token);
+  localStorage.setItem("hr_token_scheme", "Token");
+  localStorage.setItem("hr_user", JSON.stringify(data.user));
+  return data.user;
+}
+
+async function centralLogin(externalUserId) {
+  localStorage.removeItem("hr_token");
+  localStorage.removeItem("hr_token_scheme");
+  localStorage.removeItem("hr_user");
+  const data = await apiRequest("/mock-central/login/", {
+    method: "POST",
+    body: JSON.stringify({ external_user_id: externalUserId })
+  });
+  localStorage.setItem("hr_token", data.access_token);
+  localStorage.setItem("hr_token_scheme", data.token_type || "Bearer");
   localStorage.setItem("hr_user", JSON.stringify(data.user));
   return data.user;
 }
@@ -78,6 +96,7 @@ function downloadAttachment(name, data) {
 
 function logout() {
   localStorage.removeItem("hr_token");
+  localStorage.removeItem("hr_token_scheme");
   localStorage.removeItem("hr_user");
   window.location.href = "../login.html";
 }

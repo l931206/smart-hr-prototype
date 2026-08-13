@@ -205,7 +205,7 @@
     </div>
   </main>
 </body>
-  <script src="../assets/js/api.js?v=20260811-live47"></script>
+  <script src="../assets/js/api.js?v=20260813-sso1"></script>
   <script>
     (async () => { const id = new URLSearchParams(window.location.search).get("id"); if (!id) return; try { const user = await apiRequest(`/employees/${id}/`); document.querySelector("#createdEmployeeName").textContent = user.display_name || user.username; document.querySelector("#createdEmployeeNo").textContent = user.employee_no || "—"; document.querySelector("#createdEmployeeUsername").textContent = user.username; document.querySelector("#createdEmployeeRole").textContent = user.role_label; } catch (error) {} })();
   </script>

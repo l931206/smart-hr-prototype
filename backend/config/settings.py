@@ -108,6 +108,8 @@ CENTRAL_TOKEN_VERIFY_URL = os.getenv("CENTRAL_TOKEN_VERIFY_URL", "")
 CENTRAL_TOKEN_FIELD = os.getenv("CENTRAL_TOKEN_FIELD", "token")
 CENTRAL_API_KEY = os.getenv("CENTRAL_API_KEY", "")
 CENTRAL_SYSTEM_CODE = os.getenv("CENTRAL_SYSTEM_CODE", "smart-hr")
+ENABLE_MOCK_CENTRAL = os.getenv("ENABLE_MOCK_CENTRAL", "0") == "1"
+MOCK_CENTRAL_TOKEN_MAX_AGE = int(os.getenv("MOCK_CENTRAL_TOKEN_MAX_AGE", "900"))
 
 authentication_classes = ["rest_framework.authentication.SessionAuthentication"]
 if AUTH_MODE in {"local", "hybrid"}:

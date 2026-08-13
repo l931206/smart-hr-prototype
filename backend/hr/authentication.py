@@ -3,11 +3,13 @@ from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
 from django.conf import settings
+from django.core import signing
 from django.utils import timezone
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
 from rest_framework.exceptions import APIException, AuthenticationFailed
 
 from .models import User
+from .mock_central import TOKEN_PREFIX, verify_mock_token
 
 
 class CentralAuthUnavailable(APIException):
@@ -32,28 +34,33 @@ class CentralTokenAuthentication(BaseAuthentication):
             return None
         if len(parts) != 2:
             raise AuthenticationFailed("Bearer Token 格式錯誤。")
-        if not settings.CENTRAL_TOKEN_VERIFY_URL:
-            raise CentralAuthUnavailable("尚未設定 CENTRAL_TOKEN_VERIFY_URL。")
-
         try:
             token = parts[1].decode("utf-8")
         except UnicodeError as error:
             raise AuthenticationFailed("Token 編碼錯誤。") from error
 
-        payload = json.dumps({settings.CENTRAL_TOKEN_FIELD: token}).encode("utf-8")
-        headers = {"Content-Type": "application/json", "Accept": "application/json"}
-        if settings.CENTRAL_API_KEY:
-            headers["X-API-Key"] = settings.CENTRAL_API_KEY
-        central_request = Request(settings.CENTRAL_TOKEN_VERIFY_URL, data=payload, headers=headers, method="POST")
-        try:
-            with urlopen(central_request, timeout=5) as response:
-                identity = json.loads(response.read().decode("utf-8"))
-        except HTTPError as error:
-            if error.code in {400, 401, 403}:
-                raise AuthenticationFailed("中控 Token 無效或已過期。") from error
-            raise CentralAuthUnavailable() from error
-        except (URLError, TimeoutError, ValueError) as error:
-            raise CentralAuthUnavailable() from error
+        if settings.ENABLE_MOCK_CENTRAL and token.startswith(TOKEN_PREFIX):
+            try:
+                identity = verify_mock_token(token)
+            except (signing.BadSignature, signing.SignatureExpired) as error:
+                raise AuthenticationFailed("模擬中控 Token 無效或已過期。") from error
+        else:
+            if not settings.CENTRAL_TOKEN_VERIFY_URL:
+                raise CentralAuthUnavailable("尚未設定 CENTRAL_TOKEN_VERIFY_URL。")
+            payload = json.dumps({settings.CENTRAL_TOKEN_FIELD: token}).encode("utf-8")
+            headers = {"Content-Type": "application/json", "Accept": "application/json"}
+            if settings.CENTRAL_API_KEY:
+                headers["X-API-Key"] = settings.CENTRAL_API_KEY
+            central_request = Request(settings.CENTRAL_TOKEN_VERIFY_URL, data=payload, headers=headers, method="POST")
+            try:
+                with urlopen(central_request, timeout=5) as response:
+                    identity = json.loads(response.read().decode("utf-8"))
+            except HTTPError as error:
+                if error.code in {400, 401, 403}:
+                    raise AuthenticationFailed("中控 Token 無效或已過期。") from error
+                raise CentralAuthUnavailable() from error
+            except (URLError, TimeoutError, ValueError) as error:
+                raise CentralAuthUnavailable() from error
 
         if not identity.get("active"):
             raise AuthenticationFailed("中控 Token 無效或已過期。")

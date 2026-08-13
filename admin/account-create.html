@@ -197,6 +197,11 @@ width:100%;
 
 </div>
 
+<div class="form-group">
+<label for="externalUserId">中控使用者 ID（選填）</label>
+<input id="externalUserId" type="text" maxlength="100" placeholder="例如：central-employee-001">
+</div>
+
 <div class="notice">
 建立完成後，系統會寄送啟用通知給使用者，第一次登入時需重新設定密碼。
 </div>
@@ -217,7 +222,7 @@ width:100%;
 
 </main>
 
-<script src="../assets/js/api.js?v=20260811-live47"></script>
+<script src="../assets/js/api.js?v=20260813-sso1"></script>
 <script>
   document.querySelector("#accountCreateForm").addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -230,6 +235,7 @@ width:100%;
         username: document.querySelector("#username").value.trim(),
         email: document.querySelector("#email").value.trim(),
         role: document.querySelector("#role").value,
+        external_user_id: document.querySelector("#externalUserId").value.trim() || null,
         password: document.querySelector("#password").value,
         is_active: document.querySelector("#status").value === "active"
       }) });

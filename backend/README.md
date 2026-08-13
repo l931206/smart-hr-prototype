@@ -42,3 +42,11 @@ before starting Gunicorn.
 中控回應必須至少包含 `active: true`，以及 `external_user_id`、`user_id`
 或 `sub` 其中一個穩定識別碼。該識別碼須先綁定到 HR User 的
 `external_user_id`；系統不會自動建立員工資料。
+
+## 模擬中控展示流程
+
+展示環境可設定 `AUTH_MODE=hybrid`、`ENABLE_MOCK_CENTRAL=1`，再開啟前端
+`central-login.html`。系統只允許三個示範帳號取得模擬中控 Token，Token
+由 Django 簽章且預設 15 分鐘過期。此功能用來在正式中控尚未提供規格前
+驗證完整流程；正式上線時必須設定 `ENABLE_MOCK_CENTRAL=0`，並填入真正的
+`CENTRAL_TOKEN_VERIFY_URL`。

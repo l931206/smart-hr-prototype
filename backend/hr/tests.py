@@ -4,6 +4,7 @@ from rest_framework.test import APIRequestFactory, APITestCase
 from unittest.mock import MagicMock, patch
 
 from .authentication import CentralTokenAuthentication
+from .mock_central import issue_mock_token
 from .models import AuditLog, Announcement, Department, LeaveBalance, LeaveRequest, LeaveType, ProfileChangeRequest, User
 
 
@@ -270,3 +271,46 @@ class CoreApiTests(APITestCase):
             authenticated_user, auth_context = CentralTokenAuthentication().authenticate(request)
         self.assertEqual(authenticated_user, self.user)
         self.assertEqual(auth_context["source"], "central")
+
+    @override_settings(
+        AUTH_MODE="hybrid",
+        ENABLE_MOCK_CENTRAL=True,
+        MOCK_CENTRAL_TOKEN_MAX_AGE=900,
+        CENTRAL_TOKEN_VERIFY_URL="",
+    )
+    def test_mock_central_login_and_bearer_authentication_flow(self):
+        self.user.username = "employee01"
+        self.user.external_user_id = "central-employee-001"
+        self.user.save(update_fields=["username", "external_user_id"])
+        response = self.client.post(
+            "/api/mock-central/login/",
+            {"external_user_id": "central-employee-001"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["token_type"], "Bearer")
+        token = response.data["access_token"]
+        request = APIRequestFactory().get("/api/integration/me/", HTTP_AUTHORIZATION=f"Bearer {token}")
+        authenticated_user, auth_context = CentralTokenAuthentication().authenticate(request)
+        self.assertEqual(authenticated_user, self.user)
+        self.assertEqual(auth_context["identity"]["external_user_id"], "central-employee-001")
+
+    @override_settings(ENABLE_MOCK_CENTRAL=True)
+    def test_mock_central_login_rejects_non_demo_account(self):
+        self.user.external_user_id = "central-private-user"
+        self.user.save(update_fields=["external_user_id"])
+        response = self.client.post(
+            "/api/mock-central/login/",
+            {"external_user_id": "central-private-user"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 404)
+
+    @override_settings(ENABLE_MOCK_CENTRAL=False)
+    def test_mock_central_endpoints_can_be_disabled(self):
+        response = self.client.post(
+            "/api/mock-central/login/",
+            {"external_user_id": "central-employee-001"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 404)

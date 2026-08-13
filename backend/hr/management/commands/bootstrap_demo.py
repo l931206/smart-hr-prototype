@@ -50,6 +50,11 @@ class Command(BaseCommand):
             user.job_title = {User.Role.EMPLOYEE: "營運專員", User.Role.MANAGER: "部門主管", User.Role.ADMIN: "系統管理者"}[role]
             user.role = role
             user.employee_no = employee_no
+            user.external_user_id = {
+                User.Role.EMPLOYEE: "central-employee-001",
+                User.Role.MANAGER: "central-manager-001",
+                User.Role.ADMIN: "central-admin-001",
+            }[role]
             user.department = department
             user.is_active = True
             user.is_staff = role == User.Role.ADMIN

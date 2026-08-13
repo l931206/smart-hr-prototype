@@ -296,6 +296,11 @@
         </div>
 
         <div class="row">
+          <span>中控使用者 ID</span>
+          <strong id="accountExternalId">尚未綁定</strong>
+        </div>
+
+        <div class="row">
           <span>最後登入</span>
           <strong id="accountLastLogin">—</strong>
         </div>
@@ -355,7 +360,7 @@
       <a class="button danger" id="accountDisableLink" href="account-disable.html">停用帳號</a>
     </div>
   </main>
-  <script src="../assets/js/api.js?v=20260811-live47"></script>
+  <script src="../assets/js/api.js?v=20260813-sso1"></script>
   <script>
     (async () => {
       const id = new URLSearchParams(window.location.search).get("id");
@@ -373,6 +378,7 @@
         set("#accountEmail", user.email);
         set("#accountRole", user.role_label);
         set("#accountState", user.is_active ? "已啟用" : "已停用");
+        set("#accountExternalId", user.external_user_id || "尚未綁定");
         set("#accountLastLogin", user.last_login ? new Date(user.last_login).toLocaleString("zh-TW") : "尚未登入");
         set("#accountCreatedAt", user.date_joined ? new Date(user.date_joined).toLocaleString("zh-TW") : "—");
         document.querySelector("#accountStatus").classList.toggle("inactive", !user.is_active);
