@@ -236,7 +236,7 @@
       </div>
     </form>
   </main>
-  <script src="../assets/js/api.js?v=20260813-sso1"></script>
+  <script src="../assets/js/api.js?v=20260814-review1"></script>
   <script>
     (async () => {
       const managerSelect = document.querySelector("#manager");
@@ -251,7 +251,7 @@
         try {
           const department = await apiRequest("/departments/", { method: "POST", body: JSON.stringify({ code: document.querySelector("#departmentCode").value.trim().toUpperCase(), name: document.querySelector("#departmentName").value.trim(), is_active: document.querySelector("#status").value === "active" }) });
           const managerId = Number(managerSelect.value); if (managerId) await apiRequest(`/employees/${managerId}/`, { method: "PATCH", body: JSON.stringify({ department: department.id, role: "manager" }) });
-          window.location.href = `department-create-success.html?id=${department.id}`;
+          window.location.href = `department-detail.html?id=${department.id}&notice=${encodeURIComponent("部門已建立")}`;
         } catch (error) { alert(error.message || "建立部門失敗。"); button.disabled = false; }
       });
     })();

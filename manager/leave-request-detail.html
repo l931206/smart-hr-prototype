@@ -352,7 +352,7 @@
       <small>更多</small>
     </a>
   </nav>
-  <script src="../assets/js/api.js?v=20260813-sso1"></script>
+  <script src="../assets/js/api.js?v=20260814-review1"></script>
   <script>
     (async () => {
       const requestId = new URLSearchParams(window.location.search).get("id");
@@ -398,8 +398,8 @@
             alert(error.message || "更新申請狀態失敗，請稍後再試。");
           }
         };
-        document.querySelector("#approveRequest").addEventListener("click", (event) => updateStatus(event, "approved", "approval-success.html"));
-        document.querySelector("#rejectRequest").addEventListener("click", (event) => updateStatus(event, "rejected", "rejection-success.html"));
+        document.querySelector("#approveRequest").addEventListener("click", (event) => updateStatus(event, "approved", "leave-requests.html?notice=" + encodeURIComponent("請假申請已核准")));
+        document.querySelector("#rejectRequest").addEventListener("click", (event) => updateStatus(event, "rejected", "leave-requests.html?notice=" + encodeURIComponent("請假申請已退回")));
       } catch (error) {
         alert(error.message || "無法載入申請資料。");
       }

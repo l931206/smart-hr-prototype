@@ -255,6 +255,7 @@
         <option>等待審核</option>
         <option>已核准</option>
         <option>已退回</option>
+        <option>已撤回</option>
       </select>
 
       <select aria-label="選擇假別">
@@ -295,7 +296,7 @@
       <small>我的</small>
     </a>
   </nav>
-  <script src="../assets/js/api.js?v=20260813-sso1"></script>
+  <script src="../assets/js/api.js?v=20260814-review1"></script>
   <script>
     (async () => {
       const list = document.querySelector("#historyList");
@@ -316,27 +317,44 @@
           const year = filters[0]?.value || "";
           const statusText = filters[1]?.value || "全部狀態";
           const type = filters[2]?.value || "";
-          const statusMap = {"等待審核":"pending", "已核准":"approved", "已退回":"rejected"};
+          const statusMap = {"等待審核":"pending", "已核准":"approved", "已退回":"rejected", "已撤回":"withdrawn"};
           const filtered = requests.filter((request) => (!year || String(request.start_date).startsWith(year)) && (!statusMap[statusText] || request.status === statusMap[statusText]) && (!type || request.leave_type === type));
           list.innerHTML = filtered.length ? filtered.map((request) => `
           <article class="history-card">
             <div class="history-head">
               <div>
-                <h2>${request.leave_type}</h2>
-                <p class="application-no">申請編號：LEAVE-${String(request.id).padStart(6, "0")}</p>
+                <h2>${hrEscapeHtml(request.leave_type)}</h2>
+                <p class="application-no">申請編號：LEAVE-${hrEscapeHtml(String(request.id).padStart(6, "0"))}</p>
               </div>
-              <span class="status ${request.status}">${request.status_label}</span>
+              <span class="status ${hrEscapeHtml(request.status)}">${hrEscapeHtml(request.status_label)}</span>
             </div>
             <div class="history-details">
-              <div class="history-detail"><span>請假日期</span><strong>${request.start_date}－${request.end_date}</strong></div>
-              <div class="history-detail"><span>請假天數</span><strong>${request.days} 天</strong></div>
-              <div class="history-detail"><span>審核狀態</span><strong>${request.status_label}</strong></div>
+              <div class="history-detail"><span>請假日期</span><strong>${hrEscapeHtml(request.start_date)}－${hrEscapeHtml(request.end_date)}</strong></div>
+              <div class="history-detail"><span>請假天數</span><strong>${Number(request.days)} 天</strong></div>
+              <div class="history-detail"><span>審核狀態</span><strong>${hrEscapeHtml(request.status_label)}</strong></div>
             </div>
-            <div class="history-reason">請假原因：${request.reason}</div>
+            <div class="history-reason">請假原因：${hrEscapeHtml(request.reason)}</div>
+            ${request.status === "pending" ? `<button class="button secondary withdraw-leave" type="button" data-id="${Number(request.id)}">撤回申請</button>` : ""}
           </article>
         `).join("") : "<div class=\"card\"><p>目前沒有符合條件的請假紀錄。</p></div>";
         };
         filters.forEach((filter) => filter.addEventListener("change", render));
+        list.addEventListener("click", async (event) => {
+          const button = event.target.closest(".withdraw-leave");
+          if (!button || !confirm("確定要撤回這筆待審核申請嗎？")) return;
+          button.disabled = true;
+          try {
+            const updated = await apiRequest(`/leave-requests/${button.dataset.id}/withdraw/`, { method: "POST" });
+            const index = requests.findIndex((item) => item.id === updated.id);
+            if (index >= 0) requests[index] = updated;
+            document.querySelector("#historyPendingCount").textContent = String(requests.filter((item) => item.status === "pending").length);
+            render();
+            showHrToast("請假申請已撤回");
+          } catch (error) {
+            button.disabled = false;
+            showHrToast(error.message || "撤回失敗", "error");
+          }
+        });
         render();
       } catch (error) {
         list.innerHTML = `<div class="card"><p>${error.message || "無法載入請假紀錄。"}</p></div>`;

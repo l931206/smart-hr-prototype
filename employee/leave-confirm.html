@@ -248,7 +248,7 @@
       <small>我的</small>
     </a>
   </nav>
-  <script src="../assets/js/api.js?v=20260813-sso1"></script>
+  <script src="../assets/js/api.js?v=20260814-review1"></script>
   <script>
     (() => {
       const draft = JSON.parse(sessionStorage.getItem("hr_leave_draft") || "null");
@@ -295,7 +295,8 @@
         try {
           const requestItem = await apiRequest("/leave-requests/", { method: "POST", body: JSON.stringify(draft) });
           sessionStorage.removeItem("hr_leave_draft");
-          window.location.href = `leave-success.html?id=${requestItem.id}`;
+          sessionStorage.removeItem("hr_leave_draft");
+          window.location.href = `leave-history.html?notice=${encodeURIComponent("請假申請已送出")}`;
         } catch (error) {
           button.removeAttribute("aria-disabled");
           alert(error.message || "送出申請失敗，請稍後再試。");

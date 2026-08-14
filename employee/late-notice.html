@@ -262,7 +262,7 @@
       <small>我的</small>
     </a>
   </nav>
-  <script src="../assets/js/api.js?v=20260813-sso1"></script>
+  <script src="../assets/js/api.js?v=20260814-review1"></script>
   <script src="../assets/js/employee-data-state.js?v=20260811-live47"></script>
   <script>
     (async () => {
@@ -282,7 +282,7 @@
       try {
         const notice = await apiRequest("/late-notices/", { method: "POST", body: JSON.stringify({ date: form.date.value, expected_arrival: form.arrivalTime.value, reason_type: form.reasonType.value, reason: form.reason.value.trim() }) });
         sessionStorage.setItem("hr_last_late_notice", JSON.stringify(notice));
-        window.location.href = "late-success.html";
+        window.location.href = `index.html?notice=${encodeURIComponent("晚到通知已送出")}`;
       } catch (error) { alert(error.message || "晚到通知送出失敗，請稍後再試。"); button.disabled = false; }
     });
   </script>

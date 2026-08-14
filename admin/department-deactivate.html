@@ -253,7 +253,7 @@
       </div>
     </section>
   </main>
-  <script src="../assets/js/api.js?v=20260813-sso1"></script>
+  <script src="../assets/js/api.js?v=20260814-review1"></script>
   <script>
     (async () => {
       const id = new URLSearchParams(window.location.search).get("id");
@@ -266,7 +266,7 @@
         const manager = members.find((user) => user.role === "manager");
         set("#deactivateDepartmentName", department.name); set("#deactivateDepartmentCode", department.code); set("#deactivateDepartmentManager", manager?.display_name); set("#deactivateDepartmentCount", `${members.length} 人`); set("#deactivateDepartmentStatus", department.is_active ? "啟用中" : "已停用");
         document.querySelector("#cancelDepartmentDeactivate").href = `department-detail.html?id=${id}`;
-        document.querySelector("#confirmDepartmentDeactivate").addEventListener("click", async (event) => { event.preventDefault(); try { await apiRequest(`/departments/${id}/`, { method: "PATCH", body: JSON.stringify({ is_active: false }) }); window.location.href = `department-deactivate-success.html?id=${id}`; } catch (error) { alert(error.message || "停用部門失敗。"); } });
+        document.querySelector("#confirmDepartmentDeactivate").addEventListener("click", async (event) => { event.preventDefault(); try { await apiRequest(`/departments/${id}/`, { method: "PATCH", body: JSON.stringify({ is_active: false }) }); window.location.href = `departments.html?notice=${encodeURIComponent("部門已停用")}`; } catch (error) { showHrToast(error.message || "停用部門失敗。", "error"); } });
       } catch (error) { set("#deactivateDepartmentName", `無法載入部門：${error.message}`); }
     })();
   </script>

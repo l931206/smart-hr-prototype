@@ -250,7 +250,7 @@
       </div>
     </section>
   </main>
-  <script src="../assets/js/api.js?v=20260813-sso1"></script>
+  <script src="../assets/js/api.js?v=20260814-review1"></script>
   <script>
     (async () => {
       const id = new URLSearchParams(window.location.search).get("id");
@@ -263,7 +263,7 @@
         document.querySelector("#cancelDisable").href = `account-detail.html?id=${id}`;
         document.querySelector("#confirmDisable").addEventListener("click", async (event) => {
           event.preventDefault();
-          try { await apiRequest(`/accounts/${id}/`, { method: "PATCH", body: JSON.stringify({ is_active: false }) }); window.location.href = `account-disable-success.html?id=${id}`; }
+          try { await apiRequest(`/accounts/${id}/`, { method: "PATCH", body: JSON.stringify({ is_active: false }) }); window.location.href = `accounts.html?notice=${encodeURIComponent("帳號已停用")}`; }
           catch (error) { alert(error.message || "停用帳號失敗。"); }
         });
       } catch (error) { set("#disableName", `無法載入帳號：${error.message}`); }

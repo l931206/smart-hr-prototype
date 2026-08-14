@@ -282,7 +282,7 @@
       </div>
     </form>
   </main>
-  <script src="../assets/js/api.js?v=20260813-sso1"></script>
+  <script src="../assets/js/api.js?v=20260814-review1"></script>
   <script>
     document.querySelector(".form-card").addEventListener("submit", async (event) => {
       event.preventDefault();
@@ -302,7 +302,7 @@
             ...attachment
           })
         });
-        window.location.href = `announcement-create-success.html?id=${item.id}`;
+        window.location.href = `announcement-detail.html?id=${item.id}&notice=${encodeURIComponent("公告已發布")}`;
       } catch (error) {
         button.disabled = false;
         alert(error.message || "公告發布失敗");
@@ -316,7 +316,7 @@
       try {
         const attachment = await encodeAttachment(form.querySelector("#attachment").files[0]);
         const item = await apiRequest("/announcements/", {method:"POST", body:JSON.stringify({title:form.querySelector("#title").value.trim(), category:categoryMap[form.querySelector("#type").value] || "company", content:form.querySelector("#content").value.trim(), is_published:false, ...attachment})});
-        window.location.href = `announcement-draft-success.html?id=${item.id}`;
+        window.location.href = `announcement-detail.html?id=${item.id}&notice=${encodeURIComponent("公告草稿已儲存")}`;
       } catch (error) { button.disabled = false; alert(error.message || "儲存草稿失敗"); }
     });
   </script>

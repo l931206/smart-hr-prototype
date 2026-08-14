@@ -3,6 +3,88 @@ const HR_API_BASE_URL = window.HR_API_BASE_URL
     ? "http://127.0.0.1:8000/api"
     : "https://smart-hr-api-8rxh.onrender.com/api");
 
+// Every functional page loads this file. Attach the three shared stylesheets
+// here so older pages no longer depend on duplicated inline styles.
+(function ensureSharedAssets() {
+  const scriptUrl = document.currentScript?.src || new URL("assets/js/api.js", window.location.href).href;
+  ["base.css", "components.css", "mobile.css"].forEach((file) => {
+    if (document.querySelector(`link[data-shared-hr-style="${file}"]`)) return;
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = new URL(`../css/${file}`, scriptUrl).href;
+    link.dataset.sharedHrStyle = file;
+    document.head.appendChild(link);
+  });
+})();
+
+window.hrEscapeHtml = (value) => String(value ?? "").replace(/[&<>'"]/g, (char) => ({
+  "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;"
+})[char]);
+
+window.showHrToast = (message, type = "success") => {
+  document.querySelector(".hr-toast")?.remove();
+  const toast = document.createElement("div");
+  toast.className = `hr-toast ${type}`;
+  toast.setAttribute("role", "status");
+  toast.textContent = message;
+  document.body.appendChild(toast);
+  requestAnimationFrame(() => toast.classList.add("visible"));
+  setTimeout(() => {
+    toast.classList.remove("visible");
+    setTimeout(() => toast.remove(), 200);
+  }, 3600);
+};
+
+function installAdminSidebar() {
+  if (!/\/admin\//.test(window.location.pathname) || document.querySelector(".admin-sidebar")) return;
+  const links = [
+    ["index.html", "工作台"], ["employees.html", "員工管理"],
+    ["departments.html", "部門管理"], ["accounts.html", "帳號與權限"],
+    ["leave-settings.html", "假別設定"], ["profile-requests.html", "資料修改申請"],
+    ["system-log.html", "系統紀錄"]
+  ];
+  const current = window.location.pathname.split("/").pop() || "index.html";
+  const group = current.startsWith("employee-") ? "employees.html"
+    : current.startsWith("department-") ? "departments.html"
+    : current.startsWith("account-") ? "accounts.html"
+    : current.startsWith("leave-type-") ? "leave-settings.html"
+    : current.startsWith("profile-request-") ? "profile-requests.html" : current;
+  const aside = document.createElement("aside");
+  aside.className = "admin-sidebar";
+  aside.setAttribute("aria-label", "系統管理導覽");
+  aside.innerHTML = `<a class="admin-sidebar-brand" href="index.html"><span>HR</span><strong>系統管理</strong></a><nav>${links.map(([href, label]) => `<a href="${href}" ${href === group ? 'aria-current="page"' : ""}>${label}</a>`).join("")}</nav><button type="button" class="admin-sidebar-logout">登出</button>`;
+  aside.querySelector("button").addEventListener("click", logout);
+  document.body.prepend(aside);
+  document.body.classList.add("has-admin-sidebar");
+}
+
+function normalizeLegacyIcons() {
+  const replacements = new Map([
+    ["📢", "公"], ["🔔", "知"], ["⏰", "時"], ["👥", "團"], ["👤", "人"],
+    ["📅", "日"], ["📝", "申"], ["📋", "表"], ["⚙️", "設"], ["✅", "✓"],
+    ["💼", "職"], ["🏢", "部"], ["🔑", "權"], ["📊", "統"], ["📁", "檔"]
+  ]);
+  document.querySelectorAll(".function-icon, .role-icon, .notification-icon, .announcement-icon, .action-icon, .icon").forEach((node) => {
+    const value = node.textContent.trim();
+    if (replacements.has(value)) node.textContent = replacements.get(value);
+  });
+}
+
+function prioritizeDashboardTasks(section) {
+  const grid = document.querySelector(".function-grid, .manager-actions");
+  if (!grid) return;
+  const priorities = section === "employee"
+    ? ["leave-apply.html", "leave-history.html", "notifications.html"]
+    : ["leave-requests.html", "late-notices.html", "team.html"];
+  const cards = [...grid.children];
+  cards.sort((left, right) => {
+    const leftHref = left.matches("a") ? left.getAttribute("href") : left.querySelector("a")?.getAttribute("href");
+    const rightHref = right.matches("a") ? right.getAttribute("href") : right.querySelector("a")?.getAttribute("href");
+    const rank = (href) => { const index = priorities.findIndex((item) => href?.includes(item)); return index < 0 ? 99 : index; };
+    return rank(leftHref) - rank(rightHref);
+  }).forEach((card) => grid.appendChild(card));
+}
+
 async function apiRequest(path, options = {}) {
   const token = localStorage.getItem("hr_token");
   const tokenScheme = localStorage.getItem("hr_token_scheme") || "Token";
@@ -103,6 +185,16 @@ function logout() {
 
 document.addEventListener("DOMContentLoaded", async () => {
   const section = window.location.pathname.match(/\/(employee|manager|admin)\//)?.[1];
+  installAdminSidebar();
+  normalizeLegacyIcons();
+  prioritizeDashboardTasks(section);
+  const notice = new URLSearchParams(window.location.search).get("notice");
+  if (notice) {
+    showHrToast(notice);
+    const url = new URL(window.location.href);
+    url.searchParams.delete("notice");
+    history.replaceState({}, "", url);
+  }
   if (!section || !localStorage.getItem("hr_token")) return;
   try {
     const user = await getCurrentUser();

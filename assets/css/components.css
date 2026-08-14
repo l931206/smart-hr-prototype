@@ -559,6 +559,94 @@ label {
 
 /* ---------- Responsive desktop/tablet ---------- */
 
+/* ---------- Admin desktop navigation ---------- */
+
+.hr-toast {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  z-index: 2000;
+  max-width: min(420px, calc(100vw - 36px));
+  padding: 13px 16px;
+  color: #fff;
+  background: #183b63;
+  border: 1px solid #31597e;
+  border-radius: 6px;
+  box-shadow: var(--shadow-large);
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: opacity .2s ease, transform .2s ease;
+}
+.hr-toast.visible { opacity: 1; transform: translateY(0); }
+.hr-toast.error { background: #8f2d2d; border-color: #a94646; }
+
+.admin-sidebar {
+  position: fixed;
+  inset: 0 auto 0 0;
+  z-index: 1000;
+  width: 232px;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 14px;
+  color: #dbe8f5;
+  background: #102a46;
+  border-right: 1px solid #284764;
+}
+
+.admin-sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 8px 22px;
+  color: #fff;
+}
+
+.admin-sidebar-brand span {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  background: #2d5f8b;
+}
+
+.admin-sidebar nav { display: grid; gap: 4px; }
+.admin-sidebar nav a,
+.admin-sidebar-logout {
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  color: #c8d8e8;
+  border: 1px solid transparent;
+  border-radius: 6px !important;
+  background: transparent;
+  text-align: left;
+}
+.admin-sidebar nav a:hover,
+.admin-sidebar nav a[aria-current="page"] {
+  color: #fff;
+  border-color: #3f6485;
+  background: #234b70;
+}
+.admin-sidebar-logout { width: 100%; margin-top: auto; }
+.has-admin-sidebar > .page,
+.has-admin-sidebar > .app,
+.has-admin-sidebar > main { margin-left: max(248px, calc((100vw - var(--page-width)) / 2 + 116px)); }
+
+/* Inline styles in older pages used saturated gradients and oversized shadows. */
+.manager-hero, .admin-hero, .welcome-card, [class*="hero-card"] {
+  background: #183b63 !important;
+  box-shadow: var(--shadow-medium) !important;
+  border-radius: 8px !important;
+}
+
+.function-card:hover, .action-card:hover, [class*="-card"]:hover {
+  transform: none !important;
+  border-color: #9eb3c8 !important;
+  box-shadow: var(--shadow-medium) !important;
+}
+
 @media (max-width: 900px) {
   .hero,
   .lower-grid,

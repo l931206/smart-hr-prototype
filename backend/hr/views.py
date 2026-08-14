@@ -1,4 +1,5 @@
 from django.contrib.auth import logout
+from django.db.models import Q
 from django.utils import timezone
 from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
 from rest_framework import status, viewsets
@@ -7,6 +8,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.exceptions import MethodNotAllowed, PermissionDenied, ValidationError
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.decorators import action
 from rest_framework.views import APIView
 
 from .models import AuditLog, Announcement, Department, LateNotice, LeaveBalance, LeaveRequest, LeaveType, Notification, ProfileChangeRequest, User
@@ -185,7 +187,7 @@ class AnnouncementViewSet(viewsets.ModelViewSet):
         if self.request.user.role == User.Role.EMPLOYEE:
             return queryset.filter(is_published=True)
         if self.request.user.role == User.Role.MANAGER:
-            return queryset.filter(created_by=self.request.user)
+            return queryset.filter(Q(is_published=True) | Q(created_by=self.request.user)).distinct()
         return queryset
 
     def perform_create(self, serializer):
@@ -199,7 +201,7 @@ class AnnouncementViewSet(viewsets.ModelViewSet):
         if announcement.is_published:
             Notification.objects.bulk_create([
                 Notification(recipient=employee, title="最新公告", content=announcement.title, category="announcement")
-                for employee in User.objects.filter(role=User.Role.EMPLOYEE, is_active=True)
+                for employee in User.objects.filter(role__in=[User.Role.EMPLOYEE, User.Role.MANAGER], is_active=True).exclude(pk=self.request.user.pk)
             ])
 
     def perform_update(self, serializer):
@@ -214,7 +216,7 @@ class AnnouncementViewSet(viewsets.ModelViewSet):
         if announcement.is_published and not was_published:
             Notification.objects.bulk_create([
                 Notification(recipient=employee, title="公告已發布", content=announcement.title, category="announcement")
-                for employee in User.objects.filter(role=User.Role.EMPLOYEE, is_active=True)
+                for employee in User.objects.filter(role__in=[User.Role.EMPLOYEE, User.Role.MANAGER], is_active=True).exclude(pk=self.request.user.pk)
             ])
 
     def destroy(self, request, *args, **kwargs):
@@ -256,7 +258,13 @@ class LeaveRequestViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         if self.request.user.role != User.Role.EMPLOYEE:
             raise PermissionDenied("只有員工可以提出請假申請。")
-        leave_request = serializer.save(employee=self.request.user, status=LeaveRequest.Status.PENDING)
+        leave_type = serializer.validated_data["leave_type"]
+        initial_status = LeaveRequest.Status.PENDING if leave_type.requires_manager_approval else LeaveRequest.Status.APPROVED
+        leave_request = serializer.save(
+            employee=self.request.user,
+            status=initial_status,
+            reviewed_at=None if initial_status == LeaveRequest.Status.PENDING else timezone.now(),
+        )
         record_audit(self.request, "提出請假", leave_request)
         department = self.request.user.department
         manager = self.request.user.manager or (department.employees.filter(role=User.Role.MANAGER).first() if department else None)
@@ -264,7 +272,7 @@ class LeaveRequestViewSet(viewsets.ModelViewSet):
             Notification.objects.create(
                 recipient=manager,
                 title="收到新的請假申請",
-                content=f"{self.request.user.display_name or self.request.user.username} 提出{leave_request.leave_type}申請。",
+                content=f"{self.request.user.display_name or self.request.user.username} 提出{leave_request.leave_type.name}申請。",
                 category="leave",
             )
 
@@ -273,7 +281,7 @@ class LeaveRequestViewSet(viewsets.ModelViewSet):
             raise PermissionDenied("員工不可修改請假審核狀態。")
         status_value = serializer.validated_data.get("status")
         if status_value == LeaveRequest.Status.APPROVED and serializer.instance.status != LeaveRequest.Status.APPROVED:
-            leave_type = LeaveType.objects.filter(name=serializer.instance.leave_type, is_active=True).first()
+            leave_type = serializer.instance.leave_type
             if leave_type and leave_type.deduct_quota:
                 balance, _ = LeaveBalance.objects.get_or_create(
                     employee=serializer.instance.employee,
@@ -288,7 +296,7 @@ class LeaveRequestViewSet(viewsets.ModelViewSet):
             Notification.objects.create(
                 recipient=leave_request.employee,
                 title="請假申請審核結果",
-                content=f"您的{leave_request.leave_type}申請{leave_request.get_status_display()}。",
+                content=f"您的{leave_request.leave_type.name}申請{leave_request.get_status_display()}。",
                 category="leave",
             )
             record_audit(self.request, "核准請假" if status_value == LeaveRequest.Status.APPROVED else "退回請假", leave_request)
@@ -299,6 +307,18 @@ class LeaveRequestViewSet(viewsets.ModelViewSet):
         if not is_admin(request.user):
             raise PermissionDenied("只有系統管理者可以刪除請假紀錄。")
         return super().destroy(request, *args, **kwargs)
+
+    @action(detail=True, methods=["post"])
+    def withdraw(self, request, pk=None):
+        leave_request = self.get_object()
+        if request.user.role != User.Role.EMPLOYEE or leave_request.employee_id != request.user.id:
+            raise PermissionDenied("只能撤回自己的請假申請。")
+        if leave_request.status != LeaveRequest.Status.PENDING:
+            raise ValidationError({"status": "只有待審核的請假申請可以撤回。"})
+        leave_request.status = LeaveRequest.Status.WITHDRAWN
+        leave_request.save(update_fields=["status"])
+        record_audit(request, "撤回請假", leave_request)
+        return Response(self.get_serializer(leave_request).data)
 
 
 class LateNoticeViewSet(viewsets.ModelViewSet):
@@ -356,7 +376,13 @@ class LeaveTypeViewSet(AdminWriteMixin, viewsets.ModelViewSet):
                     employee=employee,
                     leave_type=leave_type,
                     year=timezone.localdate().year,
-                    defaults={"allocated_days": leave_type.default_days},
+                    defaults={
+                        "allocated_days": leave_type.default_days,
+                        "carried_days": max(
+                            LeaveBalance.objects.filter(employee=employee, leave_type=leave_type, year=year - 1).first().remaining_days,
+                            0,
+                        ) if leave_type.allow_carry_over and LeaveBalance.objects.filter(employee=employee, leave_type=leave_type, year=year - 1).exists() else 0,
+                    },
                 )
         record_audit(self.request, "新增", leave_type)
 

@@ -4,9 +4,9 @@
    ========================================= */
 
 :root {
-  --color-primary: #0f766e;
-  --color-primary-dark: #115e59;
-  --color-admin: #4338ca;
+  --color-primary: #183b63;
+  --color-primary-dark: #102a46;
+  --color-admin: #183b63;
 
   --color-text: #18212f;
   --color-text-soft: #475569;
@@ -25,14 +25,14 @@
   --color-danger: #b91c1c;
   --color-danger-bg: #fee2e2;
 
-  --radius-small: 10px;
-  --radius-medium: 14px;
-  --radius-large: 20px;
-  --radius-xlarge: 28px;
+  --radius-small: 4px;
+  --radius-medium: 6px;
+  --radius-large: 8px;
+  --radius-xlarge: 8px;
 
-  --shadow-small: 0 8px 20px rgba(15, 23, 42, 0.05);
-  --shadow-medium: 0 12px 32px rgba(15, 23, 42, 0.07);
-  --shadow-large: 0 20px 52px rgba(15, 23, 42, 0.1);
+  --shadow-small: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-medium: 0 2px 8px rgba(15, 23, 42, 0.06);
+  --shadow-large: 0 4px 14px rgba(15, 23, 42, 0.08);
 
   --page-width: 1180px;
 }
@@ -214,3 +214,22 @@ table {
     display: initial;
   }
 }
+
+h1 { font-size: clamp(26px, 3vw, 34px) !important; font-weight: 600 !important; }
+h2, h3, h4 { font-weight: 600; }
+body, p, input, select, textarea { font-weight: 400; }
+strong, label, .button, button { font-weight: 500 !important; }
+
+/* Enterprise normalization for legacy pages that still contain inline CSS. */
+.card, .panel, .summary-card, .stat-card, .function-card, .form-card,
+[class*="-card"], [class*="-panel"] {
+  border-radius: 8px !important;
+  box-shadow: var(--shadow-medium) !important;
+}
+
+.button, .add-button, button, input, select, textarea, .status, .tag, .role-tag {
+  border-radius: 6px !important;
+}
+
+a, button { transition: color .15s ease, background-color .15s ease, border-color .15s ease !important; }
+a:hover, button:hover { transform: none !important; }

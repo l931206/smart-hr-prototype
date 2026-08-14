@@ -1,4 +1,7 @@
 (function () {
+  const escapeHtml = (value) => String(value ?? "").replace(/[&<>'"]/g, (char) => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;"
+  })[char]);
   const setValue = (selector, index, value) => {
     const nodes = document.querySelectorAll(selector);
     if (nodes[index]) nodes[index].textContent = value;
@@ -59,9 +62,9 @@
       if (heading) taskList.appendChild(heading);
       const content = pending.length ? pending.slice(0, 3).map((request) => `
         <a class="manager-task" href="leave-request-detail.html?id=${request.id}">
-          <div><h3>${request.employee_name || "未提供姓名"}－${request.leave_type}</h3>
-          <p>${request.start_date} 至 ${request.end_date}，共 ${request.days} 天</p></div>
-          <span class="manager-task-status">${request.status_label || "待審核"}</span>
+          <div><h3>${escapeHtml(request.employee_name || "未提供姓名")}－${escapeHtml(request.leave_type)}</h3>
+          <p>${escapeHtml(request.start_date)} 至 ${escapeHtml(request.end_date)}，共 ${escapeHtml(request.days)} 天</p></div>
+          <span class="manager-task-status">${escapeHtml(request.status_label || "待審核")}</span>
         </a>
       `).join("") : "<p>目前沒有待審核申請。</p>";
       taskList.insertAdjacentHTML("beforeend", content);
@@ -71,8 +74,8 @@
     if (teamList) {
       teamList.innerHTML = employees.map((employee) => `
         <a class="manager-employee" href="team-member-detail.html?id=${employee.id}">
-          <div class="manager-employee-avatar">${(employee.display_name || employee.username || "員").slice(0, 1)}</div>
-          <div><h3>${employee.display_name || employee.username}</h3><p>${employee.department_name || "—"}</p></div>
+          <div class="manager-employee-avatar">${escapeHtml((employee.display_name || employee.username || "員").slice(0, 1))}</div>
+          <div><h3>${escapeHtml(employee.display_name || employee.username)}</h3><p>${escapeHtml(employee.department_name || "—")}</p></div>
         </a>
       `).join("") || "<p>目前沒有直屬員工資料。</p>";
     }
@@ -101,11 +104,11 @@
     if (panels[0]) {
       panels[0].innerHTML = `<h2>等待處理</h2>${pending.length ? pending.slice(0, 5).map((request) => `
         <a class="task" href="profile-request-detail.html?id=${request.id}">
-          <div><h3>${request.employee_name || "未提供姓名"}－個人資料修改申請</h3>
-          <p>申請編號：PROFILE-${request.id}</p></div><span class="task-status">等待審核</span>
+          <div><h3>${escapeHtml(request.employee_name || "未提供姓名")}－個人資料修改申請</h3>
+          <p>申請編號：PROFILE-${escapeHtml(request.id)}</p></div><span class="task-status">等待審核</span>
         </a>`).join("") : "<p>目前沒有待處理的資料修改申請。</p>"}`;
     }
-    if (panels[1]) panels[1].innerHTML = `<h2>近期系統活動</h2>${audits.length ? audits.slice(0, 5).map((item) => `<div class="activity"><h3>${item.action} ${item.target_type}</h3><p>${item.actor_name}｜${item.target_label || "—"}｜${new Date(item.created_at).toLocaleString("zh-TW")}</p></div>`).join("") : "<p>目前尚無可顯示的操作紀錄。</p>"}`;
+    if (panels[1]) panels[1].innerHTML = `<h2>近期系統活動</h2>${audits.length ? audits.slice(0, 5).map((item) => `<div class="activity"><h3>${escapeHtml(item.action)} ${escapeHtml(item.target_type)}</h3><p>${escapeHtml(item.actor_name)}｜${escapeHtml(item.target_label || "—")}｜${escapeHtml(new Date(item.created_at).toLocaleString("zh-TW"))}</p></div>`).join("") : "<p>目前尚無可顯示的操作紀錄。</p>"}`;
   }
 
   document.addEventListener("DOMContentLoaded", async () => {

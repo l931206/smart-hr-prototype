@@ -242,7 +242,7 @@ href="employees.html">
 
 </main>
 
-<script src="../assets/js/api.js?v=20260813-sso1"></script>
+<script src="../assets/js/api.js?v=20260814-review1"></script>
 <script>
   (async () => {
     const id = new URLSearchParams(window.location.search).get("id");
@@ -260,7 +260,7 @@ href="employees.html">
         if (!terminationDate.value) { alert("請選擇離職日期。"); terminationDate.focus(); return; }
         try {
           await apiRequest(`/employees/${id}/`, { method: "PATCH", body: JSON.stringify({ is_active: false, termination_date: terminationDate.value, termination_reason: document.querySelector("#terminationReason").value.trim() }) });
-          window.location.href = `employee-deactivate-success.html?id=${id}`;
+          window.location.href = `employees.html?notice=${encodeURIComponent("員工已設定為離職")}`;
         } catch (error) { alert(error.message || "設定離職失敗。"); }
       });
     } catch (error) { set("#deactivateEmployeeName", `無法載入員工：${error.message}`); }

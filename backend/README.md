@@ -23,6 +23,11 @@ Create a new Blueprint in Render, connect this repository, and select the `backe
 directory as the Blueprint root. Render will run migrations and collect static files
 before starting Gunicorn.
 
+Before deployment, configure the three `DEMO_*_PASSWORD` values in Render's
+Environment page. They are declared with `sync: false` in `render.yaml` so secrets
+are never committed to Git. Production data is stored in the PostgreSQL service
+referenced by `DATABASE_URL`.
+
 - `POST /api/auth/login/`
 - `POST /api/auth/logout/`
 - `GET /api/auth/me/`

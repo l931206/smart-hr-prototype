@@ -244,7 +244,7 @@
       <small>我的</small>
     </a>
   </nav>
-  <script src="../assets/js/api.js?v=20260813-sso1"></script>
+  <script src="../assets/js/api.js?v=20260814-review1"></script>
   <script>
     (async () => {
       const form = document.querySelector(".edit-form");
@@ -290,7 +290,7 @@
             method: "POST",
             body: JSON.stringify({ requested_data: payload })
           });
-          window.location.href = `profile-success.html?id=${requestItem.id}`;
+          window.location.href = `profile.html?notice=${encodeURIComponent("資料修改申請已送出")}`;
         } catch (error) {
           button.disabled = false;
           alert(error.message || "資料更新失敗");

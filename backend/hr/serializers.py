@@ -108,12 +108,13 @@ class LoginSerializer(serializers.Serializer):
 
 
 class LeaveRequestSerializer(serializers.ModelSerializer):
+    leave_type = serializers.SlugRelatedField(slug_field="name", queryset=LeaveType.objects.filter(is_active=True))
     employee_name = serializers.CharField(source="employee.display_name", read_only=True)
     employee_no = serializers.CharField(source="employee.employee_no", read_only=True)
     employee_department = serializers.CharField(source="employee.department.name", read_only=True)
     employee_job_title = serializers.CharField(source="employee.job_title", read_only=True)
     status_label = serializers.CharField(source="get_status_display", read_only=True)
-    days = serializers.IntegerField(read_only=True)
+    days = serializers.DecimalField(max_digits=7, decimal_places=3, read_only=True)
 
     class Meta:
         model = LeaveRequest
@@ -134,11 +135,34 @@ class LeaveRequestSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("結束日期不能早於開始日期。")
         attachment_data = attrs.get("attachment_data", getattr(self.instance, "attachment_data", ""))
         attachment_name = attrs.get("attachment_name", getattr(self.instance, "attachment_name", ""))
-        leave_type_name = attrs.get("leave_type", getattr(self.instance, "leave_type", ""))
-        leave_type = LeaveType.objects.filter(name=leave_type_name, is_active=True).first()
+        leave_type = attrs.get("leave_type", getattr(self.instance, "leave_type", None))
+        if not leave_type:
+            raise serializers.ValidationError({"leave_type": "請選擇有效且啟用中的假別。"})
         if leave_type and leave_type.attachment_required and not attachment_data:
             raise serializers.ValidationError({"attachment_data": "此假別要求上傳附件。"})
+        start_time = attrs.get("start_time", getattr(self.instance, "start_time", ""))
+        end_time = attrs.get("end_time", getattr(self.instance, "end_time", ""))
+        uses_clock_time = ":" in start_time or ":" in end_time
+        if uses_clock_time and not leave_type.allow_hourly:
+            raise serializers.ValidationError({"start_time": "此假別不允許以小時計算。"})
         validate_attachment_payload(attachment_name, attachment_data)
+        candidate = LeaveRequest(
+            employee=getattr(self.instance, "employee", self.context["request"].user),
+            leave_type=leave_type,
+            start_date=start_date,
+            end_date=end_date,
+            start_time=start_time,
+            end_time=end_time,
+            reason=attrs.get("reason", getattr(self.instance, "reason", "")),
+        )
+        duration = candidate.days
+        if duration <= 0:
+            raise serializers.ValidationError({"start_date": "請假期間必須包含至少一個工作日或有效時數。"})
+        minimum = str(leave_type.minimum_unit)
+        if "1" in minimum and "天" in minimum and duration % 1:
+            raise serializers.ValidationError({"start_time": "此假別最小申請單位為 1 天。"})
+        if "半天" in minimum and (duration * 2) % 1:
+            raise serializers.ValidationError({"start_time": "此假別最小申請單位為半天。"})
         return attrs
 
 

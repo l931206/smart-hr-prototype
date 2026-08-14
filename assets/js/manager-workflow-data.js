@@ -50,7 +50,7 @@
     const values = document.querySelectorAll(".info-box .row strong, .info .row strong");
     [item.title, `ANN-${item.id}`, item.category_label, item.is_published ? "已發布" : "草稿"].forEach((value,index) => { if(values[index]) values[index].textContent=value; });
     document.querySelectorAll('a[href="announcement-detail.html"]').forEach((link) => { link.href=`announcement-detail.html?id=${item.id}`; });
-    document.querySelector(".button.danger")?.addEventListener("click", async (event) => { event.preventDefault(); await apiRequest(`/announcements/${item.id}/`, {method:"PATCH",body:JSON.stringify({is_published:false})}); location.href=`announcement-deactivate-success.html?id=${item.id}`; });
+    document.querySelector(".button.danger")?.addEventListener("click", async (event) => { event.preventDefault(); await apiRequest(`/announcements/${item.id}/`, {method:"PATCH",body:JSON.stringify({is_published:false})}); location.href=`announcements.html?notice=${encodeURIComponent("公告已停用")}`; });
   }
 
   async function announcementEdit() {
@@ -60,7 +60,7 @@
     if (!card) return;
     card.innerHTML = `<h1>編輯公告</h1><form id="announcementEditForm"><label>公告標題<input id="editAnnouncementTitle" value="${escapeHtml(item.title)}" required></label><label>公告內容<textarea id="editAnnouncementContent" required>${escapeHtml(item.content)}</textarea></label><label>目前附件<strong>${escapeHtml(item.attachment_name || "未上傳附件")}</strong><input id="editAnnouncementAttachment" type="file" accept=".pdf,.jpg,.jpeg,.png"></label><label>發布狀態<select id="editAnnouncementPublished"><option value="true" ${item.is_published ? "selected" : ""}>已發布</option><option value="false" ${!item.is_published ? "selected" : ""}>草稿</option></select></label><div class="actions"><button class="button primary" type="submit">儲存公告</button><a class="button secondary" href="announcement-detail.html?id=${item.id}">取消</a></div></form>`;
     card.querySelectorAll("input, textarea, select").forEach((field) => { field.style.cssText = "display:block;width:100%;margin:8px 0 18px;padding:12px;border:1px solid #d8e2ec;border-radius:10px;font:inherit"; });
-    card.querySelector("form").addEventListener("submit", async (event) => { event.preventDefault(); const file=card.querySelector("#editAnnouncementAttachment").files[0]; const attachment=file ? await encodeAttachment(file) : {}; await apiRequest(`/announcements/${item.id}/`, {method:"PATCH",body:JSON.stringify({title:card.querySelector("#editAnnouncementTitle").value.trim(),content:card.querySelector("#editAnnouncementContent").value.trim(),is_published:card.querySelector("#editAnnouncementPublished").value === "true",...attachment})}); location.href=`announcement-edit-success.html?id=${item.id}`; });
+    card.querySelector("form").addEventListener("submit", async (event) => { event.preventDefault(); const file=card.querySelector("#editAnnouncementAttachment").files[0]; const attachment=file ? await encodeAttachment(file) : {}; await apiRequest(`/announcements/${item.id}/`, {method:"PATCH",body:JSON.stringify({title:card.querySelector("#editAnnouncementTitle").value.trim(),content:card.querySelector("#editAnnouncementContent").value.trim(),is_published:card.querySelector("#editAnnouncementPublished").value === "true",...attachment})}); location.href=`announcement-detail.html?id=${item.id}&notice=${encodeURIComponent("公告已更新")}`; });
   }
 
   document.addEventListener("DOMContentLoaded", async () => {

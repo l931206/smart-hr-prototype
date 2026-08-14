@@ -19,6 +19,12 @@ class CoreApiTests(APITestCase):
             role=User.Role.EMPLOYEE,
             department=self.department,
         )
+        self.default_leave_type = LeaveType.objects.create(
+            code="VACATION",
+            name="特休",
+            default_days="10.0",
+            deduct_quota=True,
+        )
 
     def test_login_returns_token_and_user(self):
         response = self.client.post(
@@ -63,7 +69,7 @@ class CoreApiTests(APITestCase):
             format="json",
         )
         self.assertEqual(response.status_code, 201)
-        self.assertEqual(response.data["days"], 2)
+        self.assertEqual(response.data["days"], "2.000")
         self.assertEqual(LeaveRequest.objects.count(), 1)
 
     def test_manager_can_approve_department_leave_request(self):
@@ -77,7 +83,7 @@ class CoreApiTests(APITestCase):
         )
         request = LeaveRequest.objects.create(
             employee=self.user,
-            leave_type="特休假",
+            leave_type=self.default_leave_type,
             start_date="2026-08-10",
             end_date="2026-08-10",
             reason="家庭事務",
@@ -121,20 +127,21 @@ class CoreApiTests(APITestCase):
         self.assertTrue(leave_type.attachment_required)
         self.assertEqual(leave_type.attachment_rule, "需附公文")
 
-    def test_manager_only_sees_own_announcements(self):
+    def test_manager_sees_published_company_announcements_and_own_drafts(self):
         manager = User.objects.create_user(username="manager-a", password="password", role=User.Role.MANAGER, department=self.department)
         other = User.objects.create_user(username="manager-b", password="password", role=User.Role.MANAGER, department=self.department)
-        own = Announcement.objects.create(title="自己的公告", content="內容", created_by=manager)
-        Announcement.objects.create(title="其他主管公告", content="內容", created_by=other)
+        own = Announcement.objects.create(title="自己的草稿", content="內容", created_by=manager)
+        published = Announcement.objects.create(title="公司公告", content="內容", created_by=other, is_published=True)
+        Announcement.objects.create(title="其他主管草稿", content="內容", created_by=other)
         self.client.force_authenticate(user=manager)
         response = self.client.get("/api/announcements/")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual([item["id"] for item in response.data], [own.id])
+        self.assertEqual({item["id"] for item in response.data}, {own.id, published.id})
 
     def test_employee_cannot_approve_own_leave_request(self):
         leave_request = LeaveRequest.objects.create(
             employee=self.user,
-            leave_type="特休假",
+            leave_type=self.default_leave_type,
             start_date="2026-08-12",
             end_date="2026-08-12",
             reason="測試權限",
@@ -168,7 +175,7 @@ class CoreApiTests(APITestCase):
     def test_leave_balance_is_created_and_deducted_from_approved_requests(self):
         leave_type = LeaveType.objects.create(code="ANNUAL", name="特休假", default_days="10.0", deduct_quota=True)
         manager = User.objects.create_user(username="balance-manager", password="password", role=User.Role.MANAGER, department=self.department)
-        leave_request = LeaveRequest.objects.create(employee=self.user, leave_type="特休假", start_date="2026-08-12", end_date="2026-08-13", reason="休假")
+        leave_request = LeaveRequest.objects.create(employee=self.user, leave_type=leave_type, start_date="2026-08-12", end_date="2026-08-13", reason="休假")
         self.client.force_authenticate(user=self.user)
         balance_response = self.client.get("/api/leave-balances/?year=2026")
         self.assertEqual(balance_response.status_code, 200)
@@ -178,6 +185,34 @@ class CoreApiTests(APITestCase):
         self.assertEqual(approve.status_code, 200)
         balance = LeaveBalance.objects.get(employee=self.user, leave_type=leave_type, year=2026)
         self.assertEqual(balance.remaining_days, 8)
+
+    def test_leave_days_exclude_weekends_and_support_half_day(self):
+        request = LeaveRequest.objects.create(
+            employee=self.user,
+            leave_type=self.default_leave_type,
+            start_date="2026-08-14",
+            end_date="2026-08-17",
+            start_time="下午",
+            end_time="下午",
+            reason="跨週末休假",
+        )
+        self.assertEqual(request.days, 1.5)
+
+    def test_employee_can_withdraw_pending_leave(self):
+        request = LeaveRequest.objects.create(
+            employee=self.user,
+            leave_type=self.default_leave_type,
+            start_date="2026-08-17",
+            end_date="2026-08-17",
+            start_time="上午",
+            end_time="下午",
+            reason="測試撤回",
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(f"/api/leave-requests/{request.id}/withdraw/")
+        self.assertEqual(response.status_code, 200)
+        request.refresh_from_db()
+        self.assertEqual(request.status, LeaveRequest.Status.WITHDRAWN)
 
     def test_required_leave_attachment_is_validated(self):
         LeaveType.objects.create(code="SICK", name="病假", attachment_required=True, deduct_quota=False)

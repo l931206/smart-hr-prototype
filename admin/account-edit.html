@@ -316,7 +316,7 @@
       </div>
     </form>
   </main>
-  <script src="../assets/js/api.js?v=20260813-sso1"></script>
+  <script src="../assets/js/api.js?v=20260814-review1"></script>
   <script>
     (async () => {
       const id = new URLSearchParams(window.location.search).get("id");
@@ -336,7 +336,7 @@
           button.disabled = true;
           try {
             await apiRequest(`/accounts/${id}/`, { method: "PATCH", body: JSON.stringify({ role: document.querySelector("#role").value, is_active: document.querySelector("#status").value === "active", external_user_id: document.querySelector("#externalUserId").value.trim() || null }) });
-            window.location.href = `account-edit-success.html?id=${id}`;
+            window.location.href = `account-detail.html?id=${id}&notice=${encodeURIComponent("帳號權限已更新")}`;
           } catch (error) { alert(error.message || "儲存帳號設定失敗。"); button.disabled = false; }
         });
       } catch (error) { alert(error.message || "無法載入帳號資料。"); }

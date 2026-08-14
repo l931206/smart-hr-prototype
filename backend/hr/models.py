@@ -1,5 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from decimal import Decimal
+from datetime import date, datetime, timedelta
 
 
 class Department(models.Model):
@@ -54,9 +56,10 @@ class LeaveRequest(models.Model):
         PENDING = "pending", "待審核"
         APPROVED = "approved", "已核准"
         REJECTED = "rejected", "已退回"
+        WITHDRAWN = "withdrawn", "已撤回"
 
     employee = models.ForeignKey(User, on_delete=models.CASCADE, related_name="leave_requests")
-    leave_type = models.CharField(max_length=50)
+    leave_type = models.ForeignKey("LeaveType", on_delete=models.PROTECT, related_name="requests")
     start_date = models.DateField()
     end_date = models.DateField()
     start_time = models.CharField(max_length=20, blank=True)
@@ -74,7 +77,33 @@ class LeaveRequest(models.Model):
 
     @property
     def days(self):
-        return (self.end_date - self.start_date).days + 1
+        start_date = date.fromisoformat(self.start_date) if isinstance(self.start_date, str) else self.start_date
+        end_date = date.fromisoformat(self.end_date) if isinstance(self.end_date, str) else self.end_date
+        day = start_date
+        business_days = 0
+        while day <= end_date:
+            if day.weekday() < 5:
+                business_days += 1
+            day += timedelta(days=1)
+        if not business_days:
+            return Decimal("0")
+
+        time_pattern = "%H:%M"
+        if start_date == end_date and ":" in self.start_time and ":" in self.end_time:
+            try:
+                start = datetime.strptime(self.start_time, time_pattern)
+                end = datetime.strptime(self.end_time, time_pattern)
+                hours = Decimal(str(max((end - start).total_seconds() / 3600, 0)))
+                return (hours / Decimal("8")).quantize(Decimal("0.125"))
+            except ValueError:
+                pass
+
+        result = Decimal(business_days)
+        if self.start_time == "下午":
+            result -= Decimal("0.5")
+        if self.end_time == "上午":
+            result -= Decimal("0.5")
+        return max(result, Decimal("0"))
 
 
 class Announcement(models.Model):
@@ -167,7 +196,7 @@ class LeaveBalance(models.Model):
     @property
     def used_days(self):
         requests = self.employee.leave_requests.filter(
-            leave_type=self.leave_type.name,
+            leave_type=self.leave_type,
             status=LeaveRequest.Status.APPROVED,
             start_date__year=self.year,
         )

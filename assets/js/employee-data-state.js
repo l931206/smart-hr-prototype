@@ -1,5 +1,5 @@
 (function () {
-  const empty = (text) => `<div class="card"><p>${text}</p></div>`;
+  const empty = (text) => `<div class="card"><p>${escapeHtml(text)}</p></div>`;
   const escapeHtml = (value) => String(value ?? "").replace(/[&<>"']/g, (char) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[char]));
   document.addEventListener("DOMContentLoaded", () => {
     if (!localStorage.getItem("hr_token")) return;
@@ -47,7 +47,7 @@
           if (summary[1]) summary[1].textContent = String(notifications.length);
           const list = document.querySelector(".notification-list");
           if (!list) return;
-          list.innerHTML = notifications.length ? notifications.map((item) => `<a class="notification-card ${item.is_read ? "read" : "unread"}" href="notification-detail.html?id=${item.id}"><div class="notification-icon">🔔</div><div class="notification-content"><div class="notification-head"><h2>${item.title}</h2><time>${new Date(item.created_at).toLocaleString("zh-TW")}</time></div><p>${item.content}</p><span class="notification-status">${item.is_read ? "已讀" : "未讀"}</span></div></a>`).join("") : empty("目前尚無通知資料。");
+          list.innerHTML = notifications.length ? notifications.map((item) => `<a class="notification-card ${item.is_read ? "read" : "unread"}" href="notification-detail.html?id=${Number(item.id)}"><div class="notification-icon">知</div><div class="notification-content"><div class="notification-head"><h2>${escapeHtml(item.title)}</h2><time>${escapeHtml(new Date(item.created_at).toLocaleString("zh-TW"))}</time></div><p>${escapeHtml(item.content)}</p><span class="notification-status">${item.is_read ? "已讀" : "未讀"}</span></div></a>`).join("") : empty("目前尚無通知資料。");
           const markAll = [...document.querySelectorAll("button")].find((button) => button.textContent.includes("全部標示為已讀"));
           markAll?.addEventListener("click", async () => {
             markAll.disabled = true;

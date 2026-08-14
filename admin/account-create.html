@@ -222,7 +222,7 @@ width:100%;
 
 </main>
 
-<script src="../assets/js/api.js?v=20260813-sso1"></script>
+<script src="../assets/js/api.js?v=20260814-review1"></script>
 <script>
   document.querySelector("#accountCreateForm").addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -239,7 +239,7 @@ width:100%;
         password: document.querySelector("#password").value,
         is_active: document.querySelector("#status").value === "active"
       }) });
-      window.location.href = `account-create-success.html?id=${user.id}`;
+      window.location.href = `account-detail.html?id=${user.id}&notice=${encodeURIComponent("帳號已建立")}`;
     } catch (error) {
       alert(error.message || "建立帳號失敗。");
       button.disabled = false;

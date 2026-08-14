@@ -341,7 +341,7 @@
       </div>
     </form>
   </main>
-  <script src="../assets/js/api.js?v=20260813-sso1"></script>
+  <script src="../assets/js/api.js?v=20260814-review1"></script>
   <script>
     (async () => {
       const departmentSelect = document.querySelector("#department");
@@ -355,7 +355,7 @@
         departmentSelect.addEventListener("change", updateManagers); updateManagers();
         document.querySelector("#employeeCreateForm").addEventListener("submit", async (event) => {
           event.preventDefault(); const button = event.currentTarget.querySelector("button[type=submit]"); button.disabled = true;
-          try { const user = await apiRequest("/employees/", { method: "POST", body: JSON.stringify({ username: document.querySelector("#username").value.trim(), password: document.querySelector("#password").value, employee_no: document.querySelector("#employeeNo").value.trim(), display_name: document.querySelector("#name").value.trim(), job_title: document.querySelector("#position").value.trim(), email: document.querySelector("#email").value.trim(), phone: document.querySelector("#phone").value.trim(), department: Number(departmentSelect.value), manager: Number(managerSelect.value) || null, hire_date: document.querySelector("#hireDate").value, work_start_time: document.querySelector("#workStartTime").value, work_end_time: document.querySelector("#workEndTime").value, role: document.querySelector("#role").value, is_active: true }) }); window.location.href = `employee-create-success.html?id=${user.id}`; }
+          try { const user = await apiRequest("/employees/", { method: "POST", body: JSON.stringify({ username: document.querySelector("#username").value.trim(), password: document.querySelector("#password").value, employee_no: document.querySelector("#employeeNo").value.trim(), display_name: document.querySelector("#name").value.trim(), job_title: document.querySelector("#position").value.trim(), email: document.querySelector("#email").value.trim(), phone: document.querySelector("#phone").value.trim(), department: Number(departmentSelect.value), manager: Number(managerSelect.value) || null, hire_date: document.querySelector("#hireDate").value, work_start_time: document.querySelector("#workStartTime").value, work_end_time: document.querySelector("#workEndTime").value, role: document.querySelector("#role").value, is_active: true }) }); window.location.href = `employee-detail.html?id=${user.id}&notice=${encodeURIComponent("員工已建立")}`; }
           catch (error) { alert(error.message || "建立員工失敗。"); button.disabled = false; }
         });
       } catch (error) { departmentSelect.innerHTML = `<option value="">無法載入部門</option>`; alert(error.message || "無法載入部門與主管資料。"); }

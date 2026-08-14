@@ -225,7 +225,7 @@
       </div>
     </form>
   </main>
-  <script src="../assets/js/api.js?v=20260813-sso1"></script>
+  <script src="../assets/js/api.js?v=20260814-review1"></script>
   <script>
     (async () => {
       const id = new URLSearchParams(window.location.search).get("id");
@@ -254,7 +254,7 @@
               if (currentManagerId) await apiRequest(`/employees/${currentManagerId}/`, { method: "PATCH", body: JSON.stringify({ role: "employee" }) });
               await apiRequest(`/employees/${selectedManagerId}/`, { method: "PATCH", body: JSON.stringify({ department: Number(id), role: "manager" }) });
             }
-            window.location.href = `department-edit-success.html?id=${id}`;
+            window.location.href = `department-detail.html?id=${id}&notice=${encodeURIComponent("部門資料已更新")}`;
           }
           catch (error) { alert(error.message || "儲存部門資料失敗。"); button.disabled = false; }
         });

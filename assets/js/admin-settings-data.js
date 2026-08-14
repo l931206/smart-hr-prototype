@@ -24,7 +24,7 @@
       try {
         const payText = document.querySelector("#payType").selectedOptions[0]?.textContent || "";
         const item = await apiRequest("/leave-types/", {method:"POST", body:JSON.stringify({code:document.querySelector("#leaveCode").value.trim().toUpperCase(), name:document.querySelector("#leaveName").value.trim(), default_days:Number(document.querySelector("#annualQuota").value || 0), quota_type:document.querySelector("#quotaType").value, minimum_unit:document.querySelector("#minimumUnit").value, is_paid:Boolean(payText) && !payText.includes("無薪"), deduct_quota:document.querySelector("#deductQuota").checked, requires_manager_approval:document.querySelector("#managerApproval").checked, attachment_required:document.querySelector("#attachmentRequired").checked, allow_hourly:document.querySelector("#allowHourly").checked, allow_carry_over:document.querySelector("#allowCarryOver").checked, attachment_rule:document.querySelector("#attachmentRule").value.trim(), is_active:document.querySelector("#active").checked, description:document.querySelector("#description").value.trim()})});
-        window.location.href = `leave-type-create-success.html?id=${item.id}`;
+        window.location.href = `leave-settings.html?notice=${encodeURIComponent("假別已建立")}`;
       } catch (error) { alert(error.message || "建立假別失敗。"); button.disabled = false; }
     });
   }
@@ -98,7 +98,7 @@
       event.preventDefault();
       const payText = document.querySelector("#payType").selectedOptions[0]?.textContent || "";
       await apiRequest(`/leave-types/${id}/`, {method:"PATCH", body:JSON.stringify({name:document.querySelector("#leaveName").value.trim(), description:document.querySelector("#description").value.trim(), default_days:Number(document.querySelector("#annualQuota").value || 0), quota_type:document.querySelector("#quotaType").value, minimum_unit:document.querySelector("#minimumUnit").value, is_paid:Boolean(payText) && !payText.includes("無薪"), deduct_quota:document.querySelector("#deductQuota").checked, requires_manager_approval:document.querySelector("#managerApproval").checked, attachment_required:document.querySelector("#attachmentRequired").checked, allow_hourly:document.querySelector("#allowHourly").checked, allow_carry_over:document.querySelector("#allowCarryOver").checked, attachment_rule:document.querySelector("#ruleDescription").value.trim(), is_active:document.querySelector("#active").checked})});
-      location.href = `leave-type-edit-success.html?id=${id}`;
+      location.href = `leave-type-detail.html?id=${id}&notice=${encodeURIComponent("假別規則已更新")}`;
     });
   }
 
@@ -115,7 +115,7 @@
     if (values[4]) values[4].textContent = item.is_active ? "啟用中" : "已停用";
     document.querySelectorAll('a[href="leave-type-detail.html"]').forEach((link) => { link.href = `leave-type-detail.html?id=${id}`; });
     const button = document.querySelector(".button.danger");
-    button?.addEventListener("click", async (event) => { event.preventDefault(); await apiRequest(`/leave-types/${id}/`, {method:"PATCH", body:JSON.stringify({is_active:false})}); location.href = `leave-type-deactivate-success.html?id=${id}`; });
+    button?.addEventListener("click", async (event) => { event.preventDefault(); await apiRequest(`/leave-types/${id}/`, {method:"PATCH", body:JSON.stringify({is_active:false})}); location.href = `leave-settings.html?notice=${encodeURIComponent("假別已停用")}`; });
   }
 
   async function loadLeaveTypeResult() {
@@ -169,7 +169,7 @@
       button.disabled = true;
       try {
         await apiRequest(`/profile-change-requests/${id}/`, {method:"PATCH", body:JSON.stringify({status, reviewer_comment:comment})});
-        location.href = `${status === "approved" ? "profile-request-approved" : "profile-request-rejected"}.html?id=${id}`;
+        location.href = `profile-requests.html?notice=${encodeURIComponent(status === "approved" ? "資料修改申請已核准" : "資料修改申請已退回")}`;
       } catch (error) { button.disabled = false; alert(error.message || "更新申請狀態失敗。"); }
     };
     document.querySelector("#profileDecisionForm").addEventListener("submit", (event) => { event.preventDefault(); void update("approved", document.querySelector(".button.approve")); });
