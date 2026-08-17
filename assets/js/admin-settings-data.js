@@ -11,7 +11,7 @@
     if (summary[1]) summary[1].textContent = String(types.filter((item) => item.is_active).length);
     if (summary[2]) summary[2].textContent = String(types.filter((item) => item.attachment_required).length);
     if (summary[3]) summary[3].textContent = String(types.filter((item) => item.deduct_quota).length);
-    list.innerHTML = types.length ? types.map((item) => `<article class="leave-card"><div class="leave-head"><div class="leave-main"><div class="icon">📅</div><div><h2>${escapeHtml(item.name)}</h2><p>假別代碼：${escapeHtml(item.code)}</p></div></div><span class="status ${item.is_active ? "active" : "inactive"}">${item.is_active ? "啟用中" : "已停用"}</span></div><div class="details"><div class="detail"><span>年度額度</span><strong>${item.default_days} 天</strong></div><div class="detail"><span>薪資類型</span><strong>${item.is_paid ? "給薪" : "不給薪"}</strong></div><div class="detail"><span>建立日期</span><strong>${new Date(item.created_at).toLocaleDateString("zh-TW")}</strong></div></div><div class="rule-box">${escapeHtml(item.description || "尚未設定說明")}</div><div class="actions"><a class="button primary" href="leave-type-detail.html?id=${item.id}">查看詳情</a><a class="button secondary" href="leave-type-edit.html?id=${item.id}">編輯規則</a>${item.is_active ? `<a class="button danger" href="leave-type-deactivate.html?id=${item.id}">停用假別</a>` : ""}</div></article>`).join("") : "<p>目前尚無假別資料。</p>";
+    list.innerHTML = types.length ? types.map((item) => `<article class="leave-card"><div class="leave-head"><div class="leave-main"><div class="icon">日</div><div><h2>${escapeHtml(item.name)}</h2><p>假別代碼：${escapeHtml(item.code)}</p></div></div><span class="status ${item.is_active ? "active" : "inactive"}">${item.is_active ? "啟用中" : "已停用"}</span></div><div class="details"><div class="detail"><span>年度額度</span><strong>${item.default_days} 天</strong></div><div class="detail"><span>薪資類型</span><strong>${item.is_paid ? "給薪" : "不給薪"}</strong></div><div class="detail"><span>建立日期</span><strong>${new Date(item.created_at).toLocaleDateString("zh-TW")}</strong></div></div><div class="rule-box">${escapeHtml(item.description || "尚未設定說明")}</div><div class="actions"><a class="button primary" href="leave-type-detail.html?id=${Number(item.id)}">查看詳情</a><a class="button secondary" href="leave-type-edit.html?id=${Number(item.id)}">編輯規則</a>${item.is_active ? `<a class="button danger" href="leave-type-deactivate.html?id=${Number(item.id)}">停用假別</a>` : ""}</div></article>`).join("") : "<p>目前尚無假別資料。</p>";
   }
 
   function bindLeaveTypeCreate() {
@@ -118,18 +118,6 @@
     button?.addEventListener("click", async (event) => { event.preventDefault(); await apiRequest(`/leave-types/${id}/`, {method:"PATCH", body:JSON.stringify({is_active:false})}); location.href = `leave-settings.html?notice=${encodeURIComponent("假別已停用")}`; });
   }
 
-  async function loadLeaveTypeResult() {
-    const id = new URLSearchParams(location.search).get("id");
-    if (!id) return;
-    const item = await apiRequest(`/leave-types/${id}/`);
-    const values = document.querySelectorAll(".info .row strong, .leave-info .info-row strong");
-    if (values[0]) values[0].textContent = item.name;
-    if (values[1]) values[1].textContent = item.code;
-    if (values[2]) values[2].textContent = item.is_paid ? "給薪" : "不給薪";
-    if (values[3]) values[3].textContent = item.is_active ? "啟用中" : "已停用";
-    document.querySelectorAll('a[href="leave-type-detail.html"]').forEach((link) => { link.href = `leave-type-detail.html?id=${id}`; });
-  }
-
   async function loadProfileRequests() {
     const list = document.querySelector("#profileRequestList");
     if (!list) return;
@@ -138,7 +126,7 @@
     if (summary[0]) summary[0].textContent = String(requests.filter((item) => item.status === "pending").length);
     if (summary[1]) summary[1].textContent = String(requests.filter((item) => item.status === "approved").length);
     if (summary[2]) summary[2].textContent = String(requests.filter((item) => item.status === "rejected").length);
-    list.innerHTML = requests.length ? requests.map((item) => `<a class="request" href="profile-request-detail.html?id=${item.id}"><div class="head"><div><h2>${escapeHtml(item.employee_name || "未提供姓名")}</h2><p>員工編號：${escapeHtml(item.employee_no || "—")}</p></div><span class="status">${escapeHtml(item.status_label)}</span></div><div class="detail"><div class="item"><span>部門</span><strong>${escapeHtml(item.employee_department || "—")}</strong></div><div class="item"><span>申請時間</span><strong>${new Date(item.created_at).toLocaleString("zh-TW")}</strong></div></div><span class="link">查看申請內容 →</span></a>`).join("") : "<div class=\"card\"><p>目前沒有資料修改申請。</p></div>";
+    list.innerHTML = requests.length ? requests.map((item) => `<a class="request" href="profile-request-detail.html?id=${Number(item.id)}"><div class="head"><div><h2>${escapeHtml(item.employee_name || "未提供姓名")}</h2><p>員工編號：${escapeHtml(item.employee_no || "—")}</p></div><span class="status">${escapeHtml(item.status_label)}</span></div><div class="detail"><div class="item"><span>部門</span><strong>${escapeHtml(item.employee_department || "—")}</strong></div><div class="item"><span>申請時間</span><strong>${new Date(item.created_at).toLocaleString("zh-TW")}</strong></div></div><span class="link">查看申請內容 →</span></a>`).join("") : "<div class=\"card\"><p>目前沒有資料修改申請。</p></div>";
   }
 
   async function loadProfileRequestDetail() {
@@ -204,7 +192,6 @@
       if (path.endsWith("/leave-type-detail.html")) await loadLeaveTypeDetail();
       if (path.endsWith("/leave-type-edit.html")) await bindLeaveTypeEdit();
       if (path.endsWith("/leave-type-deactivate.html")) await bindLeaveTypeDeactivate();
-      if (path.endsWith("/leave-type-create-success.html") || path.endsWith("/leave-type-edit-success.html") || path.endsWith("/leave-type-deactivate-success.html")) await loadLeaveTypeResult();
       if (path.endsWith("/profile-requests.html")) await loadProfileRequests();
       if (path.endsWith("/profile-request-detail.html")) await loadProfileRequestDetail();
       if (path.endsWith("/profile-request-approved.html") || path.endsWith("/profile-request-rejected.html")) await loadProfileRequestResult();

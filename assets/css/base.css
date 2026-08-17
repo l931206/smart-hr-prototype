@@ -17,13 +17,13 @@
   --color-border: #e5ebf2;
 
   --color-success: #047857;
-  --color-success-bg: #d1fae5;
+  --color-success-bg: rgba(4, 120, 87, 0.10);
 
   --color-warning: #92400e;
-  --color-warning-bg: #fef3c7;
+  --color-warning-bg: rgba(146, 64, 14, 0.10);
 
   --color-danger: #b91c1c;
-  --color-danger-bg: #fee2e2;
+  --color-danger-bg: rgba(185, 28, 28, 0.10);
 
   --radius-small: 4px;
   --radius-medium: 6px;
@@ -105,7 +105,7 @@ select,
 textarea {
   width: 100%;
   border: 1px solid #d8e2ec;
-  border-radius: 12px;
+  border-radius: 8px;
   color: var(--color-text);
   background: var(--color-surface);
   outline: none;
@@ -127,7 +127,7 @@ input:focus,
 select:focus,
 textarea:focus {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
+  box-shadow: 0 0 0 3px rgba(24, 59, 99, 0.12);
 }
 
 input:disabled,

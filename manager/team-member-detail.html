@@ -416,7 +416,7 @@
       <small>更多</small>
     </a>
   </nav>
-  <script src="../assets/js/api.js?v=20260814-review1"></script>
+  <script src="../assets/js/api.js?v=20260817-review2"></script>
   <script>
     (async () => {
       const id = new URLSearchParams(window.location.search).get("id");
@@ -453,7 +453,7 @@
           ...lateNotices.map((item) => ({date:item.created_at,title:"晚到通知",tag:item.status_label,className:"late",text:`${item.date}，預計 ${item.expected_arrival} 到班。`}))
         ].sort((a,b) => new Date(b.date)-new Date(a.date)).slice(0,5);
         const recordCard = document.querySelector(".team-record-card");
-        recordCard.innerHTML = `<h2>最近紀錄</h2>${records.length ? records.map((item) => `<div class="team-record"><div class="team-record-head"><h3>${item.title}</h3><span class="team-record-tag ${item.className}">${item.tag}</span></div><p>${item.text}</p></div>`).join("") : "<p>目前沒有請假或晚到紀錄。</p>"}`;
+        recordCard.innerHTML = `<h2>最近紀錄</h2>${records.length ? records.map((item) => `<div class="team-record"><div class="team-record-head"><h3>${hrEscapeHtml(item.title)}</h3><span class="team-record-tag ${item.className}">${hrEscapeHtml(item.tag)}</span></div><p>${hrEscapeHtml(item.text)}</p></div>`).join("") : "<p>目前沒有請假或晚到紀錄。</p>"}`;
         document.title = `${name} - 團隊成員資料`;
       } catch (error) {
         const heading = first(".team-profile-employee h1");

@@ -288,7 +288,7 @@
       <small>更多</small>
     </a>
   </nav>
-  <script src="../assets/js/api.js?v=20260814-review1"></script>
+  <script src="../assets/js/api.js?v=20260817-review2"></script>
   <script>
     (async () => {
       try {
@@ -300,8 +300,8 @@
         if (counts[0]) counts[0].textContent = String(notices.filter((item) => item.date === today).length);
         if (counts[1]) counts[1].textContent = String(notices.filter((item) => new Date(`${item.date}T00:00:00`) >= weekStart).length);
         if (counts[2]) counts[2].textContent = String(notices.filter((item) => item.status === "notified").length);
-        document.querySelector("#lateNoticeList").innerHTML = notices.map((item) => `<article class="late-notice-card"><div class="late-notice-head"><div class="late-employee"><div class="late-avatar">${(item.employee_name || "員").slice(0, 1)}</div><div><h2>${item.employee_name || "未提供姓名"}</h2><p>${item.employee_department || "—"}</p></div></div><span class="late-status ${item.status === "arrived" ? "arrived" : ""}">${item.status_label}</span></div><div class="late-details"><div class="late-detail"><span>晚到日期</span><strong>${item.date}</strong></div><div class="late-detail"><span>預計到班時間</span><strong>${item.expected_arrival}</strong></div><div class="late-detail"><span>原因類型</span><strong>${item.reason_type}</strong></div></div><div class="late-reason"><strong>晚到原因：</strong><br>${item.reason}</div></article>`).join("") || "<p>目前沒有晚到通知。</p>";
-      } catch (error) { document.querySelector("#lateNoticeList").innerHTML = `<p>${error.message || "無法載入晚到通知。"}</p>`; }
+        document.querySelector("#lateNoticeList").innerHTML = notices.map((item) => `<article class="late-notice-card"><div class="late-notice-head"><div class="late-employee"><div class="late-avatar">${hrEscapeHtml((item.employee_name || "員").slice(0, 1))}</div><div><h2>${hrEscapeHtml(item.employee_name || "未提供姓名")}</h2><p>${hrEscapeHtml(item.employee_department || "—")}</p></div></div><span class="late-status ${item.status === "arrived" ? "arrived" : ""}">${hrEscapeHtml(item.status_label)}</span></div><div class="late-details"><div class="late-detail"><span>晚到日期</span><strong>${hrEscapeHtml(item.date)}</strong></div><div class="late-detail"><span>預計到班時間</span><strong>${hrEscapeHtml(item.expected_arrival)}</strong></div><div class="late-detail"><span>原因類型</span><strong>${hrEscapeHtml(item.reason_type)}</strong></div></div><div class="late-reason"><strong>晚到原因：</strong><br>${hrEscapeHtml(item.reason)}</div></article>`).join("") || "<p>目前沒有晚到通知。</p>";
+      } catch (error) { document.querySelector("#lateNoticeList").innerHTML = `<p>${hrEscapeHtml(error.message || "無法載入晚到通知。")}</p>`; }
     })();
   </script>
 </body>

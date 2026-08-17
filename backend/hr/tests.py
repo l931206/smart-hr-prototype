@@ -1,5 +1,6 @@
 from django.urls import reverse
 from django.test import override_settings
+from django.utils import timezone
 from rest_framework.test import APIRequestFactory, APITestCase
 from unittest.mock import MagicMock, patch
 
@@ -126,6 +127,104 @@ class CoreApiTests(APITestCase):
         self.assertEqual(str(leave_type.default_days), "2.5")
         self.assertTrue(leave_type.attachment_required)
         self.assertEqual(leave_type.attachment_rule, "需附公文")
+
+    def test_carry_over_is_applied_when_creating_leave_type_and_yearly_balance(self):
+        admin = User.objects.create_superuser(username="carry-admin", password="admin-password")
+        previous_type = LeaveType.objects.create(
+            code="CARRY-EXISTING",
+            name="既有結轉假",
+            default_days="5.0",
+            deduct_quota=True,
+            allow_carry_over=True,
+        )
+        year = timezone.localdate().year
+        LeaveBalance.objects.create(
+            employee=self.user,
+            leave_type=previous_type,
+            year=year - 1,
+            allocated_days="4.0",
+        )
+        self.client.force_authenticate(user=self.user)
+        balance_response = self.client.get(f"/api/leave-balances/?year={year}")
+        self.assertEqual(balance_response.status_code, 200)
+        existing_balance = LeaveBalance.objects.get(employee=self.user, leave_type=previous_type, year=year)
+        self.assertEqual(existing_balance.carried_days, 4)
+
+        self.client.force_authenticate(user=admin)
+        response = self.client.post(
+            "/api/leave-types/",
+            {
+                "code": "CARRY-NEW",
+                "name": "新結轉假",
+                "default_days": "3.0",
+                "minimum_unit": "半天",
+                "deduct_quota": True,
+                "allow_carry_over": True,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 201)
+        self.assertTrue(LeaveBalance.objects.filter(employee=self.user, leave_type__code="CARRY-NEW", year=year).exists())
+
+    def test_hourly_leave_enforces_configured_minimum_unit(self):
+        hourly_type = LeaveType.objects.create(
+            code="HOURLY",
+            name="時數假",
+            deduct_quota=False,
+            allow_hourly=True,
+            minimum_unit="2 小時",
+        )
+        self.client.force_authenticate(user=self.user)
+        too_short = self.client.post(
+            "/api/leave-requests/",
+            {
+                "leave_type": hourly_type.name,
+                "start_date": "2026-08-18",
+                "end_date": "2026-08-18",
+                "start_time": "09:00",
+                "end_time": "10:00",
+                "reason": "時數測試",
+            },
+            format="json",
+        )
+        self.assertEqual(too_short.status_code, 400)
+        valid = self.client.post(
+            "/api/leave-requests/",
+            {
+                "leave_type": hourly_type.name,
+                "start_date": "2026-08-18",
+                "end_date": "2026-08-18",
+                "start_time": "09:00",
+                "end_time": "11:00",
+                "reason": "時數測試",
+            },
+            format="json",
+        )
+        self.assertEqual(valid.status_code, 201)
+        self.assertEqual(valid.data["days"], "0.250")
+
+    def test_leave_without_manager_approval_is_approved_immediately(self):
+        leave_type = LeaveType.objects.create(
+            code="AUTO",
+            name="免簽核假",
+            deduct_quota=False,
+            requires_manager_approval=False,
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(
+            "/api/leave-requests/",
+            {
+                "leave_type": leave_type.name,
+                "start_date": "2026-08-18",
+                "end_date": "2026-08-18",
+                "start_time": "上午",
+                "end_time": "下午",
+                "reason": "免簽核測試",
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.data["status"], LeaveRequest.Status.APPROVED)
 
     def test_manager_sees_published_company_announcements_and_own_drafts(self):
         manager = User.objects.create_user(username="manager-a", password="password", role=User.Role.MANAGER, department=self.department)

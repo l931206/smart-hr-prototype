@@ -181,7 +181,7 @@
       <p>更新部門名稱、主管、說明與啟用狀態。</p>
     </header>
 
-    <form class="form-card" id="departmentEditForm" action="department-edit-success.html">
+    <form class="form-card" id="departmentEditForm">
       <div class="two-column">
         <div class="form-group">
           <label for="departmentCode">部門代碼</label>
@@ -225,7 +225,7 @@
       </div>
     </form>
   </main>
-  <script src="../assets/js/api.js?v=20260814-review1"></script>
+  <script src="../assets/js/api.js?v=20260817-review2"></script>
   <script>
     (async () => {
       const id = new URLSearchParams(window.location.search).get("id");
@@ -239,7 +239,7 @@
         const employees = Array.isArray(employeePayload) ? employeePayload : (employeePayload.results || []);
         const managers = employees.filter((employee) => employee.role === "manager" && employee.is_active);
         const currentManager = managers.find((manager) => manager.department === department.id);
-        document.querySelector("#manager").innerHTML = `<option value="">尚未指定主管</option>${managers.map((manager) => `<option value="${manager.id}">${manager.display_name || manager.username}（${manager.department_name || "未分配部門"}）</option>`).join("")}`;
+        document.querySelector("#manager").innerHTML = `<option value="">尚未指定主管</option>${managers.map((manager) => `<option value="${Number(manager.id)}">${hrEscapeHtml(manager.display_name || manager.username)}（${hrEscapeHtml(manager.department_name || "未分配部門")}）</option>`).join("")}`;
         document.querySelector("#manager").value = currentManager?.id || "";
         document.querySelector(".back").href = `department-detail.html?id=${id}`;
         document.querySelector(".button.secondary").href = `department-detail.html?id=${id}`;

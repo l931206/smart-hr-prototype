@@ -327,7 +327,7 @@
       <small>更多</small>
     </a>
   </nav>
-  <script src="../assets/js/api.js?v=20260814-review1"></script>
+  <script src="../assets/js/api.js?v=20260817-review2"></script>
   <script>
     (async () => {
       const list = document.querySelector("#requestList");
@@ -349,7 +349,7 @@
         document.querySelector("#monthlyRequestCount").textContent = String(requests.filter((request) => sameMonth(request.created_at)).length);
         const filters = document.querySelectorAll(".request-filter select");
         const leaveTypes = [...new Set(requests.map((request) => request.leave_type).filter(Boolean))];
-        if (filters[1]) filters[1].innerHTML = `<option value="">全部假別</option>${leaveTypes.map((name) => `<option value="${name}">${name}</option>`).join("")}`;
+        if (filters[1]) filters[1].innerHTML = `<option value="">全部假別</option>${leaveTypes.map((name) => `<option value="${hrEscapeHtml(name)}">${hrEscapeHtml(name)}</option>`).join("")}`;
         const render = () => {
           const statusText = filters[0]?.value || "全部狀態";
           const typeText = filters[1]?.value || "";
@@ -357,13 +357,13 @@
           let filtered = requests.filter((request) => (!statusMap[statusText] || request.status === statusMap[statusText]) && (!typeText || request.leave_type === typeText));
           filtered = [...filtered].sort((a, b) => filters[2]?.selectedIndex === 1 ? String(a.start_date).localeCompare(String(b.start_date)) : new Date(b.created_at) - new Date(a.created_at));
           list.innerHTML = filtered.length ? filtered.map((request) => `
-          <a class="request-card" href="leave-request-detail.html?id=${request.id}">
+          <a class="request-card" href="leave-request-detail.html?id=${Number(request.id)}">
             <div class="request-head">
-              <div class="request-employee"><div class="request-avatar">${(request.employee_name || "員").slice(0, 1)}</div><div><h2>${request.employee_name}－${request.leave_type}</h2><p>申請編號：LEAVE-${String(request.id).padStart(6, "0")}</p></div></div>
-              <span class="request-status">${request.status_label}</span>
+              <div class="request-employee"><div class="request-avatar">${hrEscapeHtml((request.employee_name || "員").slice(0, 1))}</div><div><h2>${hrEscapeHtml(request.employee_name || "未提供姓名")}－${hrEscapeHtml(request.leave_type)}</h2><p>申請編號：LEAVE-${hrEscapeHtml(String(request.id).padStart(6, "0"))}</p></div></div>
+              <span class="request-status">${hrEscapeHtml(request.status_label)}</span>
             </div>
-            <div class="request-details"><div class="request-detail"><span>請假日期</span><strong>${request.start_date}－${request.end_date}</strong></div><div class="request-detail"><span>請假天數</span><strong>${request.days} 天</strong></div><div class="request-detail"><span>申請時間</span><strong>${new Date(request.created_at).toLocaleString("zh-TW")}</strong></div></div>
-            <div class="request-reason">請假原因：${request.reason}</div>
+            <div class="request-details"><div class="request-detail"><span>請假日期</span><strong>${hrEscapeHtml(request.start_date)}－${hrEscapeHtml(request.end_date)}</strong></div><div class="request-detail"><span>請假天數</span><strong>${Number(request.days)} 天</strong></div><div class="request-detail"><span>申請時間</span><strong>${hrEscapeHtml(new Date(request.created_at).toLocaleString("zh-TW"))}</strong></div></div>
+            <div class="request-reason">請假原因：${hrEscapeHtml(request.reason)}</div>
             <span class="request-view-link">查看申請詳情 →</span>
           </a>
         `).join("") : "<div class=\"card\"><p>目前沒有符合條件的請假申請。</p></div>";
@@ -371,7 +371,7 @@
         filters.forEach((filter) => filter.addEventListener("change", render));
         render();
       } catch (error) {
-        list.innerHTML = `<div class="card"><p>${error.message || "無法載入審核資料。"}</p></div>`;
+        list.innerHTML = `<div class="card"><p>${hrEscapeHtml(error.message || "無法載入審核資料。")}</p></div>`;
       }
     })();
   </script>

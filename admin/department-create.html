@@ -176,7 +176,7 @@
       <p>建立新的公司部門，並設定部門主管與基本資料。</p>
     </header>
 
-    <form class="form-card" id="departmentCreateForm" action="department-create-success.html">
+    <form class="form-card" id="departmentCreateForm">
       <div class="two-column">
         <div class="form-group">
           <label for="departmentCode">部門代碼</label>
@@ -236,7 +236,7 @@
       </div>
     </form>
   </main>
-  <script src="../assets/js/api.js?v=20260814-review1"></script>
+  <script src="../assets/js/api.js?v=20260817-review2"></script>
   <script>
     (async () => {
       const managerSelect = document.querySelector("#manager");
@@ -244,7 +244,7 @@
         const payload = await apiRequest("/employees/");
         const employees = Array.isArray(payload) ? payload : (payload.results || []);
         const managers = employees.filter((employee) => employee.role === "manager" && employee.is_active);
-        managerSelect.innerHTML = `<option value="">暫不指定主管</option>${managers.map((manager) => `<option value="${manager.id}">${manager.display_name || manager.username}</option>`).join("")}`;
+        managerSelect.innerHTML = `<option value="">暫不指定主管</option>${managers.map((manager) => `<option value="${Number(manager.id)}">${hrEscapeHtml(manager.display_name || manager.username)}</option>`).join("")}`;
       } catch (error) { managerSelect.innerHTML = "<option value=\"\">無法載入主管</option>"; }
       document.querySelector("#departmentCreateForm").addEventListener("submit", async (event) => {
         event.preventDefault(); const button = event.currentTarget.querySelector("button[type=submit]"); button.disabled = true;

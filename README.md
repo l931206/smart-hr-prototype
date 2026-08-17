@@ -9,6 +9,8 @@
 - Swagger API 文件：https://smart-hr-api-8rxh.onrender.com/api/docs/
 - OpenAPI Schema：https://smart-hr-api-8rxh.onrender.com/api/schema/
 
+GitHub repository 的既有網址仍保留 `smart-hr-prototype` slug，以避免已分享的 Pages 與 API 整合連結失效；產品名稱與文件定位皆以「Smart HR 智慧人資管理平台」為準。
+
 測試帳號的帳號名稱由 `DEMO_*_USERNAME` 設定，密碼屬於機密，只放在 Render Environment，不寫入 GitHub。需要展示帳號時，請向專案管理者取得。
 
 ## 系統架構
@@ -55,9 +57,9 @@ python manage.py runserver
 |---|---|---|
 | `DJANGO_SECRET_KEY` | Django 簽章金鑰 | 是 |
 | `DATABASE_URL` | PostgreSQL 連線字串 | 是 |
-| `DEMO_EMPLOYEE_USERNAME` / `DEMO_EMPLOYEE_PASSWORD` | 員工展示帳號 | 密碼是 |
-| `DEMO_MANAGER_USERNAME` / `DEMO_MANAGER_PASSWORD` | 主管展示帳號 | 密碼是 |
-| `DEMO_ADMIN_USERNAME` / `DEMO_ADMIN_PASSWORD` | 管理者展示帳號 | 密碼是 |
+| `DEMO_EMPLOYEE_USERNAME` / `DEMO_EMPLOYEE_PASSWORD` | 員工展示帳號 | 帳號否／密碼是 |
+| `DEMO_MANAGER_USERNAME` / `DEMO_MANAGER_PASSWORD` | 主管展示帳號 | 帳號否／密碼是 |
+| `DEMO_ADMIN_USERNAME` / `DEMO_ADMIN_PASSWORD` | 管理者展示帳號 | 帳號否／密碼是 |
 | `AUTH_MODE` | `local`、`central` 或 `hybrid` | 否 |
 | `CENTRAL_TOKEN_VERIFY_URL` | 中控 Token 驗證端點 | 視環境而定 |
 | `CENTRAL_API_KEY` | 呼叫中控服務的金鑰 | 是 |

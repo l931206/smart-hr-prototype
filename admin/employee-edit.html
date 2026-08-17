@@ -181,7 +181,7 @@
       <p>更新員工的個人資料、職務資訊與直屬主管。</p>
     </header>
 
-    <form class="form-card" id="employeeEditForm" action="employee-edit-success.html">
+    <form class="form-card" id="employeeEditForm">
       <h2 class="section-title">基本資料</h2>
 
       <div class="two-column">
@@ -268,7 +268,7 @@
       </div>
     </form>
   </main>
-  <script src="../assets/js/api.js?v=20260814-review1"></script>
+  <script src="../assets/js/api.js?v=20260817-review2"></script>
   <script>
     (async () => {
       const id = new URLSearchParams(window.location.search).get("id");
@@ -299,9 +299,9 @@
         document.querySelector("#hireDate").value = user.hire_date || "";
         document.querySelector("#workStartTime").value = (user.work_start_time || "09:00").slice(0, 5);
         document.querySelector("#workEndTime").value = (user.work_end_time || "18:00").slice(0, 5);
-        document.querySelector("#department").innerHTML = departments.map((department) => `<option value="${department.id}">${department.name}</option>`).join("");
+        document.querySelector("#department").innerHTML = departments.map((department) => `<option value="${Number(department.id)}">${hrEscapeHtml(department.name)}</option>`).join("");
         document.querySelector("#department").value = user.department || "";
-        document.querySelector("#manager").innerHTML = `<option value="">無直屬主管</option>${managers.map((manager) => `<option value="${manager.id}">${manager.display_name || manager.username}</option>`).join("")}`;
+        document.querySelector("#manager").innerHTML = `<option value="">無直屬主管</option>${managers.map((manager) => `<option value="${Number(manager.id)}">${hrEscapeHtml(manager.display_name || manager.username)}</option>`).join("")}`;
         document.querySelector("#manager").value = user.manager || "";
         document.querySelector("#status").value = user.is_active ? "在職" : "已離職";
         document.querySelector(".back").href = `employee-detail.html?id=${id}`;

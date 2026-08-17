@@ -54,7 +54,7 @@
   .brand-mark {
     width: 40px;
     height: 40px;
-    border-radius: 13px;
+    border-radius: 8px;
   }
 
   .brand strong {
@@ -104,7 +104,7 @@
   .welcome-card {
     min-height: auto;
     padding: 22px 20px;
-    border-radius: 22px;
+    border-radius: 8px;
     box-shadow: 0 16px 34px rgba(15, 118, 110, 0.18);
   }
 
@@ -152,7 +152,7 @@
     justify-content: space-between;
     padding: 16px;
     border: 1px solid var(--color-border);
-    border-radius: 18px;
+    border-radius: 8px;
     background: var(--color-surface);
     box-shadow: var(--shadow-small);
   }
@@ -189,7 +189,7 @@
   .stat-card {
     min-height: 96px;
     padding: 15px;
-    border-radius: 16px;
+    border-radius: 8px;
     box-shadow: var(--shadow-small);
   }
 
@@ -238,14 +238,14 @@
   .function-card {
     min-height: 118px;
     padding: 15px;
-    border-radius: 17px;
+    border-radius: 8px;
     box-shadow: var(--shadow-small);
   }
 
   .function-icon {
     width: 42px;
     height: 42px;
-    border-radius: 13px;
+    border-radius: 8px;
     font-size: 21px;
   }
 
@@ -265,7 +265,7 @@
   .panel,
   .form-card {
     padding: 18px;
-    border-radius: 18px;
+    border-radius: 8px;
     box-shadow: var(--shadow-small);
   }
 
@@ -337,7 +337,7 @@
     flex-direction: column;
     gap: 10px;
     padding: 14px;
-    border-radius: 16px;
+    border-radius: 8px;
   }
 
   .toolbar input,
@@ -350,13 +350,13 @@
     display: block;
     margin-top: 10px;
     border: 1px solid var(--color-border);
-    border-radius: 14px;
+    border-radius: 8px;
     background: #fff;
   }
 
   details.mobile-filter summary {
     padding: 14px;
-    font-weight: 800;
+    font-weight: 600;
     cursor: pointer;
   }
 
@@ -450,7 +450,7 @@
     justify-content: center;
     flex-direction: column;
     gap: 3px;
-    border-radius: 12px;
+    border-radius: 8px;
     color: var(--color-muted);
   }
 
@@ -461,12 +461,12 @@
 
   .mobile-nav span {
     font-size: 20px;
-    font-weight: 900;
+    font-weight: 600;
   }
 
   .mobile-nav small {
     font-size: 11px;
-    font-weight: 800;
+    font-weight: 600;
   }
 
   /* ---------- Hide low-priority content ---------- */
@@ -513,5 +513,30 @@
   .function-card,
   .mobile-quick-action {
     padding: 13px;
+  }
+}
+
+/* Enterprise mobile normalization. */
+@media (max-width: 700px) {
+  .mobile-quick-action,
+  .summary-card,
+  .stat-card,
+  .function-card,
+  .card,
+  .panel,
+  .form-card,
+  .toolbar,
+  details.mobile-filter,
+  .mobile-nav a {
+    border-radius: 8px !important;
+  }
+
+  .mobile-nav {
+    box-shadow: 0 -1px 4px rgba(15, 23, 42, 0.08);
+  }
+
+  .mobile-nav small,
+  details.mobile-filter summary {
+    font-weight: 500 !important;
   }
 }

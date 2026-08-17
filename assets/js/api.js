@@ -11,7 +11,7 @@ const HR_API_BASE_URL = window.HR_API_BASE_URL
     if (document.querySelector(`link[data-shared-hr-style="${file}"]`)) return;
     const link = document.createElement("link");
     link.rel = "stylesheet";
-    link.href = new URL(`../css/${file}`, scriptUrl).href;
+    link.href = new URL(`../css/${file}?v=20260817-review2`, scriptUrl).href;
     link.dataset.sharedHrStyle = file;
     document.head.appendChild(link);
   });
@@ -58,31 +58,39 @@ function installAdminSidebar() {
   document.body.classList.add("has-admin-sidebar");
 }
 
-function normalizeLegacyIcons() {
-  const replacements = new Map([
-    ["📢", "公"], ["🔔", "知"], ["⏰", "時"], ["👥", "團"], ["👤", "人"],
-    ["📅", "日"], ["📝", "申"], ["📋", "表"], ["⚙️", "設"], ["✅", "✓"],
-    ["💼", "職"], ["🏢", "部"], ["🔑", "權"], ["📊", "統"], ["📁", "檔"]
-  ]);
-  document.querySelectorAll(".function-icon, .role-icon, .notification-icon, .announcement-icon, .action-icon, .icon").forEach((node) => {
-    const value = node.textContent.trim();
-    if (replacements.has(value)) node.textContent = replacements.get(value);
-  });
-}
-
 function prioritizeDashboardTasks(section) {
   const grid = document.querySelector(".function-grid, .manager-actions");
-  if (!grid) return;
+  if (!grid || grid.dataset.organized === "true") return;
   const priorities = section === "employee"
     ? ["leave-apply.html", "leave-history.html", "notifications.html"]
     : ["leave-requests.html", "late-notices.html", "team.html"];
   const cards = [...grid.children];
+  const rank = (card) => {
+    const href = card.matches("a") ? card.getAttribute("href") : card.querySelector("a")?.getAttribute("href");
+    const index = priorities.findIndex((item) => href?.includes(item));
+    return index < 0 ? 99 : index;
+  };
   cards.sort((left, right) => {
     const leftHref = left.matches("a") ? left.getAttribute("href") : left.querySelector("a")?.getAttribute("href");
     const rightHref = right.matches("a") ? right.getAttribute("href") : right.querySelector("a")?.getAttribute("href");
-    const rank = (href) => { const index = priorities.findIndex((item) => href?.includes(item)); return index < 0 ? 99 : index; };
-    return rank(leftHref) - rank(rightHref);
+    const hrefRank = (href) => { const index = priorities.findIndex((item) => href?.includes(item)); return index < 0 ? 99 : index; };
+    return hrefRank(leftHref) - hrefRank(rightHref);
   }).forEach((card) => grid.appendChild(card));
+  grid.dataset.organized = "true";
+
+  if (section === "employee") {
+    const secondary = cards.filter((card) => rank(card) === 99);
+    if (secondary.length) {
+      const details = document.createElement("details");
+      details.className = "secondary-actions";
+      details.innerHTML = '<summary>其他人事功能</summary><div class="secondary-action-grid"></div>';
+      const secondaryGrid = details.querySelector(".secondary-action-grid");
+      secondary.forEach((card) => secondaryGrid.appendChild(card));
+      grid.insertAdjacentElement("afterend", details);
+    }
+    const heading = grid.previousElementSibling?.querySelector("h2");
+    if (heading) heading.textContent = "常用任務";
+  }
 }
 
 async function apiRequest(path, options = {}) {
@@ -186,7 +194,6 @@ function logout() {
 document.addEventListener("DOMContentLoaded", async () => {
   const section = window.location.pathname.match(/\/(employee|manager|admin)\//)?.[1];
   installAdminSidebar();
-  normalizeLegacyIcons();
   prioritizeDashboardTasks(section);
   const notice = new URLSearchParams(window.location.search).get("notice");
   if (notice) {

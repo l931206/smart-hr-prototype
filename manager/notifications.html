@@ -292,7 +292,7 @@
     </a>
   </nav>
 </body>
-  <script src="../assets/js/api.js?v=20260814-review1"></script>
+  <script src="../assets/js/api.js?v=20260817-review2"></script>
   <script>
     (async () => {
       try {
@@ -302,14 +302,14 @@
         if (counts[0]) counts[0].textContent = String(notifications.filter((item) => !item.is_read).length);
         if (counts[1]) counts[1].textContent = String(notifications.filter((item) => item.category === "leave" && !item.is_read).length);
         if (counts[2]) counts[2].textContent = String(notifications.length);
-        document.querySelector("#managerNotificationList").innerHTML = notifications.map((item) => `<a class="manager-notification-card ${item.is_read ? "" : "unread"}" href="notification-detail.html?id=${item.id}"><div class="manager-notification-head"><div class="manager-notification-title"><span class="manager-notification-dot"></span><h2>${item.title}</h2></div><span class="manager-notification-time">${new Date(item.created_at).toLocaleString("zh-TW")}</span></div><p class="manager-notification-message">${item.content}</p><span class="manager-notification-tag tag-system">${item.category === "leave" ? "請假" : "系統通知"}</span></a>`).join("") || "<p>目前沒有通知。</p>";
+        document.querySelector("#managerNotificationList").innerHTML = notifications.map((item) => `<a class="manager-notification-card ${item.is_read ? "" : "unread"}" href="notification-detail.html?id=${Number(item.id)}"><div class="manager-notification-head"><div class="manager-notification-title"><span class="manager-notification-dot"></span><h2>${hrEscapeHtml(item.title)}</h2></div><span class="manager-notification-time">${hrEscapeHtml(new Date(item.created_at).toLocaleString("zh-TW"))}</span></div><p class="manager-notification-message">${hrEscapeHtml(item.content)}</p><span class="manager-notification-tag tag-system">${item.category === "leave" ? "請假" : "系統通知"}</span></a>`).join("") || "<p>目前沒有通知。</p>";
         const markAll = document.querySelector(".manager-mark-read");
         markAll?.addEventListener("click", async () => {
           markAll.disabled = true;
           await Promise.all(notifications.filter((item) => !item.is_read).map((item) => apiRequest(`/notifications/${item.id}/`, { method: "PATCH", body: JSON.stringify({ is_read: true }) })));
           window.location.reload();
         });
-      } catch (error) { document.querySelector("#managerNotificationList").innerHTML = `<p>${error.message || "無法載入通知。"}</p>`; }
+      } catch (error) { document.querySelector("#managerNotificationList").innerHTML = `<p>${hrEscapeHtml(error.message || "無法載入通知。")}</p>`; }
     })();
   </script>
 </html>

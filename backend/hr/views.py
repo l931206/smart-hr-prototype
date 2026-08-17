@@ -1,6 +1,7 @@
 from django.contrib.auth import logout
 from django.db.models import Q
 from django.utils import timezone
+from decimal import Decimal
 from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
 from rest_framework import status, viewsets
 from rest_framework import serializers as drf_serializers
@@ -41,6 +42,23 @@ def record_audit(request, action, target, details=None, actor_override=None):
         details=details or {},
         ip_address=request.META.get("REMOTE_ADDR"),
     )
+
+
+def leave_balance_defaults(employee, leave_type, year):
+    """Return the yearly entitlement and any eligible prior-year carry-over."""
+    carried_days = Decimal("0")
+    if leave_type.allow_carry_over:
+        previous = LeaveBalance.objects.filter(
+            employee=employee,
+            leave_type=leave_type,
+            year=year - 1,
+        ).first()
+        if previous:
+            carried_days = max(previous.remaining_days, Decimal("0"))
+    return {
+        "allocated_days": leave_type.default_days,
+        "carried_days": carried_days,
+    }
 
 
 class AdminWriteMixin:
@@ -371,18 +389,13 @@ class LeaveTypeViewSet(AdminWriteMixin, viewsets.ModelViewSet):
     def perform_create(self, serializer):
         leave_type = serializer.save()
         if leave_type.deduct_quota:
+            year = timezone.localdate().year
             for employee in User.objects.filter(role=User.Role.EMPLOYEE, is_active=True):
                 LeaveBalance.objects.get_or_create(
                     employee=employee,
                     leave_type=leave_type,
-                    year=timezone.localdate().year,
-                    defaults={
-                        "allocated_days": leave_type.default_days,
-                        "carried_days": max(
-                            LeaveBalance.objects.filter(employee=employee, leave_type=leave_type, year=year - 1).first().remaining_days,
-                            0,
-                        ) if leave_type.allow_carry_over and LeaveBalance.objects.filter(employee=employee, leave_type=leave_type, year=year - 1).exists() else 0,
-                    },
+                    year=year,
+                    defaults=leave_balance_defaults(employee, leave_type, year),
                 )
         record_audit(self.request, "新增", leave_type)
 
@@ -405,7 +418,7 @@ class LeaveBalanceViewSet(AdminWriteMixin, viewsets.ModelViewSet):
                     employee=employee,
                     leave_type=leave_type,
                     year=year,
-                    defaults={"allocated_days": leave_type.default_days},
+                    defaults=leave_balance_defaults(employee, leave_type, year),
                 )
         return super().get_queryset().filter(employee__in=employees, year=year)
 

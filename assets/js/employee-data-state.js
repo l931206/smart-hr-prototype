@@ -26,13 +26,13 @@
             const category = selects[0]?.value || "";
             let filtered = announcements.filter((item) => `${item.title} ${item.content}`.toLowerCase().includes(keyword) && (!category || item.category_label === category));
             filtered = [...filtered].sort((a, b) => (selects[1]?.selectedIndex === 1 ? 1 : -1) * (new Date(b.published_at || b.created_at) - new Date(a.published_at || a.created_at)));
-            list.innerHTML = filtered.length ? filtered.map((item) => `<a class="announcement-card" href="announcement-detail.html?id=${item.id}"><div class="announcement-head"><div class="announcement-title-group"><div class="announcement-icon">📢</div><div><h2>${escapeHtml(item.title)}</h2><p>發布人：${escapeHtml(item.author_name || "—")}</p></div></div><time class="announcement-date">${new Date(item.published_at || item.created_at).toLocaleDateString("zh-TW")}</time></div><p class="announcement-excerpt">${escapeHtml(item.content)}</p><span class="announcement-tag tag-company">${escapeHtml(item.category_label || "公告")}</span><span class="announcement-view-link">查看公告內容 →</span></a>`).join("") : empty("目前尚無符合條件的公告資料。");
+            list.innerHTML = filtered.length ? filtered.map((item) => `<a class="announcement-card" href="announcement-detail.html?id=${Number(item.id)}"><div class="announcement-head"><div class="announcement-title-group"><div class="announcement-icon">公</div><div><h2>${escapeHtml(item.title)}</h2><p>發布人：${escapeHtml(item.author_name || "—")}</p></div></div><time class="announcement-date">${new Date(item.published_at || item.created_at).toLocaleDateString("zh-TW")}</time></div><p class="announcement-excerpt">${escapeHtml(item.content)}</p><span class="announcement-tag tag-company">${escapeHtml(item.category_label || "公告")}</span><span class="announcement-view-link">查看公告內容 →</span></a>`).join("") : empty("目前尚無符合條件的公告資料。");
           };
           [search, ...selects].filter(Boolean).forEach((element) => element.addEventListener("input", render));
           render();
         } catch (error) {
           const list = document.querySelector(".announcement-list");
-          if (list) list.innerHTML = empty(`無法載入公告：${error.message}`);
+          if (list) list.innerHTML = empty(`無法載入公告：${escapeHtml(error.message)}`);
         }
       })();
     }
@@ -56,7 +56,7 @@
           });
         } catch (error) {
           const list = document.querySelector(".notification-list");
-          if (list) list.innerHTML = empty(`無法載入通知：${error.message}`);
+          if (list) list.innerHTML = empty(`無法載入通知：${escapeHtml(error.message)}`);
         }
       })();
     }

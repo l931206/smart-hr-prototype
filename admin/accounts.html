@@ -334,7 +334,7 @@
     </section>
   </main>
 </body>
-  <script src="../assets/js/api.js?v=20260814-review1"></script>
+  <script src="../assets/js/api.js?v=20260817-review2"></script>
   <script>
     (async () => {
       try {
@@ -361,14 +361,14 @@
             const filterMatch = activeFilter === "all" || (activeFilter === "active" && user.is_active) || (activeFilter === "inactive" && !user.is_active) || activeFilter === "pending" && false;
             return text.includes(keyword) && roleMatch && statusMatch && filterMatch;
           });
-          list.innerHTML = filtered.map((user) => `<a class="account-card" href="account-detail.html?id=${user.id}"><div class="account-head"><div class="account-main"><div class="avatar">${(user.display_name || user.username || "員").slice(0, 1)}</div><div><h2>${user.display_name || user.username}</h2><p>登入帳號：${user.username}｜${user.employee_no || "—"}</p></div></div><span class="status ${user.is_active ? "active" : "disabled"}">${user.is_active ? "已啟用" : "已停用"}</span></div><div class="account-info"><div class="info-item"><span>系統角色</span><strong><span class="role-tag">${user.role_label}</span></strong></div><div class="info-item"><span>所屬部門</span><strong>${user.department_name || "—"}</strong></div><div class="info-item"><span>電子郵件</span><strong>${user.email || "—"}</strong></div></div><span class="view-link">查看與設定帳號權限 →</span></a>`).join("") || `<p>${activeFilter === "pending" ? "目前沒有等待啟用的帳號。" : "目前沒有符合條件的帳號。"}</p>`;
+          list.innerHTML = filtered.map((user) => `<a class="account-card" href="account-detail.html?id=${Number(user.id)}"><div class="account-head"><div class="account-main"><div class="avatar">${hrEscapeHtml((user.display_name || user.username || "員").slice(0, 1))}</div><div><h2>${hrEscapeHtml(user.display_name || user.username)}</h2><p>登入帳號：${hrEscapeHtml(user.username)}｜${hrEscapeHtml(user.employee_no || "—")}</p></div></div><span class="status ${user.is_active ? "active" : "disabled"}">${user.is_active ? "已啟用" : "已停用"}</span></div><div class="account-info"><div class="info-item"><span>系統角色</span><strong><span class="role-tag">${hrEscapeHtml(user.role_label)}</span></strong></div><div class="info-item"><span>所屬部門</span><strong>${hrEscapeHtml(user.department_name || "—")}</strong></div><div class="info-item"><span>電子郵件</span><strong>${hrEscapeHtml(user.email || "—")}</strong></div></div><span class="view-link">查看與設定帳號權限 →</span></a>`).join("") || `<p>${activeFilter === "pending" ? "目前沒有等待啟用的帳號。" : "目前沒有符合條件的帳號。"}</p>`;
         };
         document.querySelectorAll(".summary-card[data-filter]").forEach((card) => card.addEventListener("click", () => { activeFilter = card.dataset.filter; document.querySelectorAll(".summary-card[data-filter]").forEach((item) => item.classList.toggle("selected", item === card)); render(); }));
         document.querySelectorAll(".summary-card[data-filter]").forEach((card) => card.addEventListener("keydown", (event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); card.click(); } }));
         [search, ...selects].filter(Boolean).forEach((element) => element.addEventListener("input", render));
         document.querySelectorAll(".summary-card[data-filter]").forEach((item) => item.classList.toggle("selected", item.dataset.filter === activeFilter));
         render();
-      } catch (error) { document.querySelector("#accountList").innerHTML = `<p>${error.message || "無法載入帳號資料。"}</p>`; }
+      } catch (error) { document.querySelector("#accountList").innerHTML = `<p>${hrEscapeHtml(error.message || "無法載入帳號資料。")}</p>`; }
     })();
   </script>
 </html>

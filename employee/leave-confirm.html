@@ -248,7 +248,7 @@
       <small>我的</small>
     </a>
   </nav>
-  <script src="../assets/js/api.js?v=20260814-review1"></script>
+  <script src="../assets/js/api.js?v=20260817-review2"></script>
   <script>
     (() => {
       const draft = JSON.parse(sessionStorage.getItem("hr_leave_draft") || "null");
@@ -264,13 +264,27 @@
       const formatDate = (value) => value ? new Date(`${value}T00:00:00`).toLocaleDateString("zh-TW") : "—";
       const start = new Date(`${draft.start_date}T00:00:00`);
       const end = new Date(`${draft.end_date}T00:00:00`);
-      const days = Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())
-        ? "—"
-        : Math.floor((end - start) / 86400000) + 1;
+      const isClockTime = String(draft.start_time).includes(":") && String(draft.end_time).includes(":");
+      const calculateDuration = () => {
+        if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) return "—";
+        if (isClockTime && draft.start_date === draft.end_date) {
+          const [startHour, startMinute] = draft.start_time.split(":").map(Number);
+          const [endHour, endMinute] = draft.end_time.split(":").map(Number);
+          const minutes = (endHour * 60 + endMinute) - (startHour * 60 + startMinute);
+          return `${minutes / 60} 小時（${minutes / 480} 天）`;
+        }
+        let businessDays = 0;
+        for (const day = new Date(start); day <= end; day.setDate(day.getDate() + 1)) {
+          if (day.getDay() !== 0 && day.getDay() !== 6) businessDays += 1;
+        }
+        if (draft.start_time === "下午") businessDays -= 0.5;
+        if (draft.end_time === "上午") businessDays -= 0.5;
+        return `${Math.max(businessDays, 0)} 天`;
+      };
 
       set("confirmLeaveType", draft.leave_type);
       set("confirmDates", `${formatDate(draft.start_date)} ${draft.start_time || ""} 至 ${formatDate(draft.end_date)} ${draft.end_time || ""}`);
-      set("confirmDays", `${days} 天`);
+      set("confirmDays", calculateDuration());
       set("confirmReason", draft.reason);
       set("confirmAttachment", draft.attachment_name || "未上傳附件");
 
@@ -294,8 +308,7 @@
         button.setAttribute("aria-disabled", "true");
         try {
           const requestItem = await apiRequest("/leave-requests/", { method: "POST", body: JSON.stringify(draft) });
-          sessionStorage.removeItem("hr_leave_draft");
-          sessionStorage.removeItem("hr_leave_draft");
+        sessionStorage.removeItem("hr_leave_draft");
           window.location.href = `leave-history.html?notice=${encodeURIComponent("請假申請已送出")}`;
         } catch (error) {
           button.removeAttribute("aria-disabled");

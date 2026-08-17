@@ -243,6 +243,7 @@
           >
             <option>上午</option>
             <option>下午</option>
+            <option id="startHourlyOption" value="hourly" hidden disabled>指定時間</option>
           </select>
         </div>
 
@@ -256,9 +257,22 @@
           >
             <option>下午</option>
             <option>上午</option>
+            <option id="endHourlyOption" value="hourly" hidden disabled>指定時間</option>
           </select>
         </div>
       </div>
+
+      <div class="two-column" id="hourlyFields" hidden>
+        <div class="form-group">
+          <label for="startClock">開始時間</label>
+          <input id="startClock" name="startClock" type="time" step="3600">
+        </div>
+        <div class="form-group">
+          <label for="endClock">結束時間</label>
+          <input id="endClock" name="endClock" type="time" step="3600">
+        </div>
+      </div>
+      <p class="help" id="hourlyRule">選擇允許時數申請的假別後，可改用指定時間。</p>
 
       <div class="form-group">
         <label for="reason">請假原因</label>
@@ -336,7 +350,7 @@
       <small>我的</small>
     </a>
   </nav>
-  <script src="../assets/js/api.js?v=20260814-review1"></script>
+  <script src="../assets/js/api.js?v=20260817-review2"></script>
   <script>
     document.querySelector("#leaveForm").addEventListener("submit", async (event) => {
       event.preventDefault();
@@ -345,12 +359,19 @@
       button.disabled = true;
       try {
         const attachment = await encodeAttachment(form.attachment.files[0]);
+        const usesHourly = form.startTime.value === "hourly" || form.endTime.value === "hourly";
+        if (usesHourly && (form.startTime.value !== "hourly" || form.endTime.value !== "hourly")) {
+          throw new Error("時數請假必須同時選擇開始與結束的指定時間。");
+        }
+        if (usesHourly && (!form.startClock.value || !form.endClock.value)) {
+          throw new Error("請填寫完整的開始與結束時間。");
+        }
         const payload = {
           leave_type: form.leaveType.value,
           start_date: form.startDate.value,
           end_date: form.endDate.value,
-          start_time: form.startTime.value,
-          end_time: form.endTime.value,
+          start_time: usesHourly ? form.startClock.value : form.startTime.value,
+          end_time: usesHourly ? form.endClock.value : form.endTime.value,
           reason: form.reason.value.trim(),
           ...attachment
         };
@@ -369,15 +390,49 @@
         const leaveTypes = (Array.isArray(typePayload) ? typePayload : (typePayload.results || [])).filter((item) => item.is_active);
         const balances = Array.isArray(balancePayload) ? balancePayload : (balancePayload.results || []);
         const leaveTypeSelect = document.querySelector("#leaveType");
-        if (leaveTypeSelect) leaveTypeSelect.innerHTML = `<option value="">請選擇假別</option>${leaveTypes.map((item) => `<option value="${item.name}">${item.name}</option>`).join("")}`;
+        if (leaveTypeSelect) leaveTypeSelect.innerHTML = `<option value="">請選擇假別</option>${leaveTypes.map((item) => `<option value="${hrEscapeHtml(item.name)}">${hrEscapeHtml(item.name)}</option>`).join("")}`;
         const balance = document.querySelector(".leave-balance strong");
         const rows = document.querySelectorAll(".leave-summary .summary-row strong");
+        const startTimeSelect = document.querySelector("#startTime");
+        const endTimeSelect = document.querySelector("#endTime");
+        const hourlyFields = document.querySelector("#hourlyFields");
+        const startHourlyOption = document.querySelector("#startHourlyOption");
+        const endHourlyOption = document.querySelector("#endHourlyOption");
+        const hourlyRule = document.querySelector("#hourlyRule");
+        const syncHourlyFields = () => {
+          const enabled = !startHourlyOption.disabled;
+          const active = enabled && startTimeSelect.value === "hourly" && endTimeSelect.value === "hourly";
+          hourlyFields.hidden = !active;
+          document.querySelector("#startClock").required = active;
+          document.querySelector("#endClock").required = active;
+        };
         const updateBalance = () => {
           const selected = leaveTypes.find((item) => item.name === leaveTypeSelect?.value);
           const item = balances.find((entry) => entry.leave_type === selected?.id);
           if (balance) balance.textContent = item ? `${Number(item.remaining_days)} 天` : (selected?.deduct_quota ? "0 天" : "不扣除額度");
+          const hourlyEnabled = Boolean(selected?.allow_hourly);
+          [startHourlyOption, endHourlyOption].forEach((option) => {
+            option.hidden = !hourlyEnabled;
+            option.disabled = !hourlyEnabled;
+          });
+          if (!hourlyEnabled) {
+            if (startTimeSelect.value === "hourly") startTimeSelect.value = "上午";
+            if (endTimeSelect.value === "hourly") endTimeSelect.value = "下午";
+          }
+          hourlyRule.textContent = selected
+            ? `${selected.name}最小申請單位：${selected.minimum_unit}${hourlyEnabled ? "，可使用指定時間。" : "。"}`
+            : "選擇允許時數申請的假別後，可改用指定時間。";
+          syncHourlyFields();
         };
         leaveTypeSelect?.addEventListener("change", updateBalance);
+        startTimeSelect.addEventListener("change", () => {
+          if (startTimeSelect.value === "hourly") endTimeSelect.value = "hourly";
+          syncHourlyFields();
+        });
+        endTimeSelect.addEventListener("change", () => {
+          if (endTimeSelect.value === "hourly") startTimeSelect.value = "hourly";
+          syncHourlyFields();
+        });
         const annual = leaveTypes.find((item) => item.code === "ANNUAL" || item.name.includes("特休"));
         const annualBalance = balances.find((entry) => entry.leave_type === annual?.id);
         if (balance) balance.textContent = annualBalance ? `${Number(annualBalance.remaining_days)} 天` : "請選擇假別";

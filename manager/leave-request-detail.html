@@ -298,21 +298,21 @@
       </div>
 
       <div class="request-actions">
-        <a
+        <button
           class="button approve-button"
           id="approveRequest"
-          href="approval-success.html"
+          type="button"
         >
           核准申請
-        </a>
+        </button>
 
-        <a
+        <button
           class="button reject-button"
           id="rejectRequest"
-          href="rejection-success.html"
+          type="button"
         >
           退回申請
-        </a>
+        </button>
 
         <a
           class="button secondary"
@@ -352,7 +352,7 @@
       <small>更多</small>
     </a>
   </nav>
-  <script src="../assets/js/api.js?v=20260814-review1"></script>
+  <script src="../assets/js/api.js?v=20260817-review2"></script>
   <script>
     (async () => {
       const requestId = new URLSearchParams(window.location.search).get("id");

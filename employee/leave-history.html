@@ -296,7 +296,7 @@
       <small>我的</small>
     </a>
   </nav>
-  <script src="../assets/js/api.js?v=20260814-review1"></script>
+  <script src="../assets/js/api.js?v=20260817-review2"></script>
   <script>
     (async () => {
       const list = document.querySelector("#historyList");
@@ -312,7 +312,7 @@
         const years = [...new Set(requests.map((request) => String(request.start_date || "").slice(0, 4)).filter(Boolean))].sort().reverse();
         const leaveTypes = [...new Set(requests.map((request) => request.leave_type).filter(Boolean))];
         if (filters[0]) filters[0].innerHTML = `<option value="">全部年份</option>${years.map((year) => `<option value="${year}">${year} 年</option>`).join("")}`;
-        if (filters[2]) filters[2].innerHTML = `<option value="">全部假別</option>${leaveTypes.map((name) => `<option value="${name}">${name}</option>`).join("")}`;
+        if (filters[2]) filters[2].innerHTML = `<option value="">全部假別</option>${leaveTypes.map((name) => `<option value="${hrEscapeHtml(name)}">${hrEscapeHtml(name)}</option>`).join("")}`;
         const render = () => {
           const year = filters[0]?.value || "";
           const statusText = filters[1]?.value || "全部狀態";
@@ -357,7 +357,7 @@
         });
         render();
       } catch (error) {
-        list.innerHTML = `<div class="card"><p>${error.message || "無法載入請假紀錄。"}</p></div>`;
+        list.innerHTML = `<div class="card"><p>${hrEscapeHtml(error.message || "無法載入請假紀錄。")}</p></div>`;
       }
     })();
   </script>

@@ -536,7 +536,7 @@
       <small>更多</small>
     </a>
   </nav>
-  <script src="../assets/js/api.js?v=20260814-review1"></script>
+  <script src="../assets/js/api.js?v=20260817-review2"></script>
   <script>
     (async () => {
       try {
@@ -594,11 +594,11 @@
         document.querySelectorAll("#calendarGrid .calendar-event").forEach((node) => node.remove());
         events.forEach((event) => { const day = [...document.querySelectorAll("#calendarGrid .calendar-day")].find((node) => node.querySelector(".date-number")?.textContent.trim() === String(event.date) && !node.classList.contains("muted")); if (day) { const link = document.createElement("a"); link.className = `calendar-event ${event.type}`; link.href = event.type === "late" ? `late-notice-detail.html?id=${event.id}` : `leave-request-detail.html?id=${event.id}`; link.textContent = event.text; day.appendChild(link); } });
         const grouped = events.reduce((map, event) => { (map[event.date] ||= []).push(event); return map; }, {});
-        document.querySelector("#mobileSchedule").innerHTML = Object.keys(grouped).sort((a, b) => Number(a) - Number(b)).map((date) => `<article class="mobile-day-card"><div class="mobile-day-head"><strong>${month + 1} 月 ${date} 日</strong><span>${grouped[date].length} 筆安排</span></div>${grouped[date].map((event) => `<a class="calendar-event ${event.type}" href="${event.type === "late" ? `late-notice-detail.html?id=${event.id}` : `leave-request-detail.html?id=${event.id}`}">${event.text}</a>`).join("")}</article>`).join("") || "<p>目前沒有部門請假或晚到安排。</p>";
+        document.querySelector("#mobileSchedule").innerHTML = Object.keys(grouped).sort((a, b) => Number(a) - Number(b)).map((date) => `<article class="mobile-day-card"><div class="mobile-day-head"><strong>${month + 1} 月 ${Number(date)} 日</strong><span>${grouped[date].length} 筆安排</span></div>${grouped[date].map((event) => `<a class="calendar-event ${event.type}" href="${event.type === "late" ? `late-notice-detail.html?id=${Number(event.id)}` : `leave-request-detail.html?id=${Number(event.id)}`}">${hrEscapeHtml(event.text)}</a>`).join("")}</article>`).join("") || "<p>目前沒有部門請假或晚到安排。</p>";
         const schedule = document.querySelector("#scheduleCard");
         const heading = schedule.querySelector("h2");
         schedule.innerHTML = ""; if (heading) schedule.appendChild(heading);
-        schedule.insertAdjacentHTML("beforeend", events.slice(0, 5).map((event) => `<a class="schedule-item" href="${event.type === "late" ? `late-notice-detail.html?id=${event.id}` : `leave-request-detail.html?id=${event.id}`}"><div><h3>${event.text}</h3><p>${year}/${String(month + 1).padStart(2, "0")}/${String(event.date).padStart(2, "0")}</p></div><span class="schedule-status ${event.type}">${event.type === "pending" ? "等待審核" : event.type === "approved" ? "已核准" : "已通知"}</span></a>`).join("") || "<p>目前沒有近期人力安排。</p>");
+        schedule.insertAdjacentHTML("beforeend", events.slice(0, 5).map((event) => `<a class="schedule-item" href="${event.type === "late" ? `late-notice-detail.html?id=${Number(event.id)}` : `leave-request-detail.html?id=${Number(event.id)}`}"><div><h3>${hrEscapeHtml(event.text)}</h3><p>${year}/${String(month + 1).padStart(2, "0")}/${String(Number(event.date)).padStart(2, "0")}</p></div><span class="schedule-status ${event.type}">${event.type === "pending" ? "等待審核" : event.type === "approved" ? "已核准" : "已通知"}</span></a>`).join("") || "<p>目前沒有近期人力安排。</p>");
       } catch (error) { console.error("Calendar data load failed", error); }
     })();
   </script>

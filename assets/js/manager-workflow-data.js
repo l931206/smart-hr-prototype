@@ -19,31 +19,6 @@
     const employeeLink = document.querySelector('a[href="team-member-detail.html"]'); if(employeeLink) employeeLink.href=`team-member-detail.html?id=${item.employee}`;
   }
 
-  async function approvalResult() {
-    const requestId = id(); if (!requestId) return;
-    const item = await apiRequest(`/leave-requests/${requestId}/`);
-    const values = document.querySelectorAll(".approval-info-row strong, .rejection-info-row strong");
-    const data = [item.employee_name || "—", `LEAVE-${String(item.id).padStart(6,"0")}`, item.leave_type, `${item.start_date}－${item.end_date}`, item.status_label];
-    data.forEach((value,index) => { if(values[index]) values[index].textContent=value; });
-  }
-
-  async function announcementResult() {
-    const announcementId = id(); if (!announcementId) return;
-    const item = await apiRequest(`/announcements/${announcementId}/`);
-    document.querySelectorAll(".info .row, .announcement-info .row").forEach((row) => {
-      const label = row.querySelector("span")?.textContent || "";
-      const value = row.querySelector("strong");
-      if (!value) return;
-      if (label.includes("標題")) value.textContent = item.title;
-      else if (label.includes("編號")) value.textContent = `ANN-${item.id}`;
-      else if (label.includes("類型")) value.textContent = item.category_label || "未分類";
-      else if (label.includes("時間")) value.textContent = new Date(item.published_at || item.created_at).toLocaleString("zh-TW");
-      else if (label.includes("範圍")) value.textContent = "所有使用者";
-      else if (label.includes("狀態")) value.textContent = item.is_published ? "已發布" : "草稿";
-    });
-    document.querySelectorAll('a[href="announcement-detail.html"], a[href="announcement-edit.html"]').forEach((link) => { link.href = `${link.getAttribute("href")}?id=${item.id}`; });
-  }
-
   async function announcementDeactivate() {
     const announcementId = id(); if (!announcementId) return;
     const item = await apiRequest(`/announcements/${announcementId}/`);
@@ -58,8 +33,8 @@
     const item = await apiRequest(`/announcements/${announcementId}/`);
     const card = document.querySelector(".announcement-detail-card, article.card, main article");
     if (!card) return;
-    card.innerHTML = `<h1>編輯公告</h1><form id="announcementEditForm"><label>公告標題<input id="editAnnouncementTitle" value="${escapeHtml(item.title)}" required></label><label>公告內容<textarea id="editAnnouncementContent" required>${escapeHtml(item.content)}</textarea></label><label>目前附件<strong>${escapeHtml(item.attachment_name || "未上傳附件")}</strong><input id="editAnnouncementAttachment" type="file" accept=".pdf,.jpg,.jpeg,.png"></label><label>發布狀態<select id="editAnnouncementPublished"><option value="true" ${item.is_published ? "selected" : ""}>已發布</option><option value="false" ${!item.is_published ? "selected" : ""}>草稿</option></select></label><div class="actions"><button class="button primary" type="submit">儲存公告</button><a class="button secondary" href="announcement-detail.html?id=${item.id}">取消</a></div></form>`;
-    card.querySelectorAll("input, textarea, select").forEach((field) => { field.style.cssText = "display:block;width:100%;margin:8px 0 18px;padding:12px;border:1px solid #d8e2ec;border-radius:10px;font:inherit"; });
+    card.innerHTML = `<h1>編輯公告</h1><form id="announcementEditForm"><label>公告標題<input id="editAnnouncementTitle" value="${escapeHtml(item.title)}" required></label><label>公告內容<textarea id="editAnnouncementContent" required>${escapeHtml(item.content)}</textarea></label><label>目前附件<strong>${escapeHtml(item.attachment_name || "未上傳附件")}</strong><input id="editAnnouncementAttachment" type="file" accept=".pdf,.jpg,.jpeg,.png"></label><label>發布狀態<select id="editAnnouncementPublished"><option value="true" ${item.is_published ? "selected" : ""}>已發布</option><option value="false" ${!item.is_published ? "selected" : ""}>草稿</option></select></label><div class="actions"><button class="button primary" type="submit">儲存公告</button><a class="button secondary" href="announcement-detail.html?id=${Number(item.id)}">取消</a></div></form>`;
+    card.querySelectorAll("input, textarea, select").forEach((field) => { field.style.cssText = "display:block;width:100%;margin:8px 0 18px;padding:12px;border:1px solid #d8e2ec;border-radius:8px;font:inherit"; });
     card.querySelector("form").addEventListener("submit", async (event) => { event.preventDefault(); const file=card.querySelector("#editAnnouncementAttachment").files[0]; const attachment=file ? await encodeAttachment(file) : {}; await apiRequest(`/announcements/${item.id}/`, {method:"PATCH",body:JSON.stringify({title:card.querySelector("#editAnnouncementTitle").value.trim(),content:card.querySelector("#editAnnouncementContent").value.trim(),is_published:card.querySelector("#editAnnouncementPublished").value === "true",...attachment})}); location.href=`announcement-detail.html?id=${item.id}&notice=${encodeURIComponent("公告已更新")}`; });
   }
 
@@ -68,8 +43,6 @@
     const path = location.pathname;
     try {
       if (path.endsWith("/approval-record-detail.html")) await approvalDetail();
-      if (path.endsWith("/approval-success.html") || path.endsWith("/rejection-success.html")) await approvalResult();
-      if (/announcement-(create|edit|draft|deactivate)-success\.html$/.test(path)) await announcementResult();
       if (path.endsWith("/announcement-deactivate.html")) await announcementDeactivate();
       if (path.endsWith("/announcement-edit.html")) await announcementEdit();
     } catch (error) {

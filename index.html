@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>智慧人資管理平台｜互動原型</title>
+  <title>智慧人資管理平台｜系統入口</title>
 
   <style>
     * {
@@ -117,16 +117,6 @@
       margin: 7px 0 0;
       color: #64748b;
       line-height: 1.7;
-    }
-
-    .prototype-tag {
-      flex: 0 0 auto;
-      padding: 8px 12px;
-      border-radius: 999px;
-      background: #e2e8f0;
-      color: #475569;
-      font-size: 13px;
-      font-weight: 700;
     }
 
     .role-grid {
@@ -325,11 +315,14 @@
       }
     }
   </style>
+  <link rel="stylesheet" href="assets/css/base.css?v=20260817-review2">
+  <link rel="stylesheet" href="assets/css/components.css?v=20260817-review2">
+  <link rel="stylesheet" href="assets/css/mobile.css?v=20260817-review2">
 </head>
 
 <body>
   <main class="page">
-    <section class="hero">
+    <section class="hero landing-hero">
       <div class="hero-content">
         <p class="eyebrow">SMART HR MANAGEMENT PLATFORM</p>
 
@@ -344,13 +337,13 @@
 
     <section class="section-heading">
       <div>
-        <h2>選擇角色開始體驗</h2>
+        <h2>選擇登入身分</h2>
       </div>
     </section>
 
     <section class="role-grid">
       <a class="role-card" href="login.html?next=employee/index.html">
-        <div class="role-icon">👤</div>
+        <div class="role-icon">員</div>
 
         <h3>員工端</h3>
 
@@ -373,7 +366,7 @@
       </a>
 
       <a class="role-card" href="login.html?next=manager/index.html">
-        <div class="role-icon">🧑‍💼</div>
+        <div class="role-icon">主</div>
 
         <h3>主管工作台</h3>
 
@@ -396,7 +389,7 @@
       </a>
 
       <a class="role-card admin-role" href="login.html?next=admin/index.html">
-        <div class="role-icon">⚙️</div>
+        <div class="role-icon">管</div>
 
         <h3>系統管理後台</h3>
 
@@ -408,8 +401,8 @@
         <ul class="feature-list">
           <li>員工、部門與帳號管理</li>
           <li>角色、權限與假別設定</li>
-          <li>公告、通知與統計報表</li>
-          <li>Trigger、排程與 MCP 整合</li>
+          <li>公告、通知與系統紀錄</li>
+          <li>資料審核與權限控管</li>
         </ul>
 
         <div class="card-footer">

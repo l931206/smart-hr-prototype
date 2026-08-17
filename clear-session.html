@@ -4,9 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>清除登入狀態</title>
+  <link rel="stylesheet" href="assets/css/base.css?v=20260817-review2">
+  <link rel="stylesheet" href="assets/css/components.css?v=20260817-review2">
+  <link rel="stylesheet" href="assets/css/mobile.css?v=20260817-review2">
+  <style>
+    body { min-height: 100vh; display: grid; place-items: center; padding: 20px; }
+    .session-message { width: min(460px, 100%); padding: 24px; text-align: center; background: #fff; border: 1px solid var(--color-border); border-radius: 8px; }
+  </style>
 </head>
 <body>
-  <p>正在清除登入狀態，請稍候…</p>
+  <main class="session-message" aria-live="polite">
+    <h1>正在登出</h1>
+    <p>系統正在清除本機登入狀態並返回登入頁。</p>
+  </main>
   <script>
     localStorage.removeItem("hr_token");
     localStorage.removeItem("hr_user");

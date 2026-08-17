@@ -375,7 +375,7 @@
       <a class="button danger" id="departmentDeactivateLink" href="department-deactivate.html">停用部門</a>
     </div>
   </main>
-  <script src="../assets/js/api.js?v=20260814-review1"></script>
+  <script src="../assets/js/api.js?v=20260817-review2"></script>
   <script>
     (async () => {
       const id = new URLSearchParams(window.location.search).get("id");
@@ -391,7 +391,7 @@
         set("#departmentEmployeeCount", `${members.filter((user) => user.is_active && user.role === "employee").length} 人`); set("#departmentManagerCount", `${members.filter((user) => user.role === "manager" && user.is_active).length} 人`); set("#departmentPendingCount", `${leaves.filter((item) => item.status === "pending" && item.employee_department === department.name).length} 件`); set("#departmentTodayCount", `${leaves.filter((item) => item.employee_department === department.name && item.start_date <= today && item.end_date >= today && item.status === "approved").length} 人`);
         set("#departmentHeroName", department.name); set("#departmentHeroCode", `部門代碼：${department.code}`); set("#departmentHeroDescription", "部門人力與成員資料"); set("#departmentName", department.name); set("#departmentCode", department.code); set("#departmentManager", manager?.display_name); set("#departmentManagerUsername", manager?.username); set("#departmentCreated", department.created_at ? new Date(department.created_at).toLocaleDateString("zh-TW") : "—"); set("#departmentStatus", department.is_active ? "啟用中" : "已停用");
         const heroStatus = document.querySelector("#departmentHeroStatus"); heroStatus.textContent = department.is_active ? "啟用中" : "已停用"; heroStatus.classList.toggle("inactive", !department.is_active);
-        document.querySelector("#departmentMembers").innerHTML = members.map((user) => `<div class="employee"><div class="employee-main"><div class="avatar">${(user.display_name || user.username || "員").slice(0, 1)}</div><div><h3>${user.display_name || user.username}</h3><p>${user.department_name || "—"}｜${user.employee_no || "—"}</p></div></div><span class="role-tag">${user.role_label}</span></div>`).join("") || "<p>目前沒有部門成員。</p>";
+        document.querySelector("#departmentMembers").innerHTML = members.map((user) => `<div class="employee"><div class="employee-main"><div class="avatar">${hrEscapeHtml((user.display_name || user.username || "員").slice(0, 1))}</div><div><h3>${hrEscapeHtml(user.display_name || user.username)}</h3><p>${hrEscapeHtml(user.department_name || "—")}｜${hrEscapeHtml(user.employee_no || "—")}</p></div></div><span class="role-tag">${hrEscapeHtml(user.role_label)}</span></div>`).join("") || "<p>目前沒有部門成員。</p>";
         document.querySelector("#departmentEditLink").href = `department-edit.html?id=${id}`; document.querySelector("#departmentDeactivateLink").href = `department-deactivate.html?id=${id}`;
       } catch (error) { set("#departmentName", `無法載入部門：${error.message}`); }
     })();

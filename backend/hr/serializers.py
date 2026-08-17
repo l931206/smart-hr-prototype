@@ -1,5 +1,7 @@
 from django.contrib.auth import authenticate
 from rest_framework import serializers
+from datetime import datetime
+from decimal import Decimal
 
 from .models import AuditLog, Announcement, Department, LateNotice, LeaveBalance, LeaveRequest, LeaveType, Notification, ProfileChangeRequest, User
 
@@ -145,6 +147,20 @@ class LeaveRequestSerializer(serializers.ModelSerializer):
         uses_clock_time = ":" in start_time or ":" in end_time
         if uses_clock_time and not leave_type.allow_hourly:
             raise serializers.ValidationError({"start_time": "此假別不允許以小時計算。"})
+        requested_minutes = None
+        if uses_clock_time:
+            if ":" not in start_time or ":" not in end_time:
+                raise serializers.ValidationError({"start_time": "時數請假必須同時填寫開始與結束時間。"})
+            if start_date != end_date:
+                raise serializers.ValidationError({"start_date": "時數請假僅能申請同一天。"})
+            try:
+                start_clock = datetime.strptime(start_time, "%H:%M")
+                end_clock = datetime.strptime(end_time, "%H:%M")
+            except ValueError as error:
+                raise serializers.ValidationError({"start_time": "時間格式必須為 HH:MM。"}) from error
+            requested_minutes = int((end_clock - start_clock).total_seconds() // 60)
+            if requested_minutes <= 0:
+                raise serializers.ValidationError({"end_time": "結束時間必須晚於開始時間。"})
         validate_attachment_payload(attachment_name, attachment_data)
         candidate = LeaveRequest(
             employee=getattr(self.instance, "employee", self.context["request"].user),
@@ -163,6 +179,14 @@ class LeaveRequestSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"start_time": "此假別最小申請單位為 1 天。"})
         if "半天" in minimum and (duration * 2) % 1:
             raise serializers.ValidationError({"start_time": "此假別最小申請單位為半天。"})
+        if requested_minutes is not None and "小時" in minimum:
+            try:
+                minimum_hours = Decimal(minimum.split()[0])
+            except (IndexError, ValueError):
+                minimum_hours = Decimal("1")
+            minimum_minutes = int(minimum_hours * 60)
+            if requested_minutes < minimum_minutes or requested_minutes % minimum_minutes:
+                raise serializers.ValidationError({"start_time": f"此假別必須以 {minimum} 為申請單位。"})
         return attrs
 
 
