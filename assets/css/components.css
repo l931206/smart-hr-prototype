@@ -632,7 +632,11 @@ label {
 .admin-sidebar-logout { width: 100%; margin-top: auto; }
 .has-admin-sidebar > .page,
 .has-admin-sidebar > .app,
-.has-admin-sidebar > main { margin-left: max(248px, calc((100vw - var(--page-width)) / 2 + 116px)); }
+.has-admin-sidebar > main {
+  width: min(var(--page-width), calc(100% - 280px));
+  margin-left: calc(248px + max(16px, (100vw - 248px - var(--page-width)) / 2));
+  margin-right: auto;
+}
 
 /* Inline styles in older pages used saturated gradients and oversized shadows. */
 .manager-hero, .admin-hero, .welcome-card, [class*="hero-card"] {

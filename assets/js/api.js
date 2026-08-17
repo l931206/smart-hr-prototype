@@ -11,7 +11,7 @@ const HR_API_BASE_URL = window.HR_API_BASE_URL
     if (document.querySelector(`link[data-shared-hr-style="${file}"]`)) return;
     const link = document.createElement("link");
     link.rel = "stylesheet";
-    link.href = new URL(`../css/${file}?v=20260817-review2`, scriptUrl).href;
+    link.href = new URL(`../css/${file}?v=20260817-review4`, scriptUrl).href;
     link.dataset.sharedHrStyle = file;
     document.head.appendChild(link);
   });
