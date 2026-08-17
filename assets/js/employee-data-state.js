@@ -72,6 +72,7 @@
             const payload = await apiRequest("/announcements/");
             const announcements = Array.isArray(payload) ? payload : (payload.results || []);
             panel.querySelectorAll(".announcement-link").forEach((node) => node.remove());
+            panel.querySelectorAll(":scope > p").forEach((node) => node.remove());
             if (!announcements.length) {
               const message = document.createElement("p");
               message.textContent = "目前尚無公告資料。";
@@ -81,7 +82,7 @@
             announcements.slice(0, 3).reverse().forEach((item) => {
               const link = document.createElement("a");
               link.className = "announcement announcement-link";
-              link.href = `announcement-detail.html?id=${item.id}`;
+              link.href = `announcement-detail.html?id=${Number(item.id)}`;
               link.innerHTML = `<div><strong></strong><p></p></div><time></time>`;
               link.querySelector("strong").textContent = item.title;
               link.querySelector("p").textContent = item.content;
@@ -89,6 +90,7 @@
               panel.appendChild(link);
             });
           } catch (error) {
+            panel.querySelectorAll(":scope > p").forEach((node) => node.remove());
             const message = document.createElement("p");
             message.textContent = `無法載入公告：${error.message}`;
             panel.appendChild(message);
