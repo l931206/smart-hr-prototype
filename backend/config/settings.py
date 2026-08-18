@@ -110,13 +110,19 @@ CENTRAL_API_KEY = os.getenv("CENTRAL_API_KEY", "")
 CENTRAL_SYSTEM_CODE = os.getenv("CENTRAL_SYSTEM_CODE", "smart-hr")
 ENABLE_MOCK_CENTRAL = os.getenv("ENABLE_MOCK_CENTRAL", "0") == "1"
 MOCK_CENTRAL_TOKEN_MAX_AGE = int(os.getenv("MOCK_CENTRAL_TOKEN_MAX_AGE", "900"))
-MCP_PUBLIC_URL = os.getenv("MCP_PUBLIC_URL", "http://127.0.0.1:8000/mcp")
-MCP_AUTH_ISSUER_URL = os.getenv("MCP_AUTH_ISSUER_URL", "http://127.0.0.1:8000")
+RENDER_EXTERNAL_URL = os.getenv("RENDER_EXTERNAL_URL", "").rstrip("/")
+MCP_BASE_URL = RENDER_EXTERNAL_URL or "http://127.0.0.1:8000"
+MCP_PUBLIC_URL = os.getenv("MCP_PUBLIC_URL", f"{MCP_BASE_URL}/mcp")
+MCP_AUTH_ISSUER_URL = os.getenv("MCP_AUTH_ISSUER_URL", MCP_BASE_URL)
 MCP_REQUIRED_SCOPE = os.getenv("MCP_REQUIRED_SCOPE", "smart-hr")
 MCP_DRAFT_TTL_SECONDS = int(os.getenv("MCP_DRAFT_TTL_SECONDS", "600"))
+default_mcp_hosts = ["127.0.0.1", "127.0.0.1:*", "localhost", "localhost:*"]
+public_mcp_host = urlparse(MCP_PUBLIC_URL).netloc
+if public_mcp_host and public_mcp_host not in default_mcp_hosts:
+    default_mcp_hosts.append(public_mcp_host)
 MCP_ALLOWED_HOSTS = [value for value in os.getenv(
     "MCP_ALLOWED_HOSTS",
-    "127.0.0.1,127.0.0.1:*,localhost,localhost:*",
+    ",".join(default_mcp_hosts),
 ).split(",") if value]
 MCP_ALLOWED_ORIGINS = [value for value in os.getenv(
     "MCP_ALLOWED_ORIGINS",
