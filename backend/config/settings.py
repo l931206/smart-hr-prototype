@@ -110,6 +110,18 @@ CENTRAL_API_KEY = os.getenv("CENTRAL_API_KEY", "")
 CENTRAL_SYSTEM_CODE = os.getenv("CENTRAL_SYSTEM_CODE", "smart-hr")
 ENABLE_MOCK_CENTRAL = os.getenv("ENABLE_MOCK_CENTRAL", "0") == "1"
 MOCK_CENTRAL_TOKEN_MAX_AGE = int(os.getenv("MOCK_CENTRAL_TOKEN_MAX_AGE", "900"))
+MCP_PUBLIC_URL = os.getenv("MCP_PUBLIC_URL", "http://127.0.0.1:8000/mcp")
+MCP_AUTH_ISSUER_URL = os.getenv("MCP_AUTH_ISSUER_URL", "http://127.0.0.1:8000")
+MCP_REQUIRED_SCOPE = os.getenv("MCP_REQUIRED_SCOPE", "smart-hr")
+MCP_DRAFT_TTL_SECONDS = int(os.getenv("MCP_DRAFT_TTL_SECONDS", "600"))
+MCP_ALLOWED_HOSTS = [value for value in os.getenv(
+    "MCP_ALLOWED_HOSTS",
+    "127.0.0.1,127.0.0.1:*,localhost,localhost:*",
+).split(",") if value]
+MCP_ALLOWED_ORIGINS = [value for value in os.getenv(
+    "MCP_ALLOWED_ORIGINS",
+    "http://127.0.0.1:*,http://localhost:*",
+).split(",") if value]
 
 authentication_classes = ["rest_framework.authentication.SessionAuthentication"]
 if AUTH_MODE in {"local", "hybrid"}:

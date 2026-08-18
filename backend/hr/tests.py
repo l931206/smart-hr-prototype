@@ -2,11 +2,16 @@ from django.urls import reverse
 from django.test import override_settings
 from django.utils import timezone
 from rest_framework.test import APIRequestFactory, APITestCase
+from rest_framework.exceptions import ValidationError
 from unittest.mock import MagicMock, patch
+from datetime import timedelta
+import asyncio
 
 from .authentication import CentralTokenAuthentication
+from .leave_services import create_mcp_leave_draft, submit_mcp_leave_draft
+from .mcp_server import SmartHRCentralTokenVerifier, mcp
 from .mock_central import issue_mock_token
-from .models import AuditLog, Announcement, Department, LeaveBalance, LeaveRequest, LeaveType, ProfileChangeRequest, User
+from .models import AuditLog, Announcement, Department, LeaveBalance, LeaveRequest, LeaveType, McpLeaveDraft, ProfileChangeRequest, User
 
 
 class CoreApiTests(APITestCase):
@@ -448,3 +453,62 @@ class CoreApiTests(APITestCase):
             format="json",
         )
         self.assertEqual(response.status_code, 404)
+
+    @override_settings(MCP_DRAFT_TTL_SECONDS=600)
+    def test_mcp_preview_requires_confirmation_and_submit_is_single_use(self):
+        draft = create_mcp_leave_draft(self.user, {
+            "leave_type": self.default_leave_type.name,
+            "start_date": "2026-08-19",
+            "end_date": "2026-08-19",
+            "start_time": "上午",
+            "end_time": "下午",
+            "reason": "MCP 請假測試",
+        })
+        self.assertEqual(LeaveRequest.objects.count(), 0)
+        self.assertEqual(draft.summary["requested_days"], "1")
+        self.assertEqual(draft.summary["remaining_after"], "9.0")
+
+        leave_request = submit_mcp_leave_draft(self.user, str(draft.id))
+        self.assertEqual(leave_request.status, LeaveRequest.Status.PENDING)
+        self.assertEqual(LeaveRequest.objects.count(), 1)
+        draft.refresh_from_db()
+        self.assertEqual(draft.submitted_request, leave_request)
+        self.assertTrue(AuditLog.objects.filter(target_id=str(leave_request.id), details__source="mcp").exists())
+        with self.assertRaises(ValidationError):
+            submit_mcp_leave_draft(self.user, str(draft.id))
+
+    def test_expired_mcp_leave_draft_cannot_be_submitted(self):
+        draft = create_mcp_leave_draft(self.user, {
+            "leave_type": self.default_leave_type.name,
+            "start_date": "2026-08-20",
+            "end_date": "2026-08-20",
+            "start_time": "上午",
+            "end_time": "下午",
+            "reason": "過期草稿測試",
+        })
+        McpLeaveDraft.objects.filter(pk=draft.pk).update(expires_at=timezone.now() - timedelta(seconds=1))
+        with self.assertRaises(ValidationError):
+            submit_mcp_leave_draft(self.user, str(draft.id))
+        self.assertEqual(LeaveRequest.objects.count(), 0)
+
+    @override_settings(ENABLE_MOCK_CENTRAL=True, MOCK_CENTRAL_TOKEN_MAX_AGE=900)
+    def test_mcp_token_verifier_maps_central_subject(self):
+        self.user.external_user_id = "central-employee-001"
+        self.user.save(update_fields=["external_user_id"])
+        access_token = asyncio.run(SmartHRCentralTokenVerifier().verify_token(issue_mock_token(self.user)))
+        self.assertIsNotNone(access_token)
+        self.assertEqual(access_token.subject, "central-employee-001")
+        self.assertIn("smart-hr", access_token.scopes)
+
+    def test_mcp_server_exposes_expected_leave_tools(self):
+        tools = asyncio.run(mcp.list_tools())
+        names = {tool.name for tool in tools}
+        self.assertEqual(names, {
+            "get_current_user",
+            "list_leave_types",
+            "get_leave_balance",
+            "preview_leave_request",
+            "submit_leave_request",
+            "list_my_leave_requests",
+            "withdraw_leave_request",
+        })

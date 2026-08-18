@@ -1,7 +1,6 @@
 from django.contrib.auth import logout
 from django.db.models import Q
 from django.utils import timezone
-from decimal import Decimal
 from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
 from rest_framework import status, viewsets
 from rest_framework import serializers as drf_serializers
@@ -13,6 +12,7 @@ from rest_framework.decorators import action
 from rest_framework.views import APIView
 
 from .models import AuditLog, Announcement, Department, LateNotice, LeaveBalance, LeaveRequest, LeaveType, Notification, ProfileChangeRequest, User
+from .leave_services import create_leave_request, leave_balance_defaults, withdraw_leave_request
 from .serializers import (
     AnnouncementSerializer,
     AuditLogSerializer,
@@ -42,23 +42,6 @@ def record_audit(request, action, target, details=None, actor_override=None):
         details=details or {},
         ip_address=request.META.get("REMOTE_ADDR"),
     )
-
-
-def leave_balance_defaults(employee, leave_type, year):
-    """Return the yearly entitlement and any eligible prior-year carry-over."""
-    carried_days = Decimal("0")
-    if leave_type.allow_carry_over:
-        previous = LeaveBalance.objects.filter(
-            employee=employee,
-            leave_type=leave_type,
-            year=year - 1,
-        ).first()
-        if previous:
-            carried_days = max(previous.remaining_days, Decimal("0"))
-    return {
-        "allocated_days": leave_type.default_days,
-        "carried_days": carried_days,
-    }
 
 
 class AdminWriteMixin:
@@ -274,25 +257,7 @@ class LeaveRequestViewSet(viewsets.ModelViewSet):
         return queryset.filter(employee=self.request.user)
 
     def perform_create(self, serializer):
-        if self.request.user.role != User.Role.EMPLOYEE:
-            raise PermissionDenied("只有員工可以提出請假申請。")
-        leave_type = serializer.validated_data["leave_type"]
-        initial_status = LeaveRequest.Status.PENDING if leave_type.requires_manager_approval else LeaveRequest.Status.APPROVED
-        leave_request = serializer.save(
-            employee=self.request.user,
-            status=initial_status,
-            reviewed_at=None if initial_status == LeaveRequest.Status.PENDING else timezone.now(),
-        )
-        record_audit(self.request, "提出請假", leave_request)
-        department = self.request.user.department
-        manager = self.request.user.manager or (department.employees.filter(role=User.Role.MANAGER).first() if department else None)
-        if manager:
-            Notification.objects.create(
-                recipient=manager,
-                title="收到新的請假申請",
-                content=f"{self.request.user.display_name or self.request.user.username} 提出{leave_request.leave_type.name}申請。",
-                category="leave",
-            )
+        create_leave_request(self.request.user, serializer, source="web")
 
     def perform_update(self, serializer):
         if self.request.user.role == User.Role.EMPLOYEE:
@@ -328,14 +293,7 @@ class LeaveRequestViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=["post"])
     def withdraw(self, request, pk=None):
-        leave_request = self.get_object()
-        if request.user.role != User.Role.EMPLOYEE or leave_request.employee_id != request.user.id:
-            raise PermissionDenied("只能撤回自己的請假申請。")
-        if leave_request.status != LeaveRequest.Status.PENDING:
-            raise ValidationError({"status": "只有待審核的請假申請可以撤回。"})
-        leave_request.status = LeaveRequest.Status.WITHDRAWN
-        leave_request.save(update_fields=["status"])
-        record_audit(request, "撤回請假", leave_request)
+        leave_request = withdraw_leave_request(request.user, pk, source="web")
         return Response(self.get_serializer(leave_request).data)
 
 

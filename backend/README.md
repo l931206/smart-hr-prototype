@@ -11,7 +11,7 @@ py -m venv .venv
 pip install -r requirements.txt
 py manage.py migrate
 py manage.py createsuperuser
-py manage.py runserver
+uvicorn config.asgi:application --host 127.0.0.1 --port 8000
 ```
 
 The API is available at `http://127.0.0.1:8000/api/`.
@@ -21,7 +21,8 @@ The API is available at `http://127.0.0.1:8000/api/`.
 The repository includes `render.yaml` for a web service and PostgreSQL database.
 Create a new Blueprint in Render, connect this repository, and select the `backend`
 directory as the Blueprint root. Render will run migrations and collect static files
-before starting Gunicorn.
+before starting the ASGI application with Uvicorn. The same Render service hosts
+the Django REST API and the remote MCP endpoint.
 
 Before deployment, configure the three `DEMO_*_PASSWORD` values in Render's
 Environment page. They are declared with `sync: false` in `render.yaml` so secrets
@@ -55,3 +56,15 @@ referenced by `DATABASE_URL`.
 由 Django 簽章且預設 15 分鐘過期。此功能用來在正式中控尚未提供規格前
 驗證完整流程；正式上線時必須設定 `ENABLE_MOCK_CENTRAL=0`，並填入真正的
 `CENTRAL_TOKEN_VERIFY_URL`。
+
+## MCP 中控／AI 串接
+
+- Streamable HTTP endpoint: `/mcp`
+- Authorization: `Authorization: Bearer <central-token>`
+- Integration guide: `docs/MCP_INTEGRATION.md`
+- Local end-to-end check: `python scripts/test_mcp_flow.py`
+
+MCP 與 REST API 使用同一組中控 Token 驗證及 Django 請假規則。AI 必須先呼叫
+`preview_leave_request` 取得短效 `draft_id`，向使用者顯示明確日期、時段、
+天數與剩餘額度，取得確認後才能呼叫 `submit_leave_request`。同一個草稿只能
+成功送出一次，預設 10 分鐘後失效。

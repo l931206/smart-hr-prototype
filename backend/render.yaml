@@ -2,8 +2,9 @@ services:
   - type: web
     name: smart-hr-api
     runtime: python
-    buildCommand: pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --no-input
-    startCommand: gunicorn config.wsgi:application
+    plan: free
+    buildCommand: pip install -r requirements.txt && python manage.py migrate && python manage.py bootstrap_demo && python manage.py collectstatic --no-input
+    startCommand: uvicorn config.asgi:application --host 0.0.0.0 --port $PORT
     healthCheckPath: /api/health/
     envVars:
       - key: DJANGO_SECRET_KEY
@@ -16,8 +17,36 @@ services:
         value: "1"
       - key: MOCK_CENTRAL_TOKEN_MAX_AGE
         value: "900"
+      - key: MCP_PUBLIC_URL
+        value: https://smart-hr-api-8rxh.onrender.com/mcp
+      - key: MCP_AUTH_ISSUER_URL
+        value: https://smart-hr-api-8rxh.onrender.com
+      - key: MCP_REQUIRED_SCOPE
+        value: smart-hr
+      - key: MCP_DRAFT_TTL_SECONDS
+        value: "600"
+      - key: MCP_ALLOWED_HOSTS
+        value: smart-hr-api-8rxh.onrender.com
+      - key: MCP_ALLOWED_ORIGINS
+        value: https://l931206.github.io
+      - key: DEMO_EMPLOYEE_USERNAME
+        value: employee01
+      - key: DEMO_EMPLOYEE_PASSWORD
+        sync: false
+      - key: DEMO_MANAGER_USERNAME
+        value: manager01
+      - key: DEMO_MANAGER_PASSWORD
+        sync: false
+      - key: DEMO_ADMIN_USERNAME
+        value: admin01
+      - key: DEMO_ADMIN_PASSWORD
+        sync: false
+      - key: CENTRAL_TOKEN_VERIFY_URL
+        sync: false
+      - key: CENTRAL_API_KEY
+        sync: false
       - key: DJANGO_ALLOWED_HOSTS
-        value: smart-hr-api.onrender.com
+        value: "*"
       - key: CORS_ALLOWED_ORIGINS
         value: https://l931206.github.io
       - key: CSRF_TRUSTED_ORIGINS

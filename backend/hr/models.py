@@ -1,7 +1,9 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.utils import timezone
 from decimal import Decimal
 from datetime import date, datetime, timedelta
+import uuid
 
 
 class Department(models.Model):
@@ -104,6 +106,32 @@ class LeaveRequest(models.Model):
         if self.end_time == "上午":
             result -= Decimal("0.5")
         return max(result, Decimal("0"))
+
+
+class McpLeaveDraft(models.Model):
+    """Short-lived, single-use leave draft created by an MCP preview tool."""
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    employee = models.ForeignKey(User, on_delete=models.CASCADE, related_name="mcp_leave_drafts")
+    payload = models.JSONField(default=dict)
+    summary = models.JSONField(default=dict)
+    expires_at = models.DateTimeField()
+    submitted_request = models.OneToOneField(
+        LeaveRequest,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="mcp_draft",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    submitted_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    @property
+    def is_expired(self):
+        return timezone.now() >= self.expires_at
 
 
 class Announcement(models.Model):

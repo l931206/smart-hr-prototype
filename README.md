@@ -8,6 +8,7 @@
 - API 健康檢查：https://smart-hr-api-8rxh.onrender.com/api/health/
 - Swagger API 文件：https://smart-hr-api-8rxh.onrender.com/api/docs/
 - OpenAPI Schema：https://smart-hr-api-8rxh.onrender.com/api/schema/
+- MCP Endpoint：https://smart-hr-api-8rxh.onrender.com/mcp
 
 GitHub repository 的既有網址仍保留 `smart-hr-prototype` slug，以避免已分享的 Pages 與 API 整合連結失效；產品名稱與文件定位皆以「Smart HR 智慧人資管理平台」為準。
 
@@ -19,7 +20,7 @@ GitHub repository 的既有網址仍保留 `smart-hr-prototype` slug，以避免
 瀏覽器（GitHub Pages HTML/CSS/JavaScript）
               │ HTTPS / JSON / Token 或 Bearer Token
               ▼
-Render（Django REST API）
+Render（Django REST API + MCP Server）
               │ Django ORM
               ▼
 Render PostgreSQL（正式資料）
@@ -48,7 +49,7 @@ python -m venv .venv
 pip install -r requirements.txt
 python manage.py migrate
 python manage.py bootstrap_demo
-python manage.py runserver
+uvicorn config.asgi:application --host 127.0.0.1 --port 8000
 ```
 
 ## 環境變數
@@ -65,6 +66,11 @@ python manage.py runserver
 | `CENTRAL_API_KEY` | 呼叫中控服務的金鑰 | 是 |
 | `ENABLE_MOCK_CENTRAL` | 是否啟用展示用中控登入 | 否 |
 | `CORS_ALLOWED_ORIGINS` | 允許呼叫 API 的前端網址 | 否 |
+| `MCP_PUBLIC_URL` | 中控連接的公開 MCP URL | 否 |
+| `MCP_AUTH_ISSUER_URL` | 中控授權服務的 issuer | 否 |
+| `MCP_REQUIRED_SCOPE` | MCP Token 必須具備的 scope | 否 |
+| `MCP_DRAFT_TTL_SECONDS` | 請假確認草稿有效秒數 | 否 |
+| `MCP_ALLOWED_HOSTS` / `MCP_ALLOWED_ORIGINS` | MCP DNS rebinding 與來源限制 | 否 |
 
 `render.yaml` 只宣告變數名稱；密碼與金鑰必須在 Render Dashboard 設定，不得提交到版本庫。
 
@@ -81,3 +87,4 @@ python manage.py test
 - `assets/js/`：API、權限與各功能資料同步。
 - `backend/hr/`：資料模型、API、權限與測試。
 - `backend/config/`：Django 與部署設定。
+- `docs/MCP_INTEGRATION.md`：中控、文字與語音請假的 MCP 串接合約。
