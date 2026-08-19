@@ -61,6 +61,8 @@ const identities = {
       await page.getByRole("heading", { name: "我的資料" }).waitFor();
       assert.equal(await page.locator(".profile-hero").count(), 0, "個人資料頁不應顯示大型裝飾性區塊");
       assert.equal(await page.locator(".profile-content .profile-card").count(), 2, "個人與職務資料應使用緊湊雙區塊");
+      assert.equal(await page.locator("a[aria-label='返回員工首頁'] svg").count(), 1, "個人資料頁右上角應提供返回員工首頁圖示");
+      assert.equal(await page.locator("button[aria-label='登出']").count(), 0, "個人資料子頁不應將返回操作設為登出");
       await page.getByRole("link", { name: "申請修改資料" }).first().waitFor();
       await page.screenshot({ path: `${process.env.TEMP}/smart-hr-profile-desktop.png`, fullPage: true });
       await page.setViewportSize({ width: 390, height: 844 });
