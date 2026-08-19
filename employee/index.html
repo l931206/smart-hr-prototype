@@ -2,420 +2,149 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-  >
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>員工工作台｜智慧人資管理平台</title>
-
-  <!-- 全站共用樣式 -->
   <link rel="stylesheet" href="../assets/css/base.css">
   <link rel="stylesheet" href="../assets/css/components.css">
   <link rel="stylesheet" href="../assets/css/mobile.css">
-
   <style>
-    /* 只保留員工首頁專用樣式 */
-
-    .welcome-card::after {
-      content: "";
-      position: absolute;
-      right: -80px;
-      bottom: -110px;
-      width: 260px;
-      height: 260px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.08);
-    }
-
-    .profile-card a {
-      margin-top: 18px;
-      color: var(--color-primary);
-      font-weight: 800;
-    }
-
-    .empty-task {
-      min-height: 190px;
-      display: grid;
-      place-items: center;
-      text-align: center;
-    }
-
-    .empty-task span {
-      display: block;
-      margin-bottom: 12px;
-      font-size: 46px;
-    }
-
-    .empty-task strong {
-      display: block;
-      font-size: 20px;
-    }
-
-    .empty-task p {
-      margin: 8px 0 0;
-      color: var(--color-muted);
-    }
-
-    .announcement-link {
-      display: flex;
-    }
-
-    .panel-heading {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 6px;
-    }
-
-    .panel-heading h2 {
-      margin: 0;
-      font-size: 22px;
-    }
-
-    .panel-heading a {
-      color: var(--color-primary);
-      font-size: 14px;
-      font-weight: 800;
-    }
-
-    @media (max-width: 700px) {
-      .empty-task {
-        display: none;
-      }
-
-      .panel-heading h2 {
-        font-size: 20px;
-      }
-
-      .back-link {
-        display: none;
-      }
+    .app .dashboard-overview { display:flex; align-items:center; justify-content:space-between; gap:24px; padding:18px 22px; margin-bottom:22px; border:1px solid #dce5ef; background:#fff; }
+    .overview-copy h1 { margin:0 0 5px; font-size:clamp(25px,3vw,34px) !important; }
+    .overview-copy > p { margin:0; color:#64748b; }
+    .employee-meta { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+    .employee-meta span { padding:5px 9px; border-radius:6px; color:#37506f; background:#edf3f8; font-size:13px; }
+    .profile-summary { display:flex; align-items:center; gap:12px; min-width:250px; padding:10px 12px; border-radius:8px; color:inherit; background:#f5f8fb; }
+    .profile-summary .avatar { display:grid; place-items:center; width:46px; height:46px; flex:0 0 auto; border-radius:50%; color:#fff; background:#183b63; font-size:18px; font-weight:700; }
+    .profile-summary strong, .profile-summary small { display:block; }
+    .profile-summary small { margin-top:2px; color:#64748b; }
+    .profile-arrow { margin-left:auto; color:#183b63; font-size:20px; }
+    .task-heading { margin-bottom:14px; }
+    .task-heading h2 { margin:0 0 4px; font-size:25px; }
+    .task-heading p { margin:0; color:#64748b; }
+    .task-grid { display:grid; grid-template-columns:1.35fr repeat(3,1fr); gap:14px; margin-bottom:22px; }
+    .task-card { min-height:158px; display:flex; flex-direction:column; align-items:flex-start; padding:20px; border:1px solid #dce5ef; border-radius:8px; color:#10243e; background:#fff; box-shadow:0 8px 22px rgba(24,59,99,.06); }
+    .task-card:hover { transform:translateY(-2px); border-color:#9fb5ca; }
+    .task-card.primary { color:#fff; border-color:#183b63; background:#183b63; }
+    .task-icon { display:grid; place-items:center; width:38px; height:38px; margin-bottom:18px; border-radius:8px; color:#183b63; background:#edf3f8; }
+    .task-icon svg { width:22px; height:22px; }
+    .task-card.primary .task-icon { color:#183b63; background:#fff; }
+    .task-card h3 { margin:0 0 7px; font-size:19px; }
+    .task-card p { margin:0 0 16px; color:#64748b; font-size:14px; line-height:1.55; }
+    .task-card.primary p { color:#dbe8f5; }
+    .task-card strong { margin-top:auto; color:#183b63; font-size:14px; }
+    .task-card.primary strong { color:#fff; }
+    .employee-stats { margin-bottom:22px; }
+    .employee-stats .stat-card { padding:17px 20px; }
+    .employee-stats .stat-value { margin-top:7px; }
+    .employee-stats .stat-value strong { font-size:28px; }
+    .lower-grid { margin-top:0 !important; }
+    .announcement-link { display:flex; }
+    .panel-heading { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:6px; }
+    .panel-heading h2 { margin:0; font-size:22px; }
+    .panel-heading a { color:var(--color-primary); font-size:14px; font-weight:800; }
+    .more-actions { display:grid; gap:8px; margin-top:14px; }
+    .more-action { display:flex; justify-content:space-between; gap:12px; padding:13px 14px; border:1px solid #e1e8f0; border-radius:7px; color:#233d5b; background:#f8fafc; }
+    .more-action span { color:#64748b; }
+    .round-button svg, .mobile-nav svg { width:22px; height:22px; }
+    @media (max-width:900px) { .task-grid { grid-template-columns:repeat(2,1fr); } .task-card.primary { grid-column:span 2; } }
+    @media (max-width:700px) {
+      .app .dashboard-overview { align-items:flex-start; padding:15px; margin-bottom:18px; }
+      .overview-copy > p { font-size:13px; }
+      .employee-meta { gap:6px; margin-top:10px; }
+      .employee-meta span { padding:4px 7px; font-size:12px; }
+      .profile-summary { min-width:0; padding:6px; background:transparent; }
+      .profile-summary .avatar { width:40px; height:40px; }
+      .profile-summary > div, .profile-arrow { display:none; }
+      .task-heading { margin-bottom:11px; }
+      .task-heading h2 { font-size:21px; }
+      .task-heading p { font-size:13px; }
+      .task-grid { grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px; }
+      .task-card, .task-card.primary { grid-column:auto; min-height:126px; padding:15px; }
+      .task-card.primary { grid-column:1 / -1; min-height:132px; }
+      .task-icon { width:34px; height:34px; margin-bottom:13px; }
+      .task-card h3 { font-size:17px; }
+      .task-card p { display:none; }
+      .task-card strong { font-size:13px; }
+      .employee-stats .stat-card { padding:14px; }
+      .panel-heading h2 { font-size:20px; }
+      .back-link { display:none; }
     }
   </style>
 </head>
-
 <body>
   <main class="app">
-
-    <!-- 頂部導覽 -->
     <header class="topbar">
-      <div class="brand">
-        <span class="brand-mark">兆</span>
-
-        <div>
-          <strong>智慧人資管理平台</strong>
-          <small>員工行動工作台</small>
-        </div>
-      </div>
-
+      <div class="brand"><span class="brand-mark">兆</span><div><strong>智慧人資管理平台</strong><small>員工工作台</small></div></div>
       <div class="top-actions">
-        <a
-          class="round-button"
-          href="notifications.html"
-          title="通知"
-          aria-label="開啟通知中心"
-        >
-          知
-        </a>
-
-        <a
-          class="round-button desktop-only"
-          href="../index.html"
-          title="返回首頁"
-          aria-label="返回角色選擇首頁"
-        >
-          ⌂
-        </a>
+        <a class="round-button" href="notifications.html" title="通知" aria-label="開啟通知中心"><span data-hr-icon="bell"></span></a>
+        <button class="round-button desktop-only" type="button" onclick="logout()" title="登出" aria-label="登出系統"><span data-hr-icon="logout"></span></button>
       </div>
     </header>
 
-    <!-- 歡迎資訊 -->
-    <section class="hero">
-      <article class="welcome-card">
-        <p class="eyebrow">EMPLOYEE DASHBOARD</p>
-
-        <h1 id="welcomeName">午安，—</h1>
-
-        <p>日期載入中，所有個人人事資訊與常用功能都集中在這個工作台中。</p>
-
-        <div class="employee-meta">
-          <span id="departmentName">所屬部門</span>
-          <span id="jobTitle">員工</span>
-          <span id="managerName">直屬主管：—</span>
-        </div>
-      </article>
-
-      <article class="profile-card">
-        <span class="avatar">員</span>
-
-        <h2 id="profileName">—</h2>
-
-        <p id="employeeNo">—</p>
-        <p id="profileDepartment">所屬部門</p>
-
-        <a href="profile.html">
-          查看我的資料 →
-        </a>
-      </article>
-    </section>
-
-    <!-- 手機版主要操作 -->
-    <section
-      class="mobile-quick-actions"
-      aria-label="常用操作"
-    >
-      <a
-        class="mobile-quick-action primary"
-        href="leave-assistant.html"
-      >
-        <span>＋</span>
-        <strong>我要請假</strong>
-      </a>
-
-      <a
-        class="mobile-quick-action secondary"
-        href="late-notice.html"
-      >
-        <span>時</span>
-        <strong>晚到通知</strong>
-      </a>
-    </section>
-
-    <!-- 個人統計 -->
-    <section
-      class="stat-grid"
-      aria-label="個人摘要"
-    >
-      <article class="stat-card">
-        <small>剩餘特休</small>
-
-        <div class="stat-value">
-          <strong>0</strong>
-          <span>天</span>
-        </div>
-      </article>
-
-      <article class="stat-card">
-        <small>待簽核申請</small>
-
-        <div class="stat-value">
-          <strong>0</strong>
-          <span>件</span>
-        </div>
-      </article>
-
-      <article class="stat-card mobile-full">
-        <small>未讀通知</small>
-
-        <div class="stat-value">
-          <strong>0</strong>
-          <span>則</span>
-        </div>
-      </article>
-    </section>
-
-    <!-- 快速功能標題 -->
-    <section class="section-heading">
-      <div>
-        <h2>快速功能</h2>
-        <p>點選功能後會進入獨立頁面完成操作。</p>
+    <section class="dashboard-overview card" aria-label="登入者摘要">
+      <div class="overview-copy">
+        <h1 id="welcomeName">您好，—</h1>
+        <p id="dashboardDate">日期載入中…</p>
+        <div class="employee-meta"><span id="departmentName">所屬部門</span><span id="jobTitle">員工</span><span id="managerName">直屬主管：—</span></div>
       </div>
-    </section>
-
-    <!-- 快速功能 -->
-    <section class="function-grid">
-
-      <a
-        class="function-card"
-        href="profile.html"
-      >
-        <span class="function-icon">人</span>
-
-        <h3>我的資料</h3>
-
-        <p>
-          查看員工基本資料、部門、職稱與直屬主管。
-        </p>
-
-        <strong>進入查看 →</strong>
-      </a>
-
-      <a
-        class="function-card"
-        href="leave-assistant.html"
-      >
-        <span class="function-icon">申</span>
-
-        <h3>對話式請假</h3>
-
-        <p>
-          用文字或語音描述需求，確認摘要後再送出。
-        </p>
-
-        <strong>建立申請 →</strong>
-      </a>
-
-      <a
-        class="function-card"
-        href="leave-history.html"
-      >
-        <span class="function-icon">錄</span>
-
-        <h3>請假紀錄</h3>
-
-        <p>
-          查看待簽核、已核准、退回與取消的請假紀錄。
-        </p>
-
-        <strong>查看紀錄 →</strong>
-      </a>
-
-      <a
-        class="function-card"
-        href="late-notice.html"
-      >
-        <span class="function-icon">時</span>
-
-        <h3>晚到通知</h3>
-
-        <p>
-          快速通知主管預計抵達時間與晚到原因。
-        </p>
-
-        <strong>送出通知 →</strong>
-      </a>
-
-      <a
-        class="function-card"
-        href="notifications.html"
-      >
-        <span class="function-icon">知</span>
-
-        <h3>通知中心</h3>
-
-        <p>
-          集中查看審核結果、系統提醒與公司訊息。
-        </p>
-
-        <strong>查看通知 →</strong>
-      </a>
-
-      <a
-        class="function-card"
-        href="announcements.html"
-      >
-        <span class="function-icon">公</span>
-
-        <h3>公告中心</h3>
-
-        <p>
-          查看公司活動、系統維護與人事通知。
-        </p>
-
-        <strong>查看公告 →</strong>
+      <a class="profile-summary" href="profile.html" aria-label="查看我的資料">
+        <span class="avatar">員</span>
+        <div><strong id="profileName">—</strong><small><span id="employeeNo">—</span>・<span id="profileDepartment">所屬部門</span></small></div>
+        <span class="profile-arrow">›</span>
       </a>
     </section>
 
-    <!-- 公告與待辦 -->
+    <section class="task-heading"><h2>你今天要做什麼？</h2><p>選擇任務即可開始，不需要先尋找功能選單。</p></section>
+    <section class="task-grid" aria-label="常用任務">
+      <a class="task-card primary" href="leave-assistant.html"><span class="task-icon" data-hr-icon="leave"></span><h3>我要請假</h3><p>用文字或語音說明假別、日期與原因，確認後送出。</p><strong>開始請假 →</strong></a>
+      <a class="task-card" href="late-notice.html"><span class="task-icon" data-hr-icon="late"></span><h3>晚到通知</h3><p>告知主管預計抵達時間與晚到原因。</p><strong>送出通知 →</strong></a>
+      <a class="task-card" href="leave-history.html"><span class="task-icon" data-hr-icon="history"></span><h3>請假紀錄</h3><p>查看待審核、已核准、退回與撤回紀錄。</p><strong>查看進度 →</strong></a>
+      <a class="task-card" href="notifications.html"><span class="task-icon" data-hr-icon="bell"></span><h3>通知中心</h3><p>查看審核結果、提醒及公司訊息。</p><strong>查看通知 →</strong></a>
+    </section>
+
+    <section class="stat-grid employee-stats" aria-label="個人摘要">
+      <article class="stat-card"><small>剩餘特休</small><div class="stat-value"><strong>0</strong><span>天</span></div></article>
+      <article class="stat-card"><small>待簽核申請</small><div class="stat-value"><strong>0</strong><span>件</span></div></article>
+      <article class="stat-card mobile-full"><small>未讀通知</small><div class="stat-value"><strong>0</strong><span>則</span></div></article>
+    </section>
+
     <section class="lower-grid">
-
-      <article class="panel">
-        <div class="panel-heading">
-          <h2>最新公告</h2>
-
-          <a href="announcements.html">
-            查看全部 →
-          </a>
-        </div>
-
-        <p>公告資料載入中…</p>
-      </article>
-
-      <article class="panel empty-task">
-        <div>
-          <span>✓</span>
-
-          <strong>
-            今天沒有其他待辦事項
-          </strong>
-
-          <p>
-            所有工作都已處理完成。
-          </p>
-        </div>
-      </article>
+      <article class="panel"><div class="panel-heading"><h2>最新公告</h2><a href="announcements.html">查看全部 →</a></div><p>公告資料載入中…</p></article>
+      <article class="panel"><div class="panel-heading"><h2>其他人事功能</h2></div><div class="more-actions">
+        <a class="more-action" href="profile.html"><strong>我的資料</strong><span>查看個人資料 ›</span></a>
+        <a class="more-action" href="announcements.html"><strong>公告中心</strong><span>查看公司公告 ›</span></a>
+        <a class="more-action" href="leave-apply.html"><strong>表單式請假</strong><span>改用傳統表單 ›</span></a>
+      </div></article>
     </section>
-
-    <a
-      class="back-link"
-      href="../index.html"
-    >
-      ← 返回角色選擇首頁
-    </a>
+    <button class="back-link" type="button" onclick="logout()">← 登出或切換帳號</button>
   </main>
 
-  <!-- 手機版底部導覽 -->
-  <nav
-    class="mobile-nav"
-    aria-label="員工手機導覽"
-  >
-    <a
-      class="active"
-      href="index.html"
-      aria-current="page"
-    >
-      <span>⌂</span>
-      <small>首頁</small>
-    </a>
-
-    <a href="leave-assistant.html">
-      <span>＋</span>
-      <small>請假</small>
-    </a>
-
-    <a href="notifications.html">
-      <span>●</span>
-      <small>通知</small>
-    </a>
-
-    <a href="profile.html">
-      <span>人</span>
-      <small>我的</small>
-    </a>
+  <nav class="mobile-nav" aria-label="員工手機導覽">
+    <a class="active" href="index.html" aria-current="page"><span></span><small>首頁</small></a>
+    <a href="leave-assistant.html"><span></span><small>請假</small></a>
+    <a href="notifications.html"><span></span><small>通知</small></a>
+    <a href="profile.html"><span></span><small>我的</small></a>
   </nav>
-  <script src="../assets/js/api.js?v=20260817-review2"></script>
-  <script src="../assets/js/dashboard-data.js?v=20260817-review2"></script>
+  <script src="../assets/js/api.js?v=20260819-ux2"></script>
+  <script src="../assets/js/dashboard-data.js?v=20260819-ux2"></script>
   <script src="../assets/js/employee-data-state.js?v=20260817-review3"></script>
   <script>
     (async () => {
       try {
         const user = await getCurrentUser();
-        if (user.role !== "employee") {
-          window.location.href = `../${user.role}/index.html`;
-          return;
-        }
+        if (user.role !== "employee") { window.location.href = `../${user.role}/index.html`; return; }
         const name = user.display_name || user.username;
-        document.querySelector("#welcomeName").textContent = `午安，${name}`;
+        document.querySelector("#welcomeName").textContent = `您好，${name}`;
         document.querySelector("#profileName").textContent = name;
-        const avatar = document.querySelector(".profile-card .avatar");
+        const avatar = document.querySelector(".profile-summary .avatar");
         avatar.textContent = name.slice(0, 1);
-        if (user.avatar_data) {
-          avatar.textContent = "";
-          avatar.style.backgroundImage = `url(${user.avatar_data})`;
-          avatar.style.backgroundSize = "cover";
-          avatar.style.backgroundPosition = "center";
-        }
+        if (user.avatar_data) { avatar.textContent = ""; avatar.style.backgroundImage = `url(${user.avatar_data})`; avatar.style.backgroundSize = "cover"; avatar.style.backgroundPosition = "center"; }
         document.querySelector("#employeeNo").textContent = user.employee_no || "—";
         document.querySelector("#departmentName").textContent = user.department_name || "尚未分配部門";
         document.querySelector("#profileDepartment").textContent = user.department_name || "尚未分配部門";
         document.querySelector("#managerName").textContent = `直屬主管：${user.manager_name || "尚未設定"}`;
         document.querySelector("#jobTitle").textContent = user.job_title || user.role_label || "員工";
-      } catch (error) {
-        window.location.href = "../login.html?next=employee/index.html";
-      }
+      } catch { window.location.href = "../index.html?next=employee/index.html"; }
     })();
   </script>
 </body>

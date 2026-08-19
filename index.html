@@ -3,443 +3,107 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>智慧人資管理平台｜系統入口</title>
-
+  <title>登入｜智慧人資管理平台</title>
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/components.css">
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: Arial, "Noto Sans TC", sans-serif;
-      background: #f4f7fb;
-      color: #1f2937;
-    }
-
-    a {
-      color: inherit;
-    }
-
-    .page {
-      width: min(1180px, calc(100% - 32px));
-      margin: 0 auto;
-      padding: 48px 0;
-    }
-
-    .hero {
-      position: relative;
-      overflow: hidden;
-      color: white;
-      background:
-        radial-gradient(
-          circle at top right,
-          rgba(255, 255, 255, 0.18),
-          transparent 34%
-        ),
-        linear-gradient(135deg, #0f766e, #155e75);
-      border-radius: 30px;
-      padding: 46px;
-      box-shadow: 0 24px 60px rgba(15, 118, 110, 0.22);
-    }
-
-    .hero::after {
-      content: "";
-      position: absolute;
-      right: -90px;
-      bottom: -120px;
-      width: 280px;
-      height: 280px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.08);
-    }
-
-    .hero-content {
-      position: relative;
-      z-index: 1;
-      max-width: 760px;
-    }
-
-    .eyebrow {
-      margin: 0 0 12px;
-      font-size: 14px;
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      opacity: 0.78;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: clamp(36px, 6vw, 66px);
-      line-height: 1.05;
-    }
-
-    .hero-description {
-      margin: 20px 0 0;
-      font-size: 18px;
-      line-height: 1.8;
-      opacity: 0.92;
-    }
-
-    .hero-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 24px;
-    }
-
-    .hero-chip {
-      padding: 8px 13px;
-      border: 1px solid rgba(255, 255, 255, 0.24);
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.11);
-      font-size: 14px;
-      font-weight: 700;
-      backdrop-filter: blur(8px);
-    }
-
-    .section-heading {
-      display: flex;
-      justify-content: space-between;
-      gap: 20px;
-      align-items: end;
-      margin: 44px 0 18px;
-    }
-
-    .section-heading h2 {
-      margin: 0;
-      font-size: 28px;
-    }
-
-    .section-heading p {
-      max-width: 620px;
-      margin: 7px 0 0;
-      color: #64748b;
-      line-height: 1.7;
-    }
-
-    .role-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
-    }
-
-    .role-card {
-      position: relative;
-      display: flex;
-      min-height: 290px;
-      flex-direction: column;
-      text-decoration: none;
-      color: inherit;
-      background: white;
-      border: 1px solid #e6edf5;
-      border-radius: 24px;
-      padding: 26px;
-      box-shadow: 0 14px 38px rgba(15, 23, 42, 0.07);
-      transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease,
-        border-color 0.2s ease;
-    }
-
-    .role-card:hover {
-      transform: translateY(-6px);
-      border-color: #99d5cd;
-      box-shadow: 0 22px 50px rgba(15, 23, 42, 0.13);
-    }
-
-    .role-icon {
-      width: 58px;
-      height: 58px;
-      display: grid;
-      place-items: center;
-      margin-bottom: 20px;
-      border-radius: 18px;
-      background: #dff7f3;
-      font-size: 30px;
-    }
-
-    .role-card h3 {
-      margin: 0;
-      font-size: 23px;
-    }
-
-    .role-card > p {
-      margin: 12px 0 0;
-      color: #64748b;
-      line-height: 1.75;
-    }
-
-    .feature-list {
-      display: grid;
-      gap: 9px;
-      margin: 22px 0 0;
-      padding: 0;
-      list-style: none;
-    }
-
-    .feature-list li {
-      display: flex;
-      gap: 9px;
-      align-items: flex-start;
-      color: #475569;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-    .feature-list li::before {
-      content: "✓";
-      color: #0f766e;
-      font-weight: 800;
-    }
-
-    .card-footer {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      align-items: center;
-      margin-top: auto;
-      padding-top: 24px;
-      color: #0f766e;
-      font-weight: 800;
-    }
-
-    .card-footer span:last-child {
-      font-size: 20px;
-      transition: transform 0.2s ease;
-    }
-
-    .role-card:hover .card-footer span:last-child {
-      transform: translateX(4px);
-    }
-
-    .system-map {
-      margin-top: 44px;
-      background: white;
-      border: 1px solid #e6edf5;
-      border-radius: 24px;
-      padding: 26px;
-      box-shadow: 0 14px 38px rgba(15, 23, 42, 0.07);
-    }
-
-    .system-map h2 {
-      margin: 0;
-      font-size: 24px;
-    }
-
-    .system-map > p {
-      margin: 9px 0 22px;
-      color: #64748b;
-      line-height: 1.7;
-    }
-
-    .flow-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      align-items: center;
-    }
-
-    .flow-step {
-      padding: 11px 15px;
-      border-radius: 999px;
-      background: #edf6ff;
-      color: #075985;
-      font-weight: 800;
-    }
-
-    .arrow {
-      color: #94a3b8;
-      font-weight: 800;
-    }
-
-    .note {
-      margin-top: 18px;
-      padding: 16px 18px;
-      border-left: 4px solid #0f766e;
-      border-radius: 12px;
-      background: #f0fdfa;
-      color: #475569;
-      line-height: 1.7;
-    }
-
-    .page-footer {
-      padding: 30px 0 6px;
-      text-align: center;
-      color: #94a3b8;
-      font-size: 14px;
-    }
-
-    @media (max-width: 900px) {
-      .role-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .role-card {
-        min-height: auto;
-      }
-    }
-
-    @media (max-width: 700px) {
-      .page {
-        width: min(100% - 20px, 1180px);
-        padding: 20px 0;
-      }
-
-      .hero {
-        padding: 30px 23px;
-        border-radius: 24px;
-      }
-
-      .section-heading {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-
-      .admin-role {
-        display: none;
-      }
-
-      .system-map {
-        padding: 22px;
-      }
-
-      .arrow {
-        display: none;
-      }
-
-      .flow-step {
-        width: 100%;
-        border-radius: 14px;
-      }
+    body { min-height:100vh; background:#f3f6fa; }
+    .login-shell { width:min(1040px,calc(100% - 32px)); min-height:100vh; display:grid; grid-template-columns:minmax(0,1fr) 430px; align-items:center; gap:72px; margin:0 auto; padding:48px 0; }
+    .login-intro .brand { margin-bottom:34px; }
+    .login-intro h1 { max-width:560px; margin:0; font-size:clamp(34px,5vw,54px) !important; line-height:1.15; }
+    .login-intro > p { max-width:540px; margin:18px 0 0; color:#5f7188; font-size:17px; line-height:1.8; }
+    .login-points { display:grid; gap:13px; margin:30px 0 0; padding:0; list-style:none; }
+    .login-points li { display:flex; align-items:center; gap:11px; color:#304963; }
+    .login-points li::before { content:"✓"; display:grid; width:25px; height:25px; place-items:center; border-radius:50%; color:#087f73; background:#dff7f2; font-weight:800; }
+    .login-card { padding:30px; border:1px solid #dce5ef; background:#fff; box-shadow:0 18px 46px rgba(24,59,99,.1); }
+    .login-card h2 { margin:0 0 7px; font-size:25px; }
+    .login-card > p { margin:0 0 24px; color:#64748b; }
+    .login-field { margin-bottom:17px; }
+    .login-field label { display:block; margin-bottom:7px; color:#233d5b; font-weight:700; }
+    .password-wrap { position:relative; }
+    .password-wrap input { padding-right:76px; }
+    .password-toggle { position:absolute; right:8px; top:50%; min-height:34px; padding:0 10px; border:0; transform:translateY(-50%); color:#36516f; background:#edf2f7; font-size:13px; }
+    .login-submit { width:100%; min-height:50px; margin-top:5px; color:#fff; background:#183b63; }
+    .login-submit:disabled { cursor:wait; opacity:.65; }
+    .login-error { display:none; margin-bottom:17px; padding:12px 14px; border:1px solid #f2b9bd; color:#b4232e; background:#fff0f1; }
+    .company-login { display:block; margin-top:14px; padding:13px; text-align:center; color:#183b63; background:#edf3f8; font-weight:700; }
+    .login-note { margin-top:18px !important; text-align:center; font-size:13px; }
+    .mobile-brand { display:none; margin-bottom:26px; text-align:center; }
+    .mobile-brand .brand-mark { margin:0 auto 12px; }
+    .mobile-brand strong { display:block; font-size:22px; }
+    @media (max-width:780px) {
+      .login-shell { width:min(100% - 22px,460px); display:block; padding:28px 0; }
+      .login-intro { display:none; }
+      .mobile-brand { display:block; }
+      .login-card { padding:22px; }
     }
   </style>
-  <link rel="stylesheet" href="assets/css/base.css?v=20260817-review2">
-  <link rel="stylesheet" href="assets/css/components.css?v=20260817-review2">
-  <link rel="stylesheet" href="assets/css/mobile.css?v=20260817-review2">
 </head>
-
 <body>
-  <main class="page">
-    <section class="hero landing-hero">
-      <div class="hero-content">
-        <p class="eyebrow">SMART HR MANAGEMENT PLATFORM</p>
-
-        <h1>智慧人資管理平台</h1>
-
-        <p class="hero-description">
-          集中管理員工資料、出勤、請假、公告與部門協作，
-          讓每個角色都能快速完成日常工作。
-        </p>
-      </div>
+  <main class="login-shell">
+    <section class="login-intro" aria-label="系統介紹">
+      <div class="brand"><span class="brand-mark">兆</span><div><strong>智慧人資管理平台</strong><small>Smart HR Management</small></div></div>
+      <h1>登入後，直接完成你被授權的工作</h1>
+      <p>系統會依帳號權限自動進入員工、主管或系統管理者工作台，不需要自行選擇角色。</p>
+      <ul class="login-points">
+        <li>員工：請假、晚到通知與個人資料</li>
+        <li>主管：申請審核、團隊與部門資訊</li>
+        <li>管理者：員工、帳號、部門與系統設定</li>
+      </ul>
     </section>
-
-    <section class="section-heading">
-      <div>
-        <h2>選擇登入身分</h2>
-      </div>
-    </section>
-
-    <section class="role-grid">
-      <a class="role-card" href="login.html?next=employee/index.html">
-        <div class="role-icon">員</div>
-
-        <h3>員工端</h3>
-
-        <p>
-          以手機操作為優先，讓員工快速完成日常人事申請，
-          不需要進入複雜的後台介面。
-        </p>
-
-        <ul class="feature-list">
-          <li>個人資料與員工資訊</li>
-          <li>請假與晚到通知</li>
-          <li>假期餘額與申請紀錄</li>
-          <li>公司公告與個人通知</li>
-        </ul>
-
-        <div class="card-footer">
-          <span>進入員工端</span>
-          <span>→</span>
+    <section>
+      <header class="mobile-brand"><div class="brand-mark">兆</div><strong>智慧人資管理平台</strong></header>
+      <form class="login-card card" id="loginForm">
+        <h2>登入系統</h2>
+        <p>請使用公司提供的帳號與密碼。</p>
+        <div class="login-error" id="loginError" role="alert"></div>
+        <div class="login-field"><label for="username">帳號</label><input id="username" name="username" autocomplete="username" required autofocus></div>
+        <div class="login-field">
+          <label for="password">密碼</label>
+          <div class="password-wrap"><input id="password" name="password" type="password" autocomplete="current-password" required><button class="password-toggle" type="button" aria-label="顯示密碼">顯示</button></div>
         </div>
-      </a>
-
-      <a class="role-card" href="login.html?next=manager/index.html">
-        <div class="role-icon">主</div>
-
-        <h3>主管工作台</h3>
-
-        <p>
-          集中呈現主管最需要處理的資訊，
-          讓審核與部門管理在同一個工作台完成。
-        </p>
-
-        <ul class="feature-list">
-          <li>查看直屬部屬</li>
-          <li>請假審核與歷程</li>
-          <li>晚到通知與部門狀態</li>
-          <li>部門統計與待辦提醒</li>
-        </ul>
-
-        <div class="card-footer">
-          <span>進入主管工作台</span>
-          <span>→</span>
-        </div>
-      </a>
-
-      <a class="role-card admin-role" href="login.html?next=admin/index.html">
-        <div class="role-icon">管</div>
-
-        <h3>系統管理後台</h3>
-
-        <p>
-          管理整套人資平台的基礎資料、帳號、權限與自動化設定，
-          不另外拆成 HR 與技術管理後台。
-        </p>
-
-        <ul class="feature-list">
-          <li>員工、部門與帳號管理</li>
-          <li>角色、權限與假別設定</li>
-          <li>公告、通知與系統紀錄</li>
-          <li>資料審核與權限控管</li>
-        </ul>
-
-        <div class="card-footer">
-          <span>進入系統管理後台</span>
-          <span>→</span>
-        </div>
-      </a>
+        <button class="button login-submit" type="submit">登入</button>
+        <a class="company-login" href="central-login.html">公司統一登入</a>
+        <p class="login-note">登入後會依帳號權限自動開啟可使用的功能。</p>
+      </form>
     </section>
-
-    <section class="system-map">
-      <h2>平台整體架構</h2>
-
-      <p>
-        請假不是獨立系統，而是建立在員工、帳號與權限資料上的其中一個功能模組。
-      </p>
-
-      <div class="flow-row">
-        <span class="flow-step">員工與部門資料</span>
-        <span class="arrow">→</span>
-
-        <span class="flow-step">帳號與權限</span>
-        <span class="arrow">→</span>
-
-        <span class="flow-step">請假與出勤</span>
-        <span class="arrow">→</span>
-
-        <span class="flow-step">公告與通知</span>
-        <span class="arrow">→</span>
-
-        <span class="flow-step">報表與自動化</span>
-      </div>
-
-    </section>
-
-    <footer class="page-footer">
-      兆迪聯智科技有限公司｜智慧人資管理平台
-    </footer>
   </main>
+  <script src="assets/js/api.js?v=20260819-home-login1"></script>
+  <script>
+    const form = document.querySelector("#loginForm");
+    const errorBox = document.querySelector("#loginError");
+    const params = new URLSearchParams(window.location.search);
+    const rolePaths = { employee: "employee/index.html", manager: "manager/index.html", admin: "admin/index.html" };
+    const redirectUser = (user) => {
+      const rolePath = rolePaths[user.role] || "index.html";
+      const next = params.get("next");
+      window.location.replace(next && next.startsWith(rolePath) ? next : rolePath);
+    };
+    document.querySelector(".password-toggle").addEventListener("click", (event) => {
+      const showing = form.password.type === "text";
+      form.password.type = showing ? "password" : "text";
+      event.currentTarget.textContent = showing ? "顯示" : "隱藏";
+      event.currentTarget.setAttribute("aria-label", showing ? "顯示密碼" : "隱藏密碼");
+    });
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      errorBox.style.display = "none";
+      const button = form.querySelector("button[type=submit]");
+      button.disabled = true;
+      button.textContent = "登入中…";
+      try { redirectUser(await login(form.username.value.trim(), form.password.value)); }
+      catch (error) {
+        errorBox.textContent = error.message || "登入失敗，請稍後再試。";
+        errorBox.style.display = "block";
+        button.disabled = false;
+        button.textContent = "登入";
+      }
+    });
+    (async () => {
+      if (!localStorage.getItem("hr_token")) return;
+      try { redirectUser(await getCurrentUser()); }
+      catch { /* apiRequest 會清除無效登入狀態。 */ }
+    })();
+  </script>
 </body>
 </html>

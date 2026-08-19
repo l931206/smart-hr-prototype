@@ -20,8 +20,8 @@
     const units = document.querySelectorAll(".stat-grid .stat-card .stat-value span");
     if (units[0]) units[0].textContent = "天";
     const dateText = new Intl.DateTimeFormat("zh-TW", { year: "numeric", month: "long", day: "numeric" }).format(new Date());
-    const welcomeDescription = document.querySelector(".welcome-card > p:not(.eyebrow)");
-    if (welcomeDescription) welcomeDescription.textContent = `今天是 ${dateText}，所有個人人事資訊與常用功能都集中在這個工作台中。`;
+    const welcomeDescription = document.querySelector("#dashboardDate");
+    if (welcomeDescription) welcomeDescription.textContent = `今天是 ${dateText}`;
   }
 
   async function loadManagerDashboard() {

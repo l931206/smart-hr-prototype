@@ -35,6 +35,39 @@ window.showHrToast = (message, type = "success") => {
   }, 3600);
 };
 
+const HR_ICON_PATHS = {
+  home: '<path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10.5V20h13v-9.5"/><path d="M9.5 20v-6h5v6"/>',
+  leave: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18M12 13v6M9 16h6"/>',
+  late: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  history: '<path d="M6 3h9l4 4v14H6z"/><path d="M15 3v5h5M9 13h6M9 17h6"/>',
+  bell: '<path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/>',
+  user: '<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+  logout: '<path d="M10 5V3H4v18h6v-2"/><path d="M14 8l4 4-4 4M8 12h10"/>',
+  announcement: '<path d="M4 13V9l12-5v14L4 13Z"/><path d="m7 14 1 6h4l-2-5M19 8v6"/>',
+  grid: '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>'
+};
+
+window.hrIcon = (name) => `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${HR_ICON_PATHS[name] || HR_ICON_PATHS.grid}</svg>`;
+
+function installEnterpriseIcons() {
+  const iconForHref = (href = "") => href.includes("leave-assistant") || href.includes("leave-apply") ? "leave"
+    : href.includes("leave-history") ? "history"
+    : href.includes("late-notice") ? "late"
+    : href.includes("notification") ? "bell"
+    : href.includes("profile") ? "user"
+    : href.includes("announcement") ? "announcement"
+    : href.endsWith("index.html") ? "home" : "grid";
+  document.querySelectorAll("[data-hr-icon]").forEach((node) => { node.innerHTML = hrIcon(node.dataset.hrIcon); });
+  document.querySelectorAll(".mobile-nav a").forEach((link) => {
+    const icon = link.querySelector("span:first-child");
+    if (icon) icon.innerHTML = hrIcon(iconForHref(link.getAttribute("href") || ""));
+  });
+  document.querySelectorAll(".function-card").forEach((card) => {
+    const icon = card.querySelector(".function-icon");
+    if (icon) icon.innerHTML = hrIcon(iconForHref(card.getAttribute("href") || ""));
+  });
+}
+
 function installAdminSidebar() {
   if (!/\/admin\//.test(window.location.pathname) || document.querySelector(".admin-sidebar")) return;
   const links = [
@@ -111,8 +144,11 @@ async function apiRequest(path, options = {}) {
       localStorage.removeItem("hr_token");
       localStorage.removeItem("hr_token_scheme");
       localStorage.removeItem("hr_user");
-      const next = `${window.location.pathname}${window.location.search}`;
-      window.location.href = `../login.html?next=${encodeURIComponent(next.replace(/^\//, ""))}`;
+      const roleSection = window.location.pathname.match(/\/(employee|manager|admin)\//)?.[1];
+      if (roleSection) {
+        const next = `${window.location.pathname}${window.location.search}`;
+        window.location.href = `../index.html?next=${encodeURIComponent(next.replace(/^\//, ""))}`;
+      }
       throw new Error("登入狀態已失效，請重新登入。");
     }
     let message = `API request failed: ${response.status}`;
@@ -188,11 +224,12 @@ function logout() {
   localStorage.removeItem("hr_token");
   localStorage.removeItem("hr_token_scheme");
   localStorage.removeItem("hr_user");
-  window.location.href = "../login.html";
+  window.location.href = "../index.html";
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
   const section = window.location.pathname.match(/\/(employee|manager|admin)\//)?.[1];
+  installEnterpriseIcons();
   installAdminSidebar();
   prioritizeDashboardTasks(section);
   const notice = new URLSearchParams(window.location.search).get("notice");
