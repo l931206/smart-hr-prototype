@@ -19,7 +19,26 @@
   .admin-sidebar { display: none !important; }
   .has-admin-sidebar > .page,
   .has-admin-sidebar > .app,
-  .has-admin-sidebar > main { margin-left: auto; }
+  .has-admin-sidebar > main {
+    width: calc(100% - 20px) !important;
+    max-width: none !important;
+    margin-right: auto !important;
+    margin-left: auto !important;
+  }
+  .has-admin-sidebar main > .profile-card .profile-head {
+    align-items: center !important;
+    flex-direction: row !important;
+  }
+  .has-admin-sidebar main > .profile-card .employee,
+  .has-admin-sidebar main > .profile-card .account-main {
+    min-width: 0;
+    align-items: center !important;
+    flex-direction: row !important;
+  }
+  .has-admin-sidebar main > .profile-card .avatar {
+    width: 54px !important;
+    height: 54px !important;
+  }
   :root {
     --mobile-gutter: 10px;
   }
@@ -132,7 +151,7 @@
     font-size: 12px;
   }
 
-  .profile-card {
+  .hero > .profile-card {
     display: none;
   }
 

@@ -15,11 +15,18 @@ const identities = {
 
   const anonymous = await browser.newContext({ viewport: { width: 1280, height: 860 } });
   const loginPage = await anonymous.newPage();
+  await loginPage.goto(`${frontendUrl}/login.html`, { waitUntil: "domcontentloaded" });
+  await loginPage.waitForURL((url) => url.pathname === "/index.html");
   await loginPage.goto(`${frontendUrl}/`, { waitUntil: "networkidle" });
   await loginPage.getByRole("heading", { name: "登入系統" }).waitFor();
   assert.equal(await loginPage.locator("#loginForm").count(), 1, "首頁應直接顯示登入表單");
   assert.equal(await loginPage.locator(".role-grid").count(), 0, "首頁不應再要求使用者選擇角色");
   await loginPage.screenshot({ path: `${process.env.TEMP}/smart-hr-login-home.png`, fullPage: true });
+  await loginPage.setViewportSize({ width: 390, height: 844 });
+  await loginPage.goto(`${frontendUrl}/central-login.html`, { waitUntil: "networkidle" });
+  assert.equal(await loginPage.locator(".role-icon svg").count(), 3, "中控示範身分應使用企業 SVG 圖示");
+  const centralOverflow = await loginPage.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+  assert.ok(centralOverflow <= 1, `中控登入手機版不應水平溢位，目前 ${centralOverflow}px`);
   await anonymous.close();
 
   for (const [role, externalUserId] of Object.entries(identities)) {
@@ -28,6 +35,8 @@ const identities = {
     const login = await loginResponse.json();
     const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
     await context.addInitScript(({ token, user }) => {
+      if (sessionStorage.getItem("hr_test_session_initialized")) return;
+      sessionStorage.setItem("hr_test_session_initialized", "1");
       localStorage.setItem("hr_token", token);
       localStorage.setItem("hr_token_scheme", "Bearer");
       localStorage.setItem("hr_user", JSON.stringify(user));
@@ -47,6 +56,22 @@ const identities = {
       assert.ok(overflow <= 1, `員工手機首頁不應水平溢位，目前 ${overflow}px`);
       assert.equal(await page.locator(".mobile-nav svg").count(), 4, "手機導覽應使用一致的 SVG 圖示");
       await page.screenshot({ path: `${process.env.TEMP}/smart-hr-employee-task-home-mobile.png`, fullPage: true });
+      await page.setViewportSize({ width: 1280, height: 900 });
+      await page.goto(`${frontendUrl}/employee/profile.html`, { waitUntil: "networkidle" });
+      await page.getByRole("heading", { name: "我的資料" }).waitFor();
+      assert.equal(await page.locator(".profile-hero").count(), 0, "個人資料頁不應顯示大型裝飾性區塊");
+      assert.equal(await page.locator(".profile-content .profile-card").count(), 2, "個人與職務資料應使用緊湊雙區塊");
+      await page.getByRole("link", { name: "申請修改資料" }).first().waitFor();
+      await page.screenshot({ path: `${process.env.TEMP}/smart-hr-profile-desktop.png`, fullPage: true });
+      await page.setViewportSize({ width: 390, height: 844 });
+      await page.waitForTimeout(150);
+      const mobileEditButton = page.locator(".mobile-profile-action");
+      await mobileEditButton.waitFor();
+      const editBox = await mobileEditButton.boundingBox();
+      assert.ok(editBox && editBox.y < 844, "手機版修改資料按鈕應固定顯示在第一視線");
+      const profileOverflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+      assert.ok(profileOverflow <= 1, `個人資料手機版不應水平溢位，目前 ${profileOverflow}px`);
+      await page.screenshot({ path: `${process.env.TEMP}/smart-hr-profile-mobile.png`, fullPage: true });
     }
     if (role === "manager") {
       await page.getByRole("heading", { name: "你今天要處理什麼？" }).waitFor();
@@ -76,7 +101,10 @@ const identities = {
       await page.screenshot({ path: `${process.env.TEMP}/smart-hr-admin-task-home-mobile.png`, fullPage: true });
     }
     await page.evaluate(() => logout());
-    await page.waitForURL("**/index.html");
+    await page.waitForURL((url) => url.pathname === "/index.html" || url.pathname === "/");
+    await page.waitForLoadState("domcontentloaded");
+    await page.waitForTimeout(100);
+    assert.equal(await page.evaluate(() => localStorage.getItem("hr_token")), null, `${role} 登出後應清除 token`);
     await page.getByRole("heading", { name: "登入系統" }).waitFor();
     await context.close();
   }

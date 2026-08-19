@@ -3,79 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>登入｜智慧人資管理平台</title>
+  <title>前往登入｜智慧人資管理平台</title>
   <link rel="stylesheet" href="assets/css/base.css">
-  <link rel="stylesheet" href="assets/css/components.css">
-  <style>
-    .login-page { width: min(100% - 32px, 460px); margin: 0 auto; padding: 56px 0; }
-    .login-brand { margin-bottom: 28px; text-align: center; }
-    .login-brand .brand-mark { margin: 0 auto 14px; }
-    .login-brand h1 { margin: 0; font-size: 30px; }
-    .login-brand p { margin: 8px 0 0; color: var(--color-muted); }
-    .login-card { padding: 28px; border: 1px solid var(--color-border); border-radius: 24px; background: #fff; box-shadow: var(--shadow-large); }
-    .login-card h2 { margin: 0 0 22px; font-size: 22px; }
-    .login-field { margin-bottom: 16px; }
-    .login-field label { display: block; margin-bottom: 7px; font-weight: 800; }
-    .login-actions { display: grid; gap: 10px; margin-top: 22px; }
-    .login-actions button, .login-actions a { width: 100%; min-height: 48px; display: inline-flex; align-items: center; justify-content: center; border-radius: 12px; font-weight: 800; }
-    .login-actions button { color: #fff; background: var(--color-primary); }
-    .login-actions a { color: var(--color-text-soft); background: #f1f5f9; }
-    .login-error { display: none; margin-bottom: 16px; padding: 12px 14px; border-radius: 10px; color: var(--color-danger); background: var(--color-danger-bg); }
-    @media (max-width: 520px) { .login-page { width: min(100% - 20px, 460px); padding: 28px 0; } .login-card { padding: 20px; } }
-  </style>
+  <script>window.location.replace(`index.html${window.location.search || ""}`);</script>
 </head>
 <body>
-  <main class="login-page">
-    <header class="login-brand">
-      <div class="brand-mark">HR</div>
-      <h1>智慧人資管理平台</h1>
-      <p>請登入以繼續使用系統</p>
-    </header>
-
-    <form class="login-card" id="loginForm">
-      <h2>登入帳號</h2>
-      <div class="login-error" id="loginError" role="alert"></div>
-      <div class="login-field">
-        <label for="username">帳號</label>
-        <input id="username" name="username" autocomplete="username" required>
-      </div>
-      <div class="login-field">
-        <label for="password">密碼</label>
-        <input id="password" name="password" type="password" autocomplete="current-password" required>
-      </div>
-      <div class="login-actions">
-        <button type="submit">登入</button>
-        <a href="central-login.html">公司統一登入</a>
-      </div>
-    </form>
-  </main>
-
-  <script src="assets/js/api.js?v=20260817-review2"></script>
-  <script>
-    const form = document.querySelector("#loginForm");
-    const errorBox = document.querySelector("#loginError");
-    const params = new URLSearchParams(window.location.search);
-    const rolePaths = { employee: "employee/index.html", manager: "manager/index.html", admin: "admin/index.html" };
-
-    form.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      errorBox.style.display = "none";
-      const button = form.querySelector("button");
-      button.disabled = true;
-      button.textContent = "登入中…";
-      try {
-        const user = await login(form.username.value.trim(), form.password.value);
-        const next = params.get("next");
-        const rolePath = rolePaths[user.role] || "index.html";
-        const safeNext = next && next.startsWith(rolePath) ? next : rolePath;
-        window.location.href = safeNext;
-      } catch (error) {
-        errorBox.textContent = error.message || "登入失敗，請稍後再試。";
-        errorBox.style.display = "block";
-        button.disabled = false;
-        button.textContent = "登入";
-      }
-    });
-  </script>
+  <main class="page"><p>正在前往登入頁面。若未自動前往，請使用下方連結。</p><a class="button primary" href="index.html">前往登入</a></main>
 </body>
 </html>

@@ -48,6 +48,9 @@ const HR_ICON_PATHS = {
   calendar: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18M8 14h2M14 14h2M8 18h2M14 18h2"/>',
   department: '<path d="M3 21h18M5 21V7l7-4 7 4v14M9 9h1M14 9h1M9 13h1M14 13h1M9 17h6"/>',
   account: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><circle cx="12" cy="9" r="2.5"/><path d="M8.5 16a4 4 0 0 1 7 0"/>',
+  success: '<path d="m5 12 4 4L19 6"/>',
+  warning: '<path d="M10.3 3.7 2.6 17a2 2 0 0 0 1.7 3h15.4a2 2 0 0 0 1.7-3L13.7 3.7a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4M12 17h.01"/>',
+  close: '<path d="m6 6 12 12M18 6 6 18"/>',
   grid: '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>'
 };
 
@@ -74,6 +77,14 @@ function installEnterpriseIcons() {
     const icon = card.querySelector(".function-icon");
     if (icon) icon.innerHTML = hrIcon(iconForHref(card.getAttribute("href") || ""));
   });
+  document.querySelectorAll(".warning-icon").forEach((node) => { node.innerHTML = hrIcon("warning"); });
+  document.querySelectorAll(".success-icon").forEach((node) => { node.innerHTML = hrIcon("success"); });
+  document.querySelectorAll(".result-icon").forEach((node) => { node.innerHTML = hrIcon("close"); });
+  document.querySelectorAll(".icon").forEach((node) => {
+    if (node.querySelector("svg") || node.closest(".calendar")) return;
+    const href = node.closest("a")?.getAttribute("href") || window.location.pathname;
+    node.innerHTML = hrIcon(iconForHref(href));
+  });
 }
 
 function installAdminSidebar() {
@@ -97,6 +108,16 @@ function installAdminSidebar() {
   aside.querySelector("button").addEventListener("click", logout);
   document.body.prepend(aside);
   document.body.classList.add("has-admin-sidebar");
+}
+
+function promoteAdminDetailActions() {
+  if (!/\/admin\/(employee|account|department|leave-type)-detail\.html$/.test(window.location.pathname)) return;
+  const main = document.querySelector("main");
+  const actions = main?.querySelector(":scope > .actions");
+  const summary = main?.querySelector(":scope > .profile-card, :scope > .department-card, :scope > .hero");
+  if (!actions || !summary) return;
+  actions.classList.add("promoted-detail-actions");
+  summary.insertAdjacentElement("afterend", actions);
 }
 
 function prioritizeDashboardTasks(section) {
@@ -239,6 +260,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const section = window.location.pathname.match(/\/(employee|manager|admin)\//)?.[1];
   installEnterpriseIcons();
   installAdminSidebar();
+  promoteAdminDetailActions();
   prioritizeDashboardTasks(section);
   const notice = new URLSearchParams(window.location.search).get("notice");
   if (notice) {
