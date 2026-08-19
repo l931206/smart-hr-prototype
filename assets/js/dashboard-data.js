@@ -45,12 +45,18 @@
     setValue(".manager-summary .summary-card strong", 3, String(todayLeave.length));
 
     const name = user.display_name || user.username;
-    const heroTitle = document.querySelector(".manager-hero h1");
-    const heroDescription = document.querySelector(".manager-hero p");
+    const heroTitle = document.querySelector(".manager-overview h1, .manager-hero h1");
+    const heroDescription = document.querySelector(".manager-overview > div > p, .manager-hero p");
     const heroAvatar = document.querySelector(".manager-avatar");
     if (heroTitle) heroTitle.textContent = `${name}，您好`;
-    if (heroDescription) heroDescription.textContent = `${user.department_name || "目前部門"}目前有 ${employees.length} 位直屬員工，待處理事項 ${pending.length} 件。`;
+    if (heroDescription) heroDescription.textContent = pending.length ? `今天有 ${pending.length} 件請假申請需要處理。` : "目前沒有待審核的請假申請。";
     if (heroAvatar) heroAvatar.textContent = name.slice(0, 1);
+    const profileName = document.querySelector(".manager-profile strong");
+    const departmentMeta = document.querySelector("#managerDepartment");
+    const teamMeta = document.querySelector("#managerTeamMeta");
+    if (profileName) profileName.textContent = name;
+    if (departmentMeta) departmentMeta.textContent = user.department_name || "尚未設定部門";
+    if (teamMeta) teamMeta.textContent = `${employees.length} 位直屬員工`;
     const badges = document.querySelectorAll(".manager-action-badge");
     if (badges[0]) badges[0].textContent = `${pending.length} 件待處理`;
     if (badges[1]) badges[1].textContent = `${todayLate.length} 則通知`;

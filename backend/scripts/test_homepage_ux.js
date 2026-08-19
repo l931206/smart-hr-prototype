@@ -48,6 +48,36 @@ const identities = {
       assert.equal(await page.locator(".mobile-nav svg").count(), 4, "手機導覽應使用一致的 SVG 圖示");
       await page.screenshot({ path: `${process.env.TEMP}/smart-hr-employee-task-home-mobile.png`, fullPage: true });
     }
+    if (role === "manager") {
+      await page.getByRole("heading", { name: "你今天要處理什麼？" }).waitFor();
+      assert.deepEqual(await page.locator(".manager-action-card h3").allTextContents(), ["審核請假", "晚到通知", "我的團隊", "部門日曆"]);
+      assert.equal(await page.locator(".manager-action-card .manager-action-icon svg").count(), 4, "主管任務卡應使用企業線性 SVG 圖示");
+      assert.equal(await page.locator("button[aria-label='登出'] svg").count(), 1, "主管應顯示統一登出圖示");
+      assert.equal(await page.locator(".manager-hero").count(), 0, "主管首頁不應再顯示大型裝飾性橫幅");
+      await page.screenshot({ path: `${process.env.TEMP}/smart-hr-manager-task-home.png`, fullPage: true });
+      await page.setViewportSize({ width: 390, height: 844 });
+      await page.waitForTimeout(200);
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+      assert.ok(overflow <= 1, `主管手機首頁不應水平溢位，目前 ${overflow}px`);
+      assert.equal(await page.locator(".mobile-nav svg").count(), 4, "主管手機導覽應使用一致的 SVG 圖示");
+      await page.screenshot({ path: `${process.env.TEMP}/smart-hr-manager-task-home-mobile.png`, fullPage: true });
+    }
+    if (role === "admin") {
+      await page.getByRole("heading", { name: "你要管理什麼？" }).waitFor();
+      assert.deepEqual(await page.locator(".action-card h2").allTextContents(), ["員工管理", "帳號與權限", "部門管理", "資料修改申請"]);
+      assert.equal(await page.locator(".action-card .admin-action-icon svg").count(), 4, "管理者任務卡應使用企業線性 SVG 圖示");
+      assert.equal(await page.locator("button[aria-label='登出'] svg").count(), 1, "管理者應顯示統一登出圖示");
+      assert.equal(await page.locator(".hero").count(), 0, "管理者首頁不應再顯示大型裝飾性橫幅");
+      await page.screenshot({ path: `${process.env.TEMP}/smart-hr-admin-task-home.png`, fullPage: true });
+      await page.setViewportSize({ width: 390, height: 844 });
+      await page.waitForTimeout(200);
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+      assert.ok(overflow <= 1, `管理者手機首頁不應水平溢位，目前 ${overflow}px`);
+      await page.screenshot({ path: `${process.env.TEMP}/smart-hr-admin-task-home-mobile.png`, fullPage: true });
+    }
+    await page.evaluate(() => logout());
+    await page.waitForURL("**/index.html");
+    await page.getByRole("heading", { name: "登入系統" }).waitFor();
     await context.close();
   }
 

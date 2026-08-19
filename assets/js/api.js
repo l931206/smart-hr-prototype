@@ -44,6 +44,10 @@ const HR_ICON_PATHS = {
   user: '<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
   logout: '<path d="M10 5V3H4v18h6v-2"/><path d="M14 8l4 4-4 4M8 12h10"/>',
   announcement: '<path d="M4 13V9l12-5v14L4 13Z"/><path d="m7 14 1 6h4l-2-5M19 8v6"/>',
+  team: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
+  calendar: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18M8 14h2M14 14h2M8 18h2M14 18h2"/>',
+  department: '<path d="M3 21h18M5 21V7l7-4 7 4v14M9 9h1M14 9h1M9 13h1M14 13h1M9 17h6"/>',
+  account: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><circle cx="12" cy="9" r="2.5"/><path d="M8.5 16a4 4 0 0 1 7 0"/>',
   grid: '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>'
 };
 
@@ -54,6 +58,10 @@ function installEnterpriseIcons() {
     : href.includes("leave-history") ? "history"
     : href.includes("late-notice") ? "late"
     : href.includes("notification") ? "bell"
+    : href.includes("team") || href.includes("employee") ? "team"
+    : href.includes("calendar") || href.includes("leave-settings") ? "calendar"
+    : href.includes("department") ? "department"
+    : href.includes("account") ? "account"
     : href.includes("profile") ? "user"
     : href.includes("announcement") ? "announcement"
     : href.endsWith("index.html") ? "home" : "grid";
@@ -85,7 +93,7 @@ function installAdminSidebar() {
   const aside = document.createElement("aside");
   aside.className = "admin-sidebar";
   aside.setAttribute("aria-label", "系統管理導覽");
-  aside.innerHTML = `<a class="admin-sidebar-brand" href="index.html"><span>HR</span><strong>系統管理</strong></a><nav>${links.map(([href, label]) => `<a href="${href}" ${href === group ? 'aria-current="page"' : ""}>${label}</a>`).join("")}</nav><button type="button" class="admin-sidebar-logout">登出</button>`;
+  aside.innerHTML = `<a class="admin-sidebar-brand" href="index.html"><span>HR</span><strong>系統管理</strong></a><nav>${links.map(([href, label]) => `<a href="${href}" ${href === group ? 'aria-current="page"' : ""}>${label}</a>`).join("")}</nav><button type="button" class="admin-sidebar-logout" title="登出">${hrIcon("logout")}<span>登出</span></button>`;
   aside.querySelector("button").addEventListener("click", logout);
   document.body.prepend(aside);
   document.body.classList.add("has-admin-sidebar");
