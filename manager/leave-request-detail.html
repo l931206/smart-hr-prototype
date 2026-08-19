@@ -256,7 +256,7 @@
         </div>
 
         <div class="request-info-row">
-          <span>請假天數</span>
+          <span>請假時數</span>
           <strong>2 天</strong>
         </div>
 
@@ -370,7 +370,7 @@
         values[1].textContent = request.employee_job_title || "未設定職稱";
         values[2].textContent = request.leave_type;
         values[3].textContent = `${request.start_date} ${request.start_time} 至 ${request.end_date} ${request.end_time}`;
-        values[4].textContent = `${request.days} 天`;
+        values[4].textContent = formatLeaveDuration(request.days);
         values[5].textContent = balance ? `${Number(balance.remaining_days)} 天` : "不適用";
         values[6].textContent = request.reason;
         values[7].textContent = request.attachment_name || "未上傳附件";

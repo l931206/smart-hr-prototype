@@ -56,6 +56,22 @@ const HR_ICON_PATHS = {
 
 window.hrIcon = (name) => `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${HR_ICON_PATHS[name] || HR_ICON_PATHS.grid}</svg>`;
 
+window.formatLeaveDuration = (days) => {
+  const numericDays = Number(days);
+  if (!Number.isFinite(numericDays) || numericDays < 0) return "—";
+  const workdayMinutes = 8 * 60;
+  const totalMinutes = Math.round(numericDays * workdayMinutes);
+  const wholeDays = Math.floor(totalMinutes / workdayMinutes);
+  const remainder = totalMinutes % workdayMinutes;
+  const hours = Math.floor(remainder / 60);
+  const minutes = remainder % 60;
+  const parts = [];
+  if (wholeDays) parts.push(`${wholeDays} 天`);
+  if (hours) parts.push(`${hours} 小時`);
+  if (minutes) parts.push(`${minutes} 分鐘`);
+  return parts.join(" ") || "0 天";
+};
+
 function installEnterpriseIcons() {
   const iconForHref = (href = "") => href.includes("leave-assistant") || href.includes("leave-apply") ? "leave"
     : href.includes("leave-history") ? "history"

@@ -10,7 +10,7 @@
     document.querySelector(".approval-record-head p").textContent = `申請編號：LEAVE-${String(item.id).padStart(6,"0")}`;
     document.querySelector(".approval-record-status").textContent = item.status_label;
     const values = document.querySelectorAll(".approval-record-info .approval-record-row strong");
-    [item.employee_department || "—", item.leave_type, `${item.start_date} 至 ${item.end_date}`, `${item.days} 天`, item.reason || "—", item.attachment_name || "未上傳附件"].forEach((value,index) => { if(values[index]) values[index].textContent=value; });
+    [item.employee_department || "—", item.leave_type, `${item.start_date} 至 ${item.end_date}`, formatLeaveDuration(item.days), item.reason || "—", item.attachment_name || "未上傳附件"].forEach((value,index) => { if(values[index]) values[index].textContent=value; });
     if (item.attachment_data && values[5]) { values[5].style.cursor="pointer"; values[5].title="點擊下載附件"; values[5].addEventListener("click",()=>downloadAttachment(item.attachment_name,item.attachment_data)); }
     const timeline = document.querySelectorAll(".approval-timeline-item p");
     if (timeline[0]) timeline[0].textContent = `${new Date(item.created_at).toLocaleString("zh-TW")}，由 ${item.employee_name || "員工"} 送出。`;

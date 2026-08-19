@@ -445,11 +445,11 @@
         const year = new Date().getFullYear();
         const month = String(new Date().getMonth() + 1).padStart(2, "0");
         if (summary[0]) summary[0].textContent = annual ? `${Number(annual.remaining_days)} 天` : "0 天";
-        if (summary[1]) summary[1].textContent = `${leaves.filter((item) => item.status === "approved" && String(item.start_date).startsWith(String(year))).reduce((sum, item) => sum + Number(item.days), 0)} 天`;
+        if (summary[1]) summary[1].textContent = formatLeaveDuration(leaves.filter((item) => item.status === "approved" && String(item.start_date).startsWith(String(year))).reduce((sum, item) => sum + Number(item.days), 0));
         if (summary[2]) summary[2].textContent = `${lateNotices.filter((item) => String(item.date).startsWith(`${year}-${month}`)).length} 次`;
         if (summary[3]) summary[3].textContent = `${leaves.filter((item) => item.status === "pending").length} 件`;
         const records = [
-          ...leaves.map((item) => ({date:item.created_at,title:`${item.leave_type}申請`,tag:item.status_label,className:item.status,text:`${item.start_date} 至 ${item.end_date}，共 ${item.days} 天。`})),
+          ...leaves.map((item) => ({date:item.created_at,title:`${item.leave_type}申請`,tag:item.status_label,className:item.status,text:`${item.start_date} 至 ${item.end_date}，共 ${formatLeaveDuration(item.days)}。`})),
           ...lateNotices.map((item) => ({date:item.created_at,title:"晚到通知",tag:item.status_label,className:"late",text:`${item.date}，預計 ${item.expected_arrival} 到班。`}))
         ].sort((a,b) => new Date(b.date)-new Date(a.date)).slice(0,5);
         const recordCard = document.querySelector(".team-record-card");

@@ -330,7 +330,7 @@
             </div>
             <div class="history-details">
               <div class="history-detail"><span>請假日期</span><strong>${hrEscapeHtml(request.start_date)}－${hrEscapeHtml(request.end_date)}</strong></div>
-              <div class="history-detail"><span>請假天數</span><strong>${Number(request.days)} 天</strong></div>
+              <div class="history-detail"><span>請假時數</span><strong>${hrEscapeHtml(formatLeaveDuration(request.days))}</strong></div>
               <div class="history-detail"><span>審核狀態</span><strong>${hrEscapeHtml(request.status_label)}</strong></div>
             </div>
             <div class="history-reason">請假原因：${hrEscapeHtml(request.reason)}</div>

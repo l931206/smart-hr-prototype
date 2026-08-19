@@ -45,7 +45,7 @@
     const summary = document.querySelectorAll(".summary-grid .summary-card strong");
     const summaryLabels = document.querySelectorAll(".summary-grid .summary-card span");
     ["年度額度", "計薪方式", "本年度申請", "待審核申請"].forEach((label, index) => { if (summaryLabels[index]) summaryLabels[index].textContent = label; });
-    if (summary[0]) summary[0].textContent = `${item.default_days} 天`;
+    if (summary[0]) summary[0].textContent = `${Number(item.default_days)} 天`;
     if (summary[1]) summary[1].textContent = item.is_paid ? "給薪" : "不給薪";
     if (summary[2]) summary[2].textContent = String(leaves.length);
     if (summary[3]) summary[3].textContent = String(leaves.filter((leave) => leave.status === "pending").length);
@@ -53,7 +53,7 @@
     if (contentGrid) contentGrid.innerHTML = `<article class="card"><h2>基本規則</h2>
       <div class="row"><span>假別名稱</span><strong>${escapeHtml(item.name)}</strong></div>
       <div class="row"><span>假別代碼</span><strong>${escapeHtml(item.code)}</strong></div>
-      <div class="row"><span>年度額度</span><strong>${item.default_days} 天</strong></div>
+      <div class="row"><span>年度額度</span><strong>${Number(item.default_days)} 天</strong></div>
       <div class="row"><span>額度類型</span><strong>${escapeHtml(item.quota_type)}</strong></div>
       <div class="row"><span>最小請假單位</span><strong>${escapeHtml(item.minimum_unit)}</strong></div>
       <div class="row"><span>計薪方式</span><strong>${item.is_paid ? "給薪" : "不給薪"}</strong></div>

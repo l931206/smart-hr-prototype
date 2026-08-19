@@ -119,7 +119,7 @@
     const rows = [
       ["申請人", summary.employee_name], ["部門", summary.department || "—"],
       ["假別", summary.leave_type], ["日期", `${summary.start_date} 至 ${summary.end_date}`],
-      ["時段", `${summary.start_time} 至 ${summary.end_time}`], ["天數", `${Number(summary.requested_days)} 天`],
+      ["時段", `${summary.start_time} 至 ${summary.end_time}`], ["請假時數", formatLeaveDuration(summary.requested_days)],
       ["原因", summary.reason], ["附件", summary.attachment_name || "無"],
     ];
     return `<section class="summary-card"><h2>請確認請假內容</h2><div class="summary-grid">${rows.map(([label, value]) => `<div class="summary-item"><span>${hrEscapeHtml(label)}</span><strong>${hrEscapeHtml(value)}</strong></div>`).join("")}</div><div class="summary-actions"><button class="button primary confirm-draft" type="button">確認送出</button><button class="button secondary edit-draft" type="button">修改內容</button></div></section>`;

@@ -69,7 +69,7 @@
       const content = pending.length ? pending.slice(0, 3).map((request) => `
         <a class="manager-task" href="leave-request-detail.html?id=${request.id}">
           <div><h3>${escapeHtml(request.employee_name || "未提供姓名")}－${escapeHtml(request.leave_type)}</h3>
-          <p>${escapeHtml(request.start_date)} 至 ${escapeHtml(request.end_date)}，共 ${escapeHtml(request.days)} 天</p></div>
+          <p>${escapeHtml(request.start_date)} 至 ${escapeHtml(request.end_date)}，共 ${escapeHtml(formatLeaveDuration(request.days))}</p></div>
           <span class="manager-task-status">${escapeHtml(request.status_label || "待審核")}</span>
         </a>
       `).join("") : "<p>目前沒有待審核申請。</p>";

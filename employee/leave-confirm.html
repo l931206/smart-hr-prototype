@@ -177,7 +177,7 @@
       </div>
 
       <div class="confirm-row">
-        <span>請假天數</span>
+        <span>請假時數</span>
         <strong id="confirmDays">—</strong>
       </div>
 
@@ -271,7 +271,7 @@
           const [startHour, startMinute] = draft.start_time.split(":").map(Number);
           const [endHour, endMinute] = draft.end_time.split(":").map(Number);
           const minutes = (endHour * 60 + endMinute) - (startHour * 60 + startMinute);
-          return `${minutes / 60} 小時（${minutes / 480} 天）`;
+          return formatLeaveDuration(minutes / 480);
         }
         let businessDays = 0;
         for (const day = new Date(start); day <= end; day.setDate(day.getDate() + 1)) {
@@ -279,7 +279,7 @@
         }
         if (draft.start_time === "下午") businessDays -= 0.5;
         if (draft.end_time === "上午") businessDays -= 0.5;
-        return `${Math.max(businessDays, 0)} 天`;
+        return formatLeaveDuration(Math.max(businessDays, 0));
       };
 
       set("confirmLeaveType", draft.leave_type);

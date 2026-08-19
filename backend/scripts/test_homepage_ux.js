@@ -19,6 +19,11 @@ const identities = {
   await loginPage.waitForURL((url) => url.pathname === "/index.html");
   await loginPage.goto(`${frontendUrl}/`, { waitUntil: "networkidle" });
   await loginPage.getByRole("heading", { name: "登入系統" }).waitFor();
+  assert.deepEqual(await loginPage.evaluate(() => [
+    formatLeaveDuration("1.000"),
+    formatLeaveDuration("1.250"),
+    formatLeaveDuration("0.125"),
+  ]), ["1 天", "1 天 2 小時", "1 小時"], "請假時數應移除小數尾碼並換算日、小時與分鐘");
   assert.equal(await loginPage.locator("#loginForm").count(), 1, "首頁應直接顯示登入表單");
   assert.equal(await loginPage.locator(".role-grid").count(), 0, "首頁不應再要求使用者選擇角色");
   await loginPage.screenshot({ path: `${process.env.TEMP}/smart-hr-login-home.png`, fullPage: true });

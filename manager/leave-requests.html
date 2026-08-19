@@ -362,7 +362,7 @@
               <div class="request-employee"><div class="request-avatar">${hrEscapeHtml((request.employee_name || "員").slice(0, 1))}</div><div><h2>${hrEscapeHtml(request.employee_name || "未提供姓名")}－${hrEscapeHtml(request.leave_type)}</h2><p>申請編號：LEAVE-${hrEscapeHtml(String(request.id).padStart(6, "0"))}</p></div></div>
               <span class="request-status">${hrEscapeHtml(request.status_label)}</span>
             </div>
-            <div class="request-details"><div class="request-detail"><span>請假日期</span><strong>${hrEscapeHtml(request.start_date)}－${hrEscapeHtml(request.end_date)}</strong></div><div class="request-detail"><span>請假天數</span><strong>${Number(request.days)} 天</strong></div><div class="request-detail"><span>申請時間</span><strong>${hrEscapeHtml(new Date(request.created_at).toLocaleString("zh-TW"))}</strong></div></div>
+            <div class="request-details"><div class="request-detail"><span>請假日期</span><strong>${hrEscapeHtml(request.start_date)}－${hrEscapeHtml(request.end_date)}</strong></div><div class="request-detail"><span>請假時數</span><strong>${hrEscapeHtml(formatLeaveDuration(request.days))}</strong></div><div class="request-detail"><span>申請時間</span><strong>${hrEscapeHtml(new Date(request.created_at).toLocaleString("zh-TW"))}</strong></div></div>
             <div class="request-reason">請假原因：${hrEscapeHtml(request.reason)}</div>
             <span class="request-view-link">查看申請詳情 →</span>
           </a>
