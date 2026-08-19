@@ -2,7 +2,7 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
 from .integration_views import IntegrationManifestView, IntegrationMeView, MockCentralLoginView, MockCentralVerifyView
-from .views import AccountViewSet, AnnouncementViewSet, AuditLogViewSet, DepartmentViewSet, EmployeeViewSet, HealthView, LateNoticeViewSet, LeaveBalanceViewSet, LeaveRequestViewSet, LeaveTypeViewSet, LoginView, LogoutView, MeView, NotificationViewSet, ProfileChangeRequestViewSet
+from .views import AccountViewSet, AnnouncementViewSet, AuditLogViewSet, DepartmentViewSet, EmployeeViewSet, HealthView, LateNoticeViewSet, LeaveAssistantPreviewView, LeaveAssistantSubmitView, LeaveBalanceViewSet, LeaveRequestViewSet, LeaveTypeViewSet, LoginView, LogoutView, MeView, NotificationViewSet, ProfileChangeRequestViewSet
 
 router = DefaultRouter()
 router.register("departments", DepartmentViewSet, basename="department")
@@ -22,6 +22,8 @@ urlpatterns = [
     path("auth/login/", LoginView.as_view(), name="login"),
     path("auth/logout/", LogoutView.as_view(), name="logout"),
     path("auth/me/", MeView.as_view(), name="me"),
+    path("leave-assistant/preview/", LeaveAssistantPreviewView.as_view(), name="leave-assistant-preview"),
+    path("leave-assistant/submit/", LeaveAssistantSubmitView.as_view(), name="leave-assistant-submit"),
     path("integration/manifest/", IntegrationManifestView.as_view(), name="integration-manifest"),
     path("integration/me/", IntegrationMeView.as_view(), name="integration-me"),
     path("mock-central/login/", MockCentralLoginView.as_view(), name="mock-central-login"),

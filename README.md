@@ -28,7 +28,7 @@ Render PostgreSQL（正式資料）
 
 三種角色：
 
-- `employee/`：員工申請請假、晚到通知、公告、通知與個人資料。
+- `employee/`：員工可用對話、語音轉文字或傳統表單申請請假，並管理晚到通知、公告、通知與個人資料。
 - `manager/`：主管審核、團隊、日曆、晚到通知與公告。
 - `admin/`：員工、部門、帳號權限、假別、資料修改申請與稽核紀錄。
 
@@ -85,6 +85,7 @@ python manage.py test
 
 - `assets/css/`：三份共用企業版與 RWD 樣式。
 - `assets/js/`：API、權限與各功能資料同步。
+- `employee/leave-assistant.html`：對話式請假介面，送出前使用與 MCP 相同的短效確認草稿。
 - `backend/hr/`：資料模型、API、權限與測試。
 - `backend/config/`：Django 與部署設定。
 - `docs/MCP_INTEGRATION.md`：中控、文字與語音請假的 MCP 串接合約。

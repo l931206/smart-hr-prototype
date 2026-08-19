@@ -12,7 +12,14 @@ from rest_framework.decorators import action
 from rest_framework.views import APIView
 
 from .models import AuditLog, Announcement, Department, LateNotice, LeaveBalance, LeaveRequest, LeaveType, Notification, ProfileChangeRequest, User
-from .leave_services import create_leave_request, leave_balance_defaults, withdraw_leave_request
+from .leave_services import (
+    create_leave_request,
+    create_mcp_leave_draft,
+    leave_balance_defaults,
+    leave_request_result,
+    submit_mcp_leave_draft,
+    withdraw_leave_request,
+)
 from .serializers import (
     AnnouncementSerializer,
     AuditLogSerializer,
@@ -149,6 +156,44 @@ class MeView(APIView):
             user.save(update_fields=["avatar_data"])
             record_audit(request, "更新頭貼", user)
         return Response(UserSerializer(user).data)
+
+
+class LeaveAssistantPreviewView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        summary="建立對話式請假確認草稿",
+        request=LeaveRequestSerializer,
+        responses={200: OpenApiResponse(description="請假草稿與確認摘要")},
+    )
+    def post(self, request):
+        draft = create_mcp_leave_draft(request.user, request.data)
+        return Response({
+            "valid": True,
+            "requires_confirmation": True,
+            "draft_id": str(draft.id),
+            "expires_at": draft.expires_at,
+            "summary": draft.summary,
+        })
+
+
+class LeaveAssistantSubmitView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        summary="確認並送出對話式請假草稿",
+        request=inline_serializer(
+            name="LeaveAssistantSubmitRequest",
+            fields={"draft_id": drf_serializers.UUIDField()},
+        ),
+        responses={201: OpenApiResponse(description="已建立請假申請")},
+    )
+    def post(self, request):
+        draft_id = request.data.get("draft_id")
+        if not draft_id:
+            raise ValidationError({"draft_id": "請提供要送出的請假草稿。"})
+        leave_request = submit_mcp_leave_draft(request.user, draft_id, source="assistant")
+        return Response({"submitted": True, "request": leave_request_result(leave_request)}, status=status.HTTP_201_CREATED)
 
 
 class DepartmentViewSet(AdminWriteMixin, viewsets.ModelViewSet):

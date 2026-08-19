@@ -155,7 +155,7 @@ def create_leave_request(user, serializer, source="web"):
 
 
 @transaction.atomic
-def submit_mcp_leave_draft(user, draft_id):
+def submit_mcp_leave_draft(user, draft_id, source="mcp"):
     try:
         draft = McpLeaveDraft.objects.select_for_update().get(id=draft_id, employee=user)
     except (McpLeaveDraft.DoesNotExist, ValueError) as error:
@@ -167,7 +167,7 @@ def submit_mcp_leave_draft(user, draft_id):
 
     serializer, candidate = validate_leave_payload(user, draft.payload)
     build_leave_summary(user, serializer, candidate)
-    leave_request = create_leave_request(user, serializer, source="mcp")
+    leave_request = create_leave_request(user, serializer, source=source)
     draft.submitted_request = leave_request
     draft.submitted_at = timezone.now()
     draft.save(update_fields=["submitted_request", "submitted_at"])

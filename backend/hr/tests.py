@@ -491,6 +491,42 @@ class CoreApiTests(APITestCase):
             submit_mcp_leave_draft(self.user, str(draft.id))
         self.assertEqual(LeaveRequest.objects.count(), 0)
 
+    def test_leave_assistant_preview_and_submit_use_confirmation_draft(self):
+        self.client.force_authenticate(user=self.user)
+        preview = self.client.post(
+            "/api/leave-assistant/preview/",
+            {
+                "leave_type": "特休",
+                "start_date": "2026-09-03",
+                "end_date": "2026-09-03",
+                "start_time": "上午",
+                "end_time": "下午",
+                "reason": "對話式請假測試",
+            },
+            format="json",
+        )
+        self.assertEqual(preview.status_code, 200)
+        self.assertTrue(preview.data["requires_confirmation"])
+        self.assertEqual(LeaveRequest.objects.count(), 0)
+
+        submitted = self.client.post(
+            "/api/leave-assistant/submit/",
+            {"draft_id": preview.data["draft_id"]},
+            format="json",
+        )
+        self.assertEqual(submitted.status_code, 201)
+        self.assertEqual(submitted.data["request"]["status"], LeaveRequest.Status.PENDING)
+        self.assertEqual(LeaveRequest.objects.count(), 1)
+        self.assertTrue(AuditLog.objects.filter(details__source="assistant").exists())
+
+        duplicate = self.client.post(
+            "/api/leave-assistant/submit/",
+            {"draft_id": preview.data["draft_id"]},
+            format="json",
+        )
+        self.assertEqual(duplicate.status_code, 400)
+        self.assertEqual(LeaveRequest.objects.count(), 1)
+
     @override_settings(ENABLE_MOCK_CENTRAL=True, MOCK_CENTRAL_TOKEN_MAX_AGE=900)
     def test_mcp_token_verifier_maps_central_subject(self):
         self.user.external_user_id = "central-employee-001"

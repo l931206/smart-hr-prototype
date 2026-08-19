@@ -32,6 +32,8 @@ referenced by `DATABASE_URL`.
 - `POST /api/auth/login/`
 - `POST /api/auth/logout/`
 - `GET /api/auth/me/`
+- `POST /api/leave-assistant/preview/`
+- `POST /api/leave-assistant/submit/`
 - `/api/departments/`
 - `/api/employees/`
 

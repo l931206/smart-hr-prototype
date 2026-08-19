@@ -62,7 +62,7 @@ function prioritizeDashboardTasks(section) {
   const grid = document.querySelector(".function-grid, .manager-actions");
   if (!grid || grid.dataset.organized === "true") return;
   const priorities = section === "employee"
-    ? ["leave-apply.html", "leave-history.html", "notifications.html"]
+    ? ["leave-assistant.html", "leave-history.html", "notifications.html"]
     : ["leave-requests.html", "late-notices.html", "team.html"];
   const cards = [...grid.children];
   const rank = (card) => {
